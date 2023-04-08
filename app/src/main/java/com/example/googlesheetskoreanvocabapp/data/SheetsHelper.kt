@@ -9,6 +9,7 @@ import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
+import com.google.api.services.sheets.v4.model.ValueRange
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
 import javax.inject.Inject
@@ -53,6 +54,34 @@ class SheetsHelper @Inject constructor(@ApplicationContext applicationContext: C
                 e.printStackTrace()
             }
             return@withContext Pair(null, null)
+        }
+
+
+    suspend fun addData(wordType: WordType, pairToAdd: Pair<String, String>) =
+        withContext(Dispatchers.IO) {
+            try {
+                val sheetTitle = service.spreadsheets().get(SPREADSHEET_ID)
+                    .execute().sheets[wordType.sheetIndex].properties.title
+                val valuesOnColumnOne =
+                    (service.spreadsheets().values().get(SPREADSHEET_ID, "$sheetTitle!A1:A")
+                        .execute()
+                        .getValues().size) + 1
+                val values = listOf(
+                    listOf(pairToAdd.first, pairToAdd.second)
+                )
+                val body = ValueRange().apply {
+                    setValues(values)
+                }
+                service.spreadsheets().values()
+                    .update(SPREADSHEET_ID, "${wordType.name}!A$valuesOnColumnOne", body)
+                    .setValueInputOption("USER_ENTERED")
+                    .execute()
+            } catch (e: GoogleJsonResponseException) {
+                Timber.tag("Google Sheets API").e("Error: " + e.statusCode + " " + e.statusMessage)
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
 
     enum class WordType(val sheetIndex: Int) {

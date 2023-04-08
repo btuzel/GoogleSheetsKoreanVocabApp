@@ -16,5 +16,4 @@ class GetVerbs @Inject constructor(
         val koreanVerbs = asd.second!!.map { it.toString() }
         return@withContext Pair(englishVerbs, koreanVerbs)
     }
-
 }

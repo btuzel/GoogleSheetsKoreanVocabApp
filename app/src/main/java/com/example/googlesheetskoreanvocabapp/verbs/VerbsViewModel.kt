@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class VerbsViewModel @Inject constructor(private val getVerbs: GetVerbs) : ViewModel() {
+class VerbsViewModel @Inject constructor(
+    private val getVerbs: GetVerbs,
+    private val addVerb: AddVerb
+) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
         englishWord = "",
@@ -84,6 +87,12 @@ class VerbsViewModel @Inject constructor(private val getVerbs: GetVerbs) : ViewM
                     sendRandomEnglishWord(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
                 }
             }
+        }
+    }
+
+    fun addVerbToColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            addVerb(englishWord, koreanWord)
         }
     }
 

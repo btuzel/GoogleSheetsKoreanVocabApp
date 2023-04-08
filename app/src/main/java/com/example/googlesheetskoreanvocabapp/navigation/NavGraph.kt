@@ -8,8 +8,11 @@ import com.example.googlesheetskoreanvocabapp.MainScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AdverbsScreen
 import com.example.googlesheetskoreanvocabapp.complexsentences.ComplexSentencesScreen
 import com.example.googlesheetskoreanvocabapp.nouns.NounsScreen
+import com.example.googlesheetskoreanvocabapp.positions.AddPositionsScreen
 import com.example.googlesheetskoreanvocabapp.positions.PositionsScreen
+import com.example.googlesheetskoreanvocabapp.usefulphrases.AddPhrasesScreen
 import com.example.googlesheetskoreanvocabapp.usefulphrases.PhrasesScreen
+import com.example.googlesheetskoreanvocabapp.verbs.AddVerbScreen
 import com.example.googlesheetskoreanvocabapp.verbs.VerbsScreen
 
 @Composable
@@ -40,6 +43,27 @@ fun NavGraph(
         composable(route = ScreenDestination.ComplexSentencesScreen.route) {
             ComplexSentencesScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
+//////////////
+        composable(route = ScreenDestination.AddVerbsScreen.route) {
+            AddVerbScreen()
+        }
+
+//        composable(route = ScreenDestination.AddAdverbsScreen.route) {
+//            AddAdverbsScreen(onComplete = { navigateToMainScreen(navHostController) })
+//        }
+//
+//        composable(route = ScreenDestination.AddNounsScreen.route) {
+//            AddNounsScreen(onComplete = { navigateToMainScreen(navHostController) })
+//        }
+        composable(route = ScreenDestination.AddPositionsScreen.route) {
+            AddPositionsScreen()
+        }
+        composable(route = ScreenDestination.AddUsefulPhrasesScreen.route) {
+            AddPhrasesScreen()
+        }
+//        composable(route = ScreenDestination.AddComplexSentencesScreen.route) {
+//            AddComplexSentencesScreen(onComplete = { navigateToMainScreen(navHostController) })
+//        }
 
 
         composable(route = ScreenDestination.MainScreen.route) {

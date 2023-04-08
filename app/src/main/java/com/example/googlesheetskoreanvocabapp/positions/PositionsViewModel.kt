@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class PositionsViewModel @Inject constructor(private val getPositions: GetPositions) : ViewModel() {
+class PositionsViewModel @Inject constructor(
+    private val getPositions: GetPositions,
+    private val addPositions: AddPositions
+) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
         englishWord = "",
@@ -46,6 +49,13 @@ class PositionsViewModel @Inject constructor(private val getPositions: GetPositi
 
         shownWords.add(randomWord)
         return randomWord
+    }
+
+
+    fun addPositionsToColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            addPositions(englishWord, koreanWord)
+        }
     }
 
     private suspend fun fixAllWords() {
