@@ -31,7 +31,6 @@ class SheetsHelper @Inject constructor(@ApplicationContext applicationContext: C
         .setApplicationName("GoogleSheetsKoreanVocabApp")
         .build()
 
-    //TODO: idea, add words from app the database
     //TODO: add offline mode
     suspend fun getWordsFromSpreadsheet(wordType: WordType): Pair<List<List<Any>>?, List<List<Any>>?> =
         withContext(Dispatchers.IO) {
