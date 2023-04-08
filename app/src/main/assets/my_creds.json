@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "sigma-task-383110",
+  "private_key_id": "2236a927b4998049fec23d5db52aa5b86d6f9ba4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDEQYC2DNti1ZbS\n75PN9BR+XU/8wjP+0Iw+FSeA+Eo//dZfaShMYeC+nkA0MBQK9fG/FXIWws2SR3mj\nftD8jPNw+HPbj3ka2xJJW1mWV2phHPL7vV+sL20zfLU4tJdr05OJ9znsPWHsjTyS\nT1dDhMzLBWiDPE9yLZcrwLUIjn0Cb2aJoblozO7iWico1Tc+jqNJ5cRIh2hr3s+0\nUYrZ23UEX2FjHjEKkBOpVOvOzGD8PliWQ/CepS53sNatp8kwanpD3PkNz7XUKDgB\nQ73P16fNcG2bBhWG8PCfKJEBk3x1UF6gtUbHkG4aM24GxdTwE/32pI+rPKNiaEW8\n4w2zrPQdAgMBAAECggEAFmZDgoPFJmqqZDjj7cXF8QZFctvXg2XaG9vePmIYV2Vp\nakpeRxmExTzapxo1r2qSxPR1qRNi0ydFQtvejnSn9GTnFFAzylTmqWi7uOURRzQ+\np2zd1pEzLYU2SdqSzcPAOyb0fXokCxOzrh9QHmyx0xoy64eeqbF6Z4v/HZLlwbkx\n+7QasRmmSuZSi8VNpzegw9Ge5zyzpSrkxPRN5Cfxuc1J8IZ0VjrIu/S1QsP7G0tX\nLlqQHr+l31Ll1WdvGRd5lE3zMMzKY6/HRdBiAeTeT8ZEuOAjtgVfDDYN0A0Uid/A\nKyQsW3r1XX+VRXab7Vf6hxCuZjGTWIOx0Sx07Re8AQKBgQDvc1Z09jgFXl9oJEk+\n0c7k5lTVMubArAP6Feuu5hBJQOzXUaJFaJ+GNbpK8YATlx6R1y646nHctalcIW05\nRHCZhYqNx1skXY2qsS/vLp2e6uaVZA1BC1D8wrMovX8QQeNO7tHZ95WMYxJMkFhC\nLxCzrn4kMwNPR1usZALTILii4QKBgQDR0ekHfJBHRatuuUH/HXDkDg9VupqIeP3Q\na/uHVVbhOyFeD9Pqpp/RZXRBU89AAPe3oS3pWmcuv0PPsDCNKnNaLgwSD2w+wqUg\n+L973YAeoTfTUND49fmVnvQbHr6RMwFjpsm0jx0TzfWAkjj06WauzEi7LtjmPdqw\nLfLpeic0vQKBgFePaJUamD+2U9MEOdiD5lEjvO+9Tk40WLvxmh55uIjg+fp+uoUB\nDhyItxfCmeAQCbiw5D/wUzSvJUAwZP1k/nvVLmZL+RMiNrStWGbxN+gt46XLUWFw\nnuve0p7aNIWgYluxzwESnRgZ/k4LFosVJNlfvHbGRLaP1IEEjVfhBkNhAoGBAKBw\nc1DvNd/Z7UGoVUe/enBYM++o1bufUO3LdDVC00E8lsI3NiNKsBBNFL1TWbmmQ8Vd\ncR7rqtS7Gh44qpd3K2d8qGwy8OF4sw3oR3tunyZMvsROGs0UQXngZuZJ9wxORTSu\n97Oib2iSZ7SdmwHja0okGUVQiDheedeX+xP+/PW9AoGBAMfGlfUv6omKykoU/gLE\nSkprpfRQ7n4PviAfvjlBHlR0R5YZaIcVT7y6uTWsGInBQ3PwZVP0EASjz1Pt7KpS\n9u+YLJUDA7IMQ3zpDg48dg7I4/andhwoUvB2685fEjBK83GEOD3RMS8H5QjMQymd\ng8M1jYYxFQWqxnRI0S5nlols\n-----END PRIVATE KEY-----\n",
+  "client_email": "koreanapp@sigma-task-383110.iam.gserviceaccount.com",
+  "client_id": "117254008583550662385",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/koreanapp%40sigma-task-383110.iam.gserviceaccount.com"
+}
