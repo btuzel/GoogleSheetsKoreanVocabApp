@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class AdverbsViewModel @Inject constructor(private val getAdverbs: GetAdverbs) : ViewModel() {
+class AdverbsViewModel @Inject constructor(private val getAdverbs: GetAdverbs, private val addAdverbs: AddAdverbs) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
         englishWord = "",
@@ -29,6 +29,11 @@ class AdverbsViewModel @Inject constructor(private val getAdverbs: GetAdverbs) :
 
     private val shownWords = mutableSetOf<String>()
 
+    fun addAdverbsToColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            addAdverbs(englishWord, koreanWord)
+        }
+    }
 
     private fun getRandomEnglishWord(): String {
         val remainingWords = listOfAdverbs.first.filter { it !in shownWords }

@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class GetComplexSentencesViewModel @Inject constructor(private val getComplexSentences: GetComplexSentences) : ViewModel() {
+class GetComplexSentencesViewModel @Inject constructor(
+    private val getComplexSentences: GetComplexSentences,
+    private val addComplexSentences: AddComplexSentences
+) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
         englishWord = "",
@@ -29,12 +32,20 @@ class GetComplexSentencesViewModel @Inject constructor(private val getComplexSen
 
     private val shownWords = mutableSetOf<String>()
 
+    fun addComplexSentencesToColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            addComplexSentences(englishWord, koreanWord)
+        }
+    }
+
+
     private fun getRandomEnglishWord(): String {
         val remainingWords = listOfComplexSentences.first.filter { it !in shownWords }
 
         val incorrectWords = shownWords.filter { englishWord ->
-            val correctKoreanTranslation = listOfComplexSentences.first.zip(listOfComplexSentences.second)
-                .find { it.first == englishWord.split("[")[0] }!!.second
+            val correctKoreanTranslation =
+                listOfComplexSentences.first.zip(listOfComplexSentences.second)
+                    .find { it.first == englishWord.split("[")[0] }!!.second
             correctKoreanTranslation != _uiState.value.defaultWord
         }
 
