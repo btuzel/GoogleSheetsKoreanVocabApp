@@ -1,6 +1,8 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import android.content.Context
+import com.example.googlesheetskoreanvocabapp.db.Database
+import com.example.googlesheetskoreanvocabapp.db.WordPairs
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
@@ -11,15 +13,17 @@ import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.ValueRange
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.IOException
+import javax.inject.Inject
 
 const val SPREADSHEET_ID = "1OX5NhFXAiPXwjdW5g6AmEriWbqzRvAvT_uZOAeVQ1t8"
 
-class SheetsHelper @Inject constructor(@ApplicationContext applicationContext: Context) {
+class SheetsHelper @Inject constructor(
+    @ApplicationContext applicationContext: Context,private val database: Database
+) {
     private val transport: HttpTransport = NetHttpTransport()
     private val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
 
@@ -32,6 +36,33 @@ class SheetsHelper @Inject constructor(@ApplicationContext applicationContext: C
         .build()
 
     //TODO: add offline mode
+
+    suspend fun syncData() = withContext(Dispatchers.IO) {
+        try {
+            // Get data from Google Sheets
+            val verbs = getWordsFromSpreadsheet(WordType.VERBS)
+            val adverbs = getWordsFromSpreadsheet(WordType.ADVERBS)
+            val complexSentences = getWordsFromSpreadsheet(WordType.COMPLEX_SENTENCES)
+            val usefulPhrases = getWordsFromSpreadsheet(WordType.USEFUL_PHRASES)
+            val nouns = getWordsFromSpreadsheet(WordType.NOUNS)
+            val positions = getWordsFromSpreadsheet(WordType.POSITIONS)
+            val someSentences = getWordsFromSpreadsheet(WordType.SOME_SENTENCES)
+
+            val englishVerbs = verbs.first!!.map { it.toString() }
+            val koreanVerbs = verbs.second!!.map { it.toString() }
+            val listOfVerbs = mutableListOf<WordPairs>()
+            for (i in englishVerbs.indices) {
+                val wordPairs = WordPairs(englishWord = englishVerbs[i], koreanWord = koreanVerbs[i])
+                listOfVerbs.add(wordPairs)
+            }
+            // Save data to Room database
+            database.wordDao().insertWords(
+                listOfVerbs
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
     suspend fun getWordsFromSpreadsheet(wordType: WordType): Pair<List<List<Any>>?, List<List<Any>>?> =
         withContext(Dispatchers.IO) {
             try {

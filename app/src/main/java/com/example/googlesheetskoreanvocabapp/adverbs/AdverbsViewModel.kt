@@ -2,14 +2,20 @@ package com.example.googlesheetskoreanvocabapp.adverbs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.db.WordPairs
+import com.example.googlesheetskoreanvocabapp.db.WordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class AdverbsViewModel @Inject constructor(private val getAdverbs: GetAdverbs, private val addAdverbs: AddAdverbs) : ViewModel() {
+class AdverbsViewModel @Inject constructor(
+    private val getAdverbs: GetAdverbs,
+    private val addAdverbs: AddAdverbs,
+    private val wordRepository: WordRepository
+) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
         englishWord = "",
@@ -32,6 +38,14 @@ class AdverbsViewModel @Inject constructor(private val getAdverbs: GetAdverbs, p
     fun addAdverbsToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             addAdverbs(englishWord, koreanWord)
+            wordRepository.insertWordPairs(
+                listOf(
+                    WordPairs(
+                        englishWord = englishWord,
+                        koreanWord = koreanWord
+                    )
+                )
+            )
         }
     }
 

@@ -11,9 +11,10 @@ class GetAdverbs @Inject constructor(
     suspend operator fun invoke(): Pair<List<String>, List<String>> = withContext(
         Dispatchers.IO
     ) {
-        val asd = sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.ADVERBS)
-        val englishAdverbs = asd.first!!.map { it.toString() }
-        val koreanAdverbs = asd.second!!.map { it.toString() }
+        val englishAdverbs =
+            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.ADVERBS).first!!.map { it.toString() }
+        val koreanAdverbs =
+            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.ADVERBS).second!!.map { it.toString() }
         return@withContext Pair(englishAdverbs, koreanAdverbs)
     }
 
