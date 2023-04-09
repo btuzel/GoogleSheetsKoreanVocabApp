@@ -2,16 +2,18 @@ package com.example.googlesheetskoreanvocabapp.verbs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class VerbsViewModel @Inject constructor(
     private val getVerbs: GetVerbs,
-    private val addVerb: AddVerb
+    private val addVerb: AddVerb,
+    private val verbRepository: VerbRepository
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -26,11 +28,16 @@ class VerbsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             fixAllWords()
+            test()
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
 
     private val shownWords = mutableSetOf<String>()
+
+    private suspend fun test() {
+        val x  = verbRepository.getWordPairs()
+    }
 
     private fun getRandomEnglishWord(): String {
         val remainingWords = listOfVerbs.first.filter { it !in shownWords }

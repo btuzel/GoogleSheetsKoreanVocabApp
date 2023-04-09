@@ -2,7 +2,7 @@ package com.example.googlesheetskoreanvocabapp.data
 
 import android.content.Context
 import com.example.googlesheetskoreanvocabapp.db.Database
-import com.example.googlesheetskoreanvocabapp.db.WordPairs
+import com.example.googlesheetskoreanvocabapp.db.Verbs
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
@@ -37,7 +37,7 @@ class SheetsHelper @Inject constructor(
 
     //TODO: add offline mode
 
-    suspend fun syncData() = withContext(Dispatchers.IO) {
+    suspend fun syncDataForVerbs() = withContext(Dispatchers.IO) {
         try {
             // Get data from Google Sheets
             val verbs = getWordsFromSpreadsheet(WordType.VERBS)
@@ -50,13 +50,13 @@ class SheetsHelper @Inject constructor(
 
             val englishVerbs = verbs.first!!.map { it.toString() }
             val koreanVerbs = verbs.second!!.map { it.toString() }
-            val listOfVerbs = mutableListOf<WordPairs>()
+            val listOfVerbs = mutableListOf<Verbs>()
             for (i in englishVerbs.indices) {
-                val wordPairs = WordPairs(englishWord = englishVerbs[i], koreanWord = koreanVerbs[i])
+                val wordPairs = Verbs(englishWord = englishVerbs[i], koreanWord = koreanVerbs[i])
                 listOfVerbs.add(wordPairs)
             }
             // Save data to Room database
-            database.wordDao().insertWords(
+            database.verbDao().insertVerbs(
                 listOfVerbs
             )
         } catch (e: Exception) {

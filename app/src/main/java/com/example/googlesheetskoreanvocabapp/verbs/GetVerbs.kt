@@ -11,6 +11,7 @@ class GetVerbs @Inject constructor(
     suspend operator fun invoke(): Pair<List<String>, List<String>> = withContext(
         Dispatchers.IO
     ) {
+        sheetsHelper.syncDataForVerbs()
         val asd = sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.VERBS)
         val englishVerbs = asd.first!!.map { it.toString() }
         val koreanVerbs = asd.second!!.map { it.toString() }

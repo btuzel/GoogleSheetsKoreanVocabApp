@@ -6,10 +6,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface WordDao {
-    @Query("SELECT * FROM words WHERE type = :wordType")
-    fun getWordPairs(wordType: String): List<WordPairs>
+interface VerbDao {
+    @Query("SELECT * FROM verbs")
+    suspend fun getVerbs(): List<Verbs>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWordPairs(wordPairs: List<WordPairs>)
+    suspend fun insertVerbs(wordPairs: List<Verbs>)
 }
