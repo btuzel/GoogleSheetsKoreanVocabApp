@@ -2,7 +2,7 @@ package com.example.googlesheetskoreanvocabapp.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.googlesheetskoreanvocabapp.db.Database
+import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import com.example.googlesheetskoreanvocabapp.db.VerbDao
 import dagger.Module
 import dagger.Provides
@@ -14,15 +14,15 @@ import dagger.hilt.components.SingletonComponent
 object VerbDaoModule {
 
     @Provides
-    fun provideVerbDao(database: Database): VerbDao {
-        return database.verbDao()
+    fun provideVerbDao(verbDatabase: VerbDatabase): VerbDao {
+        return verbDatabase.verbDao()
     }
 
     @Provides
-    fun provideDatabase(application: Application): Database {
+    fun provideDatabase(application: Application): VerbDatabase {
         return Room.databaseBuilder(
             application,
-            Database::class.java,
+            VerbDatabase::class.java,
             "my-db"
         ).build()
     }

@@ -1,7 +1,12 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import android.content.Context
-import com.example.googlesheetskoreanvocabapp.db.Database
+import com.example.googlesheetskoreanvocabapp.db.Adverbs
+import com.example.googlesheetskoreanvocabapp.db.Nouns
+import com.example.googlesheetskoreanvocabapp.db.Phrases
+import com.example.googlesheetskoreanvocabapp.db.Positions
+import com.example.googlesheetskoreanvocabapp.db.Sentences
+import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import com.example.googlesheetskoreanvocabapp.db.Verbs
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
@@ -13,16 +18,16 @@ import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.ValueRange
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.IOException
-import javax.inject.Inject
 
 const val SPREADSHEET_ID = "1OX5NhFXAiPXwjdW5g6AmEriWbqzRvAvT_uZOAeVQ1t8"
 
 class SheetsHelper @Inject constructor(
-    @ApplicationContext applicationContext: Context,private val database: Database
+    @ApplicationContext applicationContext: Context, private val verbDatabase: VerbDatabase
 ) {
     private val transport: HttpTransport = NetHttpTransport()
     private val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
@@ -35,18 +40,14 @@ class SheetsHelper @Inject constructor(
         .setApplicationName("GoogleSheetsKoreanVocabApp")
         .build()
 
-    //TODO: add offline mode
-
-    suspend fun syncDataForVerbs() = withContext(Dispatchers.IO) {
+    private suspend fun addPairsToDeviceDatabase() = withContext(Dispatchers.IO) {
         try {
-            // Get data from Google Sheets
             val verbs = getWordsFromSpreadsheet(WordType.VERBS)
             val adverbs = getWordsFromSpreadsheet(WordType.ADVERBS)
             val complexSentences = getWordsFromSpreadsheet(WordType.COMPLEX_SENTENCES)
             val usefulPhrases = getWordsFromSpreadsheet(WordType.USEFUL_PHRASES)
             val nouns = getWordsFromSpreadsheet(WordType.NOUNS)
             val positions = getWordsFromSpreadsheet(WordType.POSITIONS)
-            val someSentences = getWordsFromSpreadsheet(WordType.SOME_SENTENCES)
 
             val englishVerbs = verbs.first!!.map { it.toString() }
             val koreanVerbs = verbs.second!!.map { it.toString() }
@@ -55,14 +56,71 @@ class SheetsHelper @Inject constructor(
                 val wordPairs = Verbs(englishWord = englishVerbs[i], koreanWord = koreanVerbs[i])
                 listOfVerbs.add(wordPairs)
             }
-            // Save data to Room database
-            database.verbDao().insertVerbs(
+
+            val englishAdverbs = adverbs.first!!.map { it.toString() }
+            val koreanAdverbs = adverbs.second!!.map { it.toString() }
+            val listOfAdverbs = mutableListOf<Adverbs>()
+            for (i in englishVerbs.indices) {
+                val wordPairs = Adverbs(englishWord = englishAdverbs[i], koreanWord = koreanAdverbs[i])
+                listOfAdverbs.add(wordPairs)
+            }
+
+            val englishPositions = positions.first!!.map { it.toString() }
+            val koreanPositions = positions.second!!.map { it.toString() }
+            val listOfPositions = mutableListOf<Positions>()
+            for (i in englishVerbs.indices) {
+                val wordPairs = Positions(englishWord = englishPositions[i], koreanWord = koreanPositions[i])
+                listOfPositions.add(wordPairs)
+            }
+
+            val englishPhrases = usefulPhrases.first!!.map { it.toString() }
+            val koreanPhrases = usefulPhrases.second!!.map { it.toString() }
+            val listOfPhrases = mutableListOf<Phrases>()
+            for (i in englishVerbs.indices) {
+                val wordPairs = Phrases(englishWord = englishPhrases[i], koreanWord = koreanPhrases[i])
+                listOfPhrases.add(wordPairs)
+            }
+
+
+            val englishNouns = nouns.first!!.map { it.toString() }
+            val koreanNouns = nouns.second!!.map { it.toString() }
+            val listOfNouns = mutableListOf<Nouns>()
+            for (i in englishVerbs.indices) {
+                val wordPairs = Nouns(englishWord = englishNouns[i], koreanWord = koreanNouns[i])
+                listOfNouns.add(wordPairs)
+            }
+
+            val englishSentences = complexSentences.first!!.map { it.toString() }
+            val koreanSentences = complexSentences.second!!.map { it.toString() }
+            val listOfSentences = mutableListOf<Sentences>()
+            for (i in englishVerbs.indices) {
+                val wordPairs = Sentences(englishWord = englishSentences[i], koreanWord = koreanSentences[i])
+                listOfSentences.add(wordPairs)
+            }
+
+            verbDatabase.verbDao().insertVerbs(
                 listOfVerbs
+            )
+            verbDatabase.verbDao().insertAdverbs(
+                listOfAdverbs
+            )
+            verbDatabase.verbDao().insertNouns(
+                listOfNouns
+            )
+            verbDatabase.verbDao().insertSentences(
+                listOfSentences
+            )
+            verbDatabase.verbDao().insertPhrases(
+                listOfPhrases
+            )
+            verbDatabase.verbDao().insertPositions(
+                listOfPositions
             )
         } catch (e: Exception) {
             Timber.e(e)
         }
     }
+
     suspend fun getWordsFromSpreadsheet(wordType: WordType): Pair<List<List<Any>>?, List<List<Any>>?> =
         withContext(Dispatchers.IO) {
             try {
@@ -76,6 +134,9 @@ class SheetsHelper @Inject constructor(
                 val koreanWords =
                     service.spreadsheets().values().get(SPREADSHEET_ID, koreanWordsRange).execute()
                         .getValues()
+
+                //TODO: idk about this one
+                addPairsToDeviceDatabase()
                 return@withContext Pair(englishWords, koreanWords)
             } catch (e: GoogleJsonResponseException) {
                 Timber.tag("Google Sheets API").e("Error: " + e.statusCode + " " + e.statusMessage)
@@ -112,7 +173,7 @@ class SheetsHelper @Inject constructor(
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        }
+        }!!
 
     enum class WordType(val sheetIndex: Int) {
         VERBS(sheetIndex = 0),

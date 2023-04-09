@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -17,7 +16,10 @@ import androidx.navigation.NavHostController
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 
 @Composable
-fun MainScreen(navHostController: NavHostController) {
+fun MainScreen(
+    navHostController: NavHostController
+) {
+
     CombinedButtons(
         onNounButtonClick = { navHostController.navigate(ScreenDestination.NounsScreen.route) },
         onAdverbButtonClick = { navHostController.navigate(ScreenDestination.AdverbsScreen.route) },
