@@ -18,9 +18,9 @@ class GetPhrases @Inject constructor(
             val wordsFromSpreadsheet =
                 sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.USEFUL_PHRASES)
             val englishPhrases =
-                wordsFromSpreadsheet.first!!.map { it.toString() }
+                wordsFromSpreadsheet.first!!.map { it.toString().replace("[","").replace("]","") }
             val koreanPhrases =
-                wordsFromSpreadsheet.second!!.map { it.toString() }
+                wordsFromSpreadsheet.second!!.map { it.toString().replace("[","").replace("]","") }
             return@withContext Pair(englishPhrases, koreanPhrases)
         } else {
             return@withContext verbRepository.getPhrases()

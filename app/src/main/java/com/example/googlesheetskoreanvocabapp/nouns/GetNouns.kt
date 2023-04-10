@@ -18,9 +18,9 @@ class GetNouns @Inject constructor(
             val wordsFromSpreadsheet =
                 sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.NOUNS)
             val englishNouns =
-                wordsFromSpreadsheet.first!!.map { it.toString() }
+                wordsFromSpreadsheet.first!!.map { it.toString().replace("[","").replace("]","") }
             val koreanNouns =
-                wordsFromSpreadsheet.second!!.map { it.toString() }
+                wordsFromSpreadsheet.second!!.map { it.toString().replace("[","").replace("]","") }
             return@withContext Pair(englishNouns, koreanNouns)
         } else {
             return@withContext verbRepository.getNouns()

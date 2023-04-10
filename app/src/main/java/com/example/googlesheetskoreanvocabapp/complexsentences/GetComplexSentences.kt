@@ -18,9 +18,9 @@ class GetComplexSentences @Inject constructor(
             val wordsFromSpreadsheet =
                 sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.COMPLEX_SENTENCES)
             val englishSentences =
-                wordsFromSpreadsheet.first!!.map { it.toString() }
+                wordsFromSpreadsheet.first!!.map { it.toString().replace("[","").replace("]","") }
             val koreanSentences =
-                wordsFromSpreadsheet.second!!.map { it.toString() }
+                wordsFromSpreadsheet.second!!.map { it.toString().replace("[","").replace("]","") }
             return@withContext Pair(englishSentences, koreanSentences)
         } else {
             return@withContext verbRepository.getSentences()

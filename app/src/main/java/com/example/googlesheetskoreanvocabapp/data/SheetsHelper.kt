@@ -40,76 +40,6 @@ class SheetsHelper @Inject constructor(
         .setApplicationName("GoogleSheetsKoreanVocabApp")
         .build()
 
-    /* private suspend fun addPairsToDeviceDatabase() = withContext(Dispatchers.IO) {
-         try {
-             val adverbs = getWordsFromSpreadsheet(WordType.ADVERBS)
-             val complexSentences = getWordsFromSpreadsheet(WordType.COMPLEX_SENTENCES)
-             val usefulPhrases = getWordsFromSpreadsheet(WordType.USEFUL_PHRASES)
-             val nouns = getWordsFromSpreadsheet(WordType.NOUNS)
-             val positions = getWordsFromSpreadsheet(WordType.POSITIONS)
-
-
-             val englishAdverbs = adverbs.first!!.map { it.toString() }
-             val koreanAdverbs = adverbs.second!!.map { it.toString() }
-             val listOfAdverbs = mutableListOf<Adverbs>()
-             for (i in englishVerbs.indices) {
-                 val wordPairs = Adverbs(englishWord = englishAdverbs[i], koreanWord = koreanAdverbs[i])
-                 listOfAdverbs.add(wordPairs)
-             }
-
-             val englishPositions = positions.first!!.map { it.toString() }
-             val koreanPositions = positions.second!!.map { it.toString() }
-             val listOfPositions = mutableListOf<Positions>()
-             for (i in englishVerbs.indices) {
-                 val wordPairs = Positions(englishWord = englishPositions[i], koreanWord = koreanPositions[i])
-                 listOfPositions.add(wordPairs)
-             }
-
-             val englishPhrases = usefulPhrases.first!!.map { it.toString() }
-             val koreanPhrases = usefulPhrases.second!!.map { it.toString() }
-             val listOfPhrases = mutableListOf<Phrases>()
-             for (i in englishVerbs.indices) {
-                 val wordPairs = Phrases(englishWord = englishPhrases[i], koreanWord = koreanPhrases[i])
-                 listOfPhrases.add(wordPairs)
-             }
-
-
-             val englishNouns = nouns.first!!.map { it.toString() }
-             val koreanNouns = nouns.second!!.map { it.toString() }
-             val listOfNouns = mutableListOf<Nouns>()
-             for (i in englishVerbs.indices) {
-                 val wordPairs = Nouns(englishWord = englishNouns[i], koreanWord = koreanNouns[i])
-                 listOfNouns.add(wordPairs)
-             }
-
-             val englishSentences = complexSentences.first!!.map { it.toString() }
-             val koreanSentences = complexSentences.second!!.map { it.toString() }
-             val listOfSentences = mutableListOf<Sentences>()
-             for (i in englishVerbs.indices) {
-                 val wordPairs = Sentences(englishWord = englishSentences[i], koreanWord = koreanSentences[i])
-                 listOfSentences.add(wordPairs)
-             }
-
-             verbDatabase.verbDao().insertAdverbs(
-                 listOfAdverbs
-             )
-             verbDatabase.verbDao().insertNouns(
-                 listOfNouns
-             )
-             verbDatabase.verbDao().insertSentences(
-                 listOfSentences
-             )
-             verbDatabase.verbDao().insertPhrases(
-                 listOfPhrases
-             )
-             verbDatabase.verbDao().insertPositions(
-                 listOfPositions
-             )
-         } catch (e: Exception) {
-             Timber.e(e)
-         }
-     }*/
-
     suspend fun getWordsFromSpreadsheet(wordType: WordType): Pair<List<List<Any>>?, List<List<Any>>?> =
         withContext(Dispatchers.IO) {
             try {
@@ -117,22 +47,28 @@ class SheetsHelper @Inject constructor(
                     .execute().sheets[wordType.sheetIndex].properties.title
                 val englishWordsRange = "$sheetTitle!A1:A"
                 val koreanWordsRange = "$sheetTitle!B1:B"
-                val englishWords =
+                val englishWords2 =
                     service.spreadsheets().values().get(SPREADSHEET_ID, englishWordsRange).execute()
-                        .getValues()
-                val koreanWords =
+                        .getValues().map { it.toString().replace("[", "").replace("]", "") }
+                val koreanWords2 =
                     service.spreadsheets().values().get(SPREADSHEET_ID, koreanWordsRange).execute()
-                        .getValues()
+                        .getValues().map { it.toString().replace("[", "").replace("]", "") }
+
                 when (wordType) {
-                    WordType.VERBS -> addVerbsToDB(englishWords, koreanWords)
-                    WordType.ADVERBS -> addAdverbsToDB(englishWords, koreanWords)
-                    WordType.COMPLEX_SENTENCES -> addSentenceToDB(englishWords, koreanWords)
-                    WordType.USEFUL_PHRASES -> addPhrasestoDB(englishWords, koreanWords)
-                    WordType.NOUNS -> addNounsToDB(englishWords, koreanWords)
-                    WordType.POSITIONS -> addPositionsToDB(englishWords, koreanWords)
+                    WordType.VERBS -> addVerbsToDB(englishWords2, koreanWords2)
+                    WordType.ADVERBS -> addAdverbsToDB(englishWords2, koreanWords2)
+                    WordType.COMPLEX_SENTENCES -> addSentenceToDB(englishWords2, koreanWords2)
+                    WordType.USEFUL_PHRASES -> addPhrasestoDB(englishWords2, koreanWords2)
+                    WordType.NOUNS -> addNounsToDB(englishWords2, koreanWords2)
+                    WordType.POSITIONS -> addPositionsToDB(englishWords2, koreanWords2)
                     WordType.SOME_SENTENCES -> {}
                 }
-                return@withContext Pair(englishWords, koreanWords)
+                return@withContext Pair(
+                    service.spreadsheets().values().get(SPREADSHEET_ID, englishWordsRange).execute()
+                        .getValues(),
+                    service.spreadsheets().values().get(SPREADSHEET_ID, koreanWordsRange).execute()
+                        .getValues()
+                )
             } catch (e: GoogleJsonResponseException) {
                 Timber.tag("Google Sheets API").e("Error: " + e.statusCode + " " + e.statusMessage)
                 e.printStackTrace()
@@ -143,14 +79,12 @@ class SheetsHelper @Inject constructor(
         }
 
     private suspend fun addVerbsToDB(
-        englishWords: MutableList<MutableList<Any>>,
-        koreanWords: MutableList<MutableList<Any>>
+        englishWords: List<String>,
+        koreanWords: List<String>
     ) {
-        val englishVerbs = englishWords.map { it.toString() }
-        val koreanVerbs = koreanWords.map { it.toString() }
         val listOfVerbs = mutableListOf<Verbs>()
-        for (i in englishVerbs.indices) {
-            val wordPairs = Verbs(englishWord = englishVerbs[i], koreanWord = koreanVerbs[i])
+        for (i in englishWords.indices) {
+            val wordPairs = Verbs(englishWord = englishWords[i], koreanWord = koreanWords[i])
             listOfVerbs.add(wordPairs)
         }
         verbDatabase.verbDao().insertVerbs(
@@ -159,15 +93,13 @@ class SheetsHelper @Inject constructor(
     }
 
     private suspend fun addPositionsToDB(
-        englishWords: MutableList<MutableList<Any>>,
-        koreanWords: MutableList<MutableList<Any>>
+        englishWords: List<String>,
+        koreanWords: List<String>
     ) {
-        val englishPositions = englishWords.map { it.toString() }
-        val koreanPositions = koreanWords.map { it.toString() }
         val listOfPositions = mutableListOf<Positions>()
-        for (i in englishPositions.indices) {
+        for (i in englishWords.indices) {
             val wordPairs =
-                Positions(englishWord = englishPositions[i], koreanWord = koreanPositions[i])
+                Positions(englishWord = englishWords[i], koreanWord = koreanWords[i])
             listOfPositions.add(wordPairs)
         }
         verbDatabase.verbDao().insertPositions(
@@ -176,14 +108,12 @@ class SheetsHelper @Inject constructor(
     }
 
     private suspend fun addPhrasestoDB(
-        englishWords: MutableList<MutableList<Any>>,
-        koreanWords: MutableList<MutableList<Any>>
+        englishWords: List<String>,
+        koreanWords: List<String>
     ) {
-        val englishPhrases = englishWords.map { it.toString() }
-        val koreanPhrases = koreanWords.map { it.toString() }
         val listOfPhrases = mutableListOf<Phrases>()
-        for (i in englishPhrases.indices) {
-            val wordPairs = Phrases(englishWord = englishPhrases[i], koreanWord = koreanPhrases[i])
+        for (i in englishWords.indices) {
+            val wordPairs = Phrases(englishWord = englishWords[i], koreanWord = koreanWords[i])
             listOfPhrases.add(wordPairs)
         }
         verbDatabase.verbDao().insertPhrases(
@@ -192,15 +122,13 @@ class SheetsHelper @Inject constructor(
     }
 
     private suspend fun addSentenceToDB(
-        englishWords: MutableList<MutableList<Any>>,
-        koreanWords: MutableList<MutableList<Any>>
+        englishWords: List<String>,
+        koreanWords: List<String>
     ) {
-        val englishSentences = englishWords.map { it.toString() }
-        val koreanSentences = koreanWords.map { it.toString() }
         val listOfSentences = mutableListOf<Sentences>()
-        for (i in englishSentences.indices) {
+        for (i in englishWords.indices) {
             val wordPairs =
-                Sentences(englishWord = englishSentences[i], koreanWord = koreanSentences[i])
+                Sentences(englishWord = englishWords[i], koreanWord = koreanWords[i])
             listOfSentences.add(wordPairs)
         }
         verbDatabase.verbDao().insertSentences(
@@ -209,14 +137,12 @@ class SheetsHelper @Inject constructor(
     }
 
     private suspend fun addAdverbsToDB(
-        englishWords: MutableList<MutableList<Any>>,
-        koreanWords: MutableList<MutableList<Any>>
+        englishWords: List<String>,
+        koreanWords: List<String>
     ) {
-        val englishAdverbs = englishWords.map { it.toString() }
-        val koreanAdverbs = koreanWords.map { it.toString() }
         val listOfAdverbs = mutableListOf<Adverbs>()
-        for (i in englishAdverbs.indices) {
-            val wordPairs = Adverbs(englishWord = englishAdverbs[i], koreanWord = koreanAdverbs[i])
+        for (i in englishWords.indices) {
+            val wordPairs = Adverbs(englishWord = englishWords[i], koreanWord = koreanWords[i])
             listOfAdverbs.add(wordPairs)
         }
         verbDatabase.verbDao().insertAdverbs(
@@ -225,14 +151,12 @@ class SheetsHelper @Inject constructor(
     }
 
     private suspend fun addNounsToDB(
-        englishWords: MutableList<MutableList<Any>>,
-        koreanWords: MutableList<MutableList<Any>>
+        englishWords: List<String>,
+        koreanWords: List<String>
     ) {
-        val englishNouns = englishWords.map { it.toString() }
-        val koreanNouns = koreanWords.map { it.toString() }
         val listOfNouns = mutableListOf<Nouns>()
-        for (i in englishNouns.indices) {
-            val wordPairs = Nouns(englishWord = englishNouns[i], koreanWord = koreanNouns[i])
+        for (i in englishWords.indices) {
+            val wordPairs = Nouns(englishWord = englishWords[i], koreanWord = koreanWords[i])
             listOfNouns.add(wordPairs)
         }
         verbDatabase.verbDao().insertNouns(

@@ -18,9 +18,9 @@ class GetPositions @Inject constructor(
             val wordsFromSpreadsheet =
                 sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.POSITIONS)
             val englishPositions =
-                wordsFromSpreadsheet.first!!.map { it.toString() }
+                wordsFromSpreadsheet.first!!.map { it.toString().replace("[","").replace("]","") }
             val koreanPositions =
-                wordsFromSpreadsheet.second!!.map { it.toString() }
+                wordsFromSpreadsheet.second!!.map { it.toString().replace("[","").replace("]","") }
             return@withContext Pair(englishPositions, koreanPositions)
         } else {
             return@withContext verbRepository.getPositions()

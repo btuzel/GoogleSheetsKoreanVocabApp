@@ -18,9 +18,9 @@ class GetVerbs @Inject constructor(
             val wordsFromSpreadsheet =
                 sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.VERBS)
             val englishVerbs =
-                wordsFromSpreadsheet.first!!.map { it.toString() }
+                wordsFromSpreadsheet.first!!.map { it.toString().replace("[","").replace("]","") }
             val koreanVerbs =
-                wordsFromSpreadsheet.second!!.map { it.toString() }
+                wordsFromSpreadsheet.second!!.map { it.toString().replace("[","").replace("]","") }
             return@withContext Pair(englishVerbs, koreanVerbs)
         } else {
             return@withContext verbRepository.getVerbs()
