@@ -14,6 +14,10 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
         verbDao.insertVerbs(verbs)
     }
 
+    suspend fun deleteVerb(verbs: Verbs) {
+        verbDao.deleteVerb(verbs)
+    }
+
     suspend fun getSentences(): Pair<List<String>, List<String>> {
         val sentences = verbDao.getSentences()
         val englishWords = sentences.map { it.englishWord }
@@ -23,6 +27,10 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
 
     suspend fun insertSentences(sentences: List<Sentences>) {
         verbDao.insertSentences(sentences)
+    }
+
+    suspend fun deleteSentence(sentences: Sentences) {
+        verbDao.deleteSentences(sentences)
     }
 
     suspend fun getNouns(): Pair<List<String>, List<String>> {
@@ -36,6 +44,9 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
         verbDao.insertNouns(nouns)
     }
 
+    suspend fun deleteNouns(nouns: Nouns) {
+        verbDao.deleteNouns(nouns)
+    }
     suspend fun getPhrases(): Pair<List<String>, List<String>> {
         val phrases = verbDao.getPhrases()
         val englishWords = phrases.map { it.englishWord }
@@ -45,6 +56,10 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
 
     suspend fun insertPhrases(phrases: List<Phrases>) {
         verbDao.insertPhrases(phrases)
+    }
+
+    suspend fun deletePhrases(phrases: Phrases) {
+        verbDao.deletePhrases(phrases)
     }
 
     suspend fun getPositions(): Pair<List<String>, List<String>> {
@@ -58,6 +73,10 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
         verbDao.insertPositions(positions)
     }
 
+    suspend fun deletePositions(positions: Positions) {
+        verbDao.deletePositions(positions)
+    }
+
     suspend fun getAdverbs(): Pair<List<String>, List<String>> {
         val adverbs = verbDao.getAdverbs()
         val englishWords = adverbs.map { it.englishWord }
@@ -67,5 +86,9 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
 
     suspend fun insertAdverbs(adverbs: List<Adverbs>) {
         verbDao.insertAdverbs(adverbs)
+    }
+
+    suspend fun deleteAdverbs(adverbs: Adverbs) {
+        verbDao.deleteAdverb(adverbs)
     }
 }

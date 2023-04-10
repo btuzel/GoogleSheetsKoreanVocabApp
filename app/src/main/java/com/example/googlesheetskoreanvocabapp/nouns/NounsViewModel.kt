@@ -3,13 +3,17 @@ package com.example.googlesheetskoreanvocabapp.nouns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class NounsViewModel @Inject constructor(private val getNouns: GetNouns, private val addNouns: AddNouns) : ViewModel() {
+class NounsViewModel @Inject constructor(
+    private val getNouns: GetNouns,
+    private val addNouns: AddNouns,
+    private val deleteNouns: DeleteNouns
+) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
         englishWord = "",
@@ -24,6 +28,12 @@ class NounsViewModel @Inject constructor(private val getNouns: GetNouns, private
         viewModelScope.launch {
             fixAllWords()
             sendRandomEnglishWord(AnswerState.Init)
+        }
+    }
+
+    fun deleteNounsFromColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            deleteNouns(englishWord, koreanWord)
         }
     }
 

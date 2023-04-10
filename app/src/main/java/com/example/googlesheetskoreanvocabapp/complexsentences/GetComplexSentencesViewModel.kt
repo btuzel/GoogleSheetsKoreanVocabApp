@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class GetComplexSentencesViewModel @Inject constructor(
     private val getComplexSentences: GetComplexSentences,
-    private val addComplexSentences: AddComplexSentences
+    private val addComplexSentences: AddComplexSentences,
+    private val deleteComplexSentences: DeleteComplexSentences
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -35,6 +36,12 @@ class GetComplexSentencesViewModel @Inject constructor(
     fun addComplexSentencesToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             addComplexSentences(englishWord, koreanWord)
+        }
+    }
+
+    fun deleteComplexSentencesFromColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            deleteComplexSentences(englishWord, koreanWord)
         }
     }
 

@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 class VerbsViewModel @Inject constructor(
     private val getVerbs: GetVerbs,
     private val addVerb: AddVerb,
+    private val deleteVerbs: DeleteVerbs
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -36,6 +37,11 @@ class VerbsViewModel @Inject constructor(
         val randomWord = listOfVerbs.first.random()
         shownWords.add(randomWord)
         return randomWord
+    }
+    fun deleteVerbsFromColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            deleteVerbs(englishWord, koreanWord)
+        }
     }
 
     private suspend fun fixAllWords() {

@@ -6,10 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,13 +22,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun AddComplexSentencesScreen(complexSentencesViewModel: GetComplexSentencesViewModel = hiltViewModel()) {
     AddComplexSentencesComposable(
-        addWord = complexSentencesViewModel::addComplexSentencesToColumn
+        addWord = complexSentencesViewModel::addComplexSentencesToColumn,
+        deleteWord = complexSentencesViewModel::deleteComplexSentencesFromColumn,
     )
 }
 
 @Composable
 fun AddComplexSentencesComposable(
     addWord: (String, String) -> Unit,
+    deleteWord: (String, String) -> Unit,
 ) {
     var englishWord by remember { mutableStateOf("") }
     var koreanWord by remember { mutableStateOf("") }
@@ -44,17 +45,40 @@ fun AddComplexSentencesComposable(
             value = englishWord,
             onValueChange = { englishWord = it },
             label = { Text("English word") },
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier.width(250.dp),
+            trailingIcon = {
+                IconButton(
+                    onClick = { englishWord = "" }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear"
+                    )
+                }
+            }
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = koreanWord,
             onValueChange = { koreanWord = it },
             label = { Text("Korean word") },
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier.width(250.dp),
+            trailingIcon = {
+                IconButton(
+                    onClick = { koreanWord = "" }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear"
+                    )
+                }
+            }
         )
         Button(onClick = { addWord(englishWord, koreanWord) }) {
             Text("Add")
+        }
+        Button(onClick = { deleteWord(englishWord, koreanWord) }) {
+            Text("Undo")
         }
     }
 }

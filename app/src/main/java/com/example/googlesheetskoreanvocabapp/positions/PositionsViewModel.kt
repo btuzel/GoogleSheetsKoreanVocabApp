@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class PositionsViewModel @Inject constructor(
     private val getPositions: GetPositions,
-    private val addPositions: AddPositions
+    private val addPositions: AddPositions,
+    private val deletePositions: DeletePositions
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -27,6 +28,12 @@ class PositionsViewModel @Inject constructor(
         viewModelScope.launch {
             fixAllWords()
             sendRandomEnglishWord(AnswerState.Init)
+        }
+    }
+
+    fun deletePositionsFromColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            deletePositions(englishWord, koreanWord)
         }
     }
 

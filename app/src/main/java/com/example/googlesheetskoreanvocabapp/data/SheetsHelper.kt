@@ -16,6 +16,7 @@ import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
+import com.google.api.services.sheets.v4.model.ClearValuesRequest
 import com.google.api.services.sheets.v4.model.ValueRange
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
@@ -191,6 +192,32 @@ class SheetsHelper @Inject constructor(
                 e.printStackTrace()
             }
         }!!
+
+    suspend fun deleteData(wordType: WordType, pairToDelete: Pair<String, String>) =
+        withContext(Dispatchers.IO) {
+            try {
+                val sheetTitle = service.spreadsheets().get(SPREADSHEET_ID)
+                    .execute().sheets[wordType.sheetIndex].properties.title
+                val range = "$sheetTitle!A1:B"
+                val response = service.spreadsheets().values()
+                    .get(SPREADSHEET_ID, range)
+                    .execute()
+                val values = response.getValues() ?: emptyList()
+                val indexToDelete = values.indexOfFirst { it[0] == pairToDelete.first && it[1] == pairToDelete.second } + 1
+                if (indexToDelete == 0) {
+                    return@withContext
+                }
+                val rangeToDelete = "$sheetTitle!A${indexToDelete}:${indexToDelete}"
+                service.spreadsheets().values()
+                    .clear(SPREADSHEET_ID, rangeToDelete, ClearValuesRequest())
+                    .execute()
+            } catch (e: GoogleJsonResponseException) {
+                Timber.tag("Google Sheets API").e("Error: " + e.statusCode + " " + e.statusMessage)
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
 
     enum class WordType(val sheetIndex: Int) {
         VERBS(sheetIndex = 0),

@@ -12,6 +12,7 @@ import javax.inject.Inject
 class AdverbsViewModel @Inject constructor(
     private val getAdverbs: GetAdverbs,
     private val addAdverbs: AddAdverbs,
+    private val deleteAdverb: DeleteAdverb
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -35,6 +36,12 @@ class AdverbsViewModel @Inject constructor(
     fun addAdverbsToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             addAdverbs(englishWord, koreanWord)
+        }
+    }
+
+    fun deleteAdverbFromColumn(englishWord: String, koreanWord: String) {
+        viewModelScope.launch {
+            deleteAdverb(englishWord, koreanWord)
         }
     }
 
