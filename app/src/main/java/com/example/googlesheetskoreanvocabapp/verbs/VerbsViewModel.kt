@@ -3,10 +3,10 @@ package com.example.googlesheetskoreanvocabapp.verbs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class VerbsViewModel @Inject constructor(
@@ -33,20 +33,7 @@ class VerbsViewModel @Inject constructor(
     private val shownWords = mutableSetOf<String>()
 
     private fun getRandomEnglishWord(): String {
-        val remainingWords = listOfVerbs.first.filter { it !in shownWords }
-
-        val incorrectWords = shownWords.filter { englishWord ->
-            val correctKoreanTranslation = listOfVerbs.first.zip(listOfVerbs.second)
-                .find { it.first == englishWord.split("[")[0] }!!.second
-            correctKoreanTranslation != _uiState.value.defaultWord
-        }
-
-        val wordsToChooseFrom = incorrectWords.ifEmpty {
-            remainingWords
-        }
-
-        val randomWord = wordsToChooseFrom.random()
-
+        val randomWord = listOfVerbs.first.random()
         shownWords.add(randomWord)
         return randomWord
     }
@@ -83,6 +70,7 @@ class VerbsViewModel @Inject constructor(
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
+                    shownWords.remove(englishWord)
                 } else {
                     sendRandomEnglishWord(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
                 }

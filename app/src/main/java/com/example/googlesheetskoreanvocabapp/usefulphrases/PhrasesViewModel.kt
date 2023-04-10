@@ -29,20 +29,7 @@ class PhrasesViewModel @Inject constructor(private val getPhrases: GetPhrases, p
 
     private val shownWords = mutableSetOf<String>()
     private fun getRandomEnglishWord(): String {
-        val remainingWords = listOfPhrases.first.filter { it !in shownWords }
-
-        val incorrectWords = shownWords.filter { englishWord ->
-            val correctKoreanTranslation = listOfPhrases.first.zip(listOfPhrases.second)
-                .find { it.first == englishWord.split("[")[0] }!!.second
-            correctKoreanTranslation != _uiState.value.defaultWord
-        }
-
-        val wordsToChooseFrom = incorrectWords.ifEmpty {
-            remainingWords
-        }
-
-        val randomWord = wordsToChooseFrom.random()
-
+        val randomWord = listOfPhrases.first.random()
         shownWords.add(randomWord)
         return randomWord
     }
@@ -86,6 +73,7 @@ class PhrasesViewModel @Inject constructor(private val getPhrases: GetPhrases, p
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
+                    shownWords.remove(englishWord)
                 } else {
                     sendRandomEnglishWord(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
                 }

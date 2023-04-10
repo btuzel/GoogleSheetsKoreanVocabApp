@@ -40,21 +40,7 @@ class GetComplexSentencesViewModel @Inject constructor(
 
 
     private fun getRandomEnglishWord(): String {
-        val remainingWords = listOfComplexSentences.first.filter { it !in shownWords }
-
-        val incorrectWords = shownWords.filter { englishWord ->
-            val correctKoreanTranslation =
-                listOfComplexSentences.first.zip(listOfComplexSentences.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
-            correctKoreanTranslation != _uiState.value.defaultWord
-        }
-
-        val wordsToChooseFrom = incorrectWords.ifEmpty {
-            remainingWords
-        }
-
-        val randomWord = wordsToChooseFrom.random()
-
+        val randomWord = listOfComplexSentences.first.random()
         shownWords.add(randomWord)
         return randomWord
     }
@@ -91,6 +77,7 @@ class GetComplexSentencesViewModel @Inject constructor(
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
+                    shownWords.remove(englishWord)
                 } else {
                     sendRandomEnglishWord(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
                 }
