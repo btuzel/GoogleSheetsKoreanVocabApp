@@ -8,7 +8,6 @@ import com.example.googlesheetskoreanvocabapp.db.Positions
 import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import com.example.googlesheetskoreanvocabapp.db.Verbs
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -18,6 +17,8 @@ import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.ClearValuesRequest
 import com.google.api.services.sheets.v4.model.ValueRange
+import com.google.auth.http.HttpCredentialsAdapter
+import com.google.auth.oauth2.GoogleCredentials
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
 import javax.inject.Inject
@@ -33,11 +34,11 @@ class SheetsHelper @Inject constructor(
     private val transport: HttpTransport = NetHttpTransport()
     private val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
 
-    private val credentials: GoogleCredential = GoogleCredential.fromStream(
+    private val credentials: GoogleCredentials = GoogleCredentials.fromStream(
         applicationContext.assets.open("my_creds.json")
     ).createScoped(listOf(SheetsScopes.SPREADSHEETS))
 
-    private val service: Sheets = Sheets.Builder(transport, jsonFactory, credentials)
+    private val service: Sheets = Sheets.Builder(transport, jsonFactory, HttpCredentialsAdapter(credentials))
         .setApplicationName("GoogleSheetsKoreanVocabApp")
         .build()
 

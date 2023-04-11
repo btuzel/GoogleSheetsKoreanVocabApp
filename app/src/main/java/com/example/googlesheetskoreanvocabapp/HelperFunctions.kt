@@ -7,7 +7,6 @@ import java.net.SocketAddress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-
 suspend fun isOnline(): Boolean {
     return try {
         val timeoutMs = 2_000

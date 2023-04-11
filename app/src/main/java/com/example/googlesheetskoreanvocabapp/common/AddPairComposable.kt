@@ -21,7 +21,7 @@ fun AddPairComposable(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "ADD complex sentences", style = MaterialTheme.typography.h3)
+        Text(text = "Add word pair", style = MaterialTheme.typography.h3)
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = englishWord,

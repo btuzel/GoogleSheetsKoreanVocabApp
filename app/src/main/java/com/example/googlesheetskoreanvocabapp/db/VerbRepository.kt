@@ -15,7 +15,7 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
     }
 
     suspend fun deleteVerb(verbs: Verbs) {
-        verbDao.deleteVerb(verbs)
+        verbDao.deleteVerbByEnglishWord(verbs)
     }
 
     suspend fun getSentences(): Pair<List<String>, List<String>> {
@@ -30,7 +30,7 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
     }
 
     suspend fun deleteSentence(sentences: Sentences) {
-        verbDao.deleteSentences(sentences)
+        verbDao.deleteSentencesByEnglishWord(sentences)
     }
 
     suspend fun getNouns(): Pair<List<String>, List<String>> {
@@ -45,7 +45,7 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
     }
 
     suspend fun deleteNouns(nouns: Nouns) {
-        verbDao.deleteNouns(nouns)
+        verbDao.deleteNounByEnglishWord(nouns)
     }
     suspend fun getPhrases(): Pair<List<String>, List<String>> {
         val phrases = verbDao.getPhrases()
@@ -59,7 +59,7 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
     }
 
     suspend fun deletePhrases(phrases: Phrases) {
-        verbDao.deletePhrases(phrases)
+        verbDao.deletePhrasesByEnglishWord(phrases)
     }
 
     suspend fun getPositions(): Pair<List<String>, List<String>> {
@@ -74,7 +74,7 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
     }
 
     suspend fun deletePositions(positions: Positions) {
-        verbDao.deletePositions(positions)
+        verbDao.deletePositionsByEnglishWord(positions)
     }
 
     suspend fun getAdverbs(): Pair<List<String>, List<String>> {
@@ -89,6 +89,6 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
     }
 
     suspend fun deleteAdverbs(adverbs: Adverbs) {
-        verbDao.deleteAdverb(adverbs)
+        verbDao.deleteAdverbByEnglishWord(adverbs)
     }
 }
