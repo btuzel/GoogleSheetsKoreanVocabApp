@@ -2,6 +2,10 @@ package com.example.googlesheetskoreanvocabapp.adverbs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.data.AddWordPair
+import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
+import com.example.googlesheetskoreanvocabapp.data.GetWordPair
+import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,9 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdverbsViewModel @Inject constructor(
-    private val getAdverbs: GetAdverbs,
-    private val addAdverbs: AddAdverbs,
-    private val deleteAdverb: DeleteAdverb
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -26,7 +30,7 @@ class AdverbsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fixAllWords()
+            listOfAdverbs = getWordPair(SheetsHelper.WordType.ADVERBS)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -35,13 +39,13 @@ class AdverbsViewModel @Inject constructor(
 
     fun addAdverbsToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            addAdverbs(englishWord, koreanWord)
+            addWordPair(englishWord, koreanWord, SheetsHelper.WordType.ADVERBS)
         }
     }
 
     fun deleteAdverbFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            deleteAdverb(englishWord, koreanWord)
+            deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.ADVERBS)
         }
     }
 
@@ -49,15 +53,6 @@ class AdverbsViewModel @Inject constructor(
         val randomWord = listOfAdverbs.first.random()
         shownWords.add(randomWord)
         return randomWord
-    }
-
-    private suspend fun fixAllWords() {
-        listOfAdverbs = getAdverbs()
-            .let {
-                Pair(
-                    it.first.map { it.replace("[", "").replace("]", "") },
-                    it.second.map { it.replace("[", "").replace("]", "") })
-            }
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {

@@ -2,6 +2,10 @@ package com.example.googlesheetskoreanvocabapp.usefulphrases
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.data.AddWordPair
+import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
+import com.example.googlesheetskoreanvocabapp.data.GetWordPair
+import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,9 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhrasesViewModel @Inject constructor(
-    private val getPhrases: GetPhrases,
-    private val addPhrases: AddPhrases,
-    private val deletePhrases: DeletePhrases
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -26,14 +30,14 @@ class PhrasesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fixAllWords()
+            listOfPhrases = getWordPair(SheetsHelper.WordType.USEFUL_PHRASES)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
 
     fun deletePhrasesFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            deletePhrases(englishWord, koreanWord)
+            deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.USEFUL_PHRASES)
         }
     }
 
@@ -44,15 +48,6 @@ class PhrasesViewModel @Inject constructor(
         return randomWord
     }
 
-    private suspend fun fixAllWords() {
-        listOfPhrases = getPhrases()
-            .let {
-                Pair(
-                    it.first.map { it.replace("[", "").replace("]", "") },
-                    it.second.map { it.replace("[", "").replace("]", "") })
-            }
-    }
-
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
         _uiState.value = QuizUiState.GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
     }
@@ -60,7 +55,7 @@ class PhrasesViewModel @Inject constructor(
 
     fun addPhrasesToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            addPhrases(englishWord, koreanWord)
+            addWordPair(englishWord, koreanWord, SheetsHelper.WordType.USEFUL_PHRASES)
         }
     }
 

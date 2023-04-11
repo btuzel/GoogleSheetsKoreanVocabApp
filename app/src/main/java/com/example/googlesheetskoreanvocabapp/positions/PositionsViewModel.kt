@@ -2,6 +2,10 @@ package com.example.googlesheetskoreanvocabapp.positions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.data.AddWordPair
+import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
+import com.example.googlesheetskoreanvocabapp.data.GetWordPair
+import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,9 +14,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class PositionsViewModel @Inject constructor(
-    private val getPositions: GetPositions,
-    private val addPositions: AddPositions,
-    private val deletePositions: DeletePositions
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -26,14 +30,14 @@ class PositionsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fixAllWords()
+            listOfPositions = getWordPair(SheetsHelper.WordType.POSITIONS)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
 
     fun deletePositionsFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            deletePositions(englishWord, koreanWord)
+            deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.POSITIONS)
         }
     }
 
@@ -48,19 +52,9 @@ class PositionsViewModel @Inject constructor(
 
     fun addPositionsToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            addPositions(englishWord, koreanWord)
+            addWordPair(englishWord, koreanWord, SheetsHelper.WordType.POSITIONS)
         }
     }
-
-    private suspend fun fixAllWords() {
-        listOfPositions = getPositions()
-            .let {
-                Pair(
-                    it.first.map { it.replace("[", "").replace("]", "") },
-                    it.second.map { it.replace("[", "").replace("]", "") })
-            }
-    }
-
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
         _uiState.value = QuizUiState.GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
     }

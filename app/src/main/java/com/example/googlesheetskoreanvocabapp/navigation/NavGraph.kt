@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import com.example.googlesheetskoreanvocabapp.MainScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AddAdverbsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AdverbsScreen
-import com.example.googlesheetskoreanvocabapp.complexsentences.AddComplexSentences
 import com.example.googlesheetskoreanvocabapp.complexsentences.AddComplexSentencesScreen
 import com.example.googlesheetskoreanvocabapp.complexsentences.ComplexSentencesScreen
 import com.example.googlesheetskoreanvocabapp.nouns.AddNounsScreen

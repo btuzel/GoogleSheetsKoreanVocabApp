@@ -2,6 +2,10 @@ package com.example.googlesheetskoreanvocabapp.complexsentences
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.data.AddWordPair
+import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
+import com.example.googlesheetskoreanvocabapp.data.GetWordPair
+import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,9 +14,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class GetComplexSentencesViewModel @Inject constructor(
-    private val getComplexSentences: GetComplexSentences,
-    private val addComplexSentences: AddComplexSentences,
-    private val deleteComplexSentences: DeleteComplexSentences
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -26,7 +30,7 @@ class GetComplexSentencesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fixAllWords()
+            listOfComplexSentences = getWordPair(SheetsHelper.WordType.COMPLEX_SENTENCES)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -35,13 +39,13 @@ class GetComplexSentencesViewModel @Inject constructor(
 
     fun addComplexSentencesToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            addComplexSentences(englishWord, koreanWord)
+            addWordPair(englishWord, koreanWord, SheetsHelper.WordType.COMPLEX_SENTENCES)
         }
     }
 
     fun deleteComplexSentencesFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            deleteComplexSentences(englishWord, koreanWord)
+            deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.COMPLEX_SENTENCES)
         }
     }
 
@@ -50,15 +54,6 @@ class GetComplexSentencesViewModel @Inject constructor(
         val randomWord = listOfComplexSentences.first.random()
         shownWords.add(randomWord)
         return randomWord
-    }
-
-    private suspend fun fixAllWords() {
-        listOfComplexSentences = getComplexSentences()
-            .let {
-                Pair(
-                    it.first.map { it.replace("[", "").replace("]", "") },
-                    it.second.map { it.replace("[", "").replace("]", "") })
-            }
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {

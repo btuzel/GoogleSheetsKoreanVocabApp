@@ -2,6 +2,10 @@ package com.example.googlesheetskoreanvocabapp.verbs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.data.AddWordPair
+import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
+import com.example.googlesheetskoreanvocabapp.data.GetWordPair
+import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,9 +14,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class VerbsViewModel @Inject constructor(
-    private val getVerbs: GetVerbs,
-    private val addVerb: AddVerb,
-    private val deleteVerbs: DeleteVerbs
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = QuizUiState.GetWords(
@@ -26,7 +30,7 @@ class VerbsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fixAllWords()
+            listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -40,17 +44,8 @@ class VerbsViewModel @Inject constructor(
     }
     fun deleteVerbsFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            deleteVerbs(englishWord, koreanWord)
+            deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.VERBS)
         }
-    }
-
-    private suspend fun fixAllWords() {
-        listOfVerbs = getVerbs()
-            .let {
-                Pair(
-                    it.first.map { it.replace("[", "").replace("]", "") },
-                    it.second.map { it.replace("[", "").replace("]", "") })
-            }
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
@@ -86,7 +81,7 @@ class VerbsViewModel @Inject constructor(
 
     fun addVerbToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            addVerb(englishWord, koreanWord)
+            addWordPair(englishWord, koreanWord, SheetsHelper.WordType.VERBS)
         }
     }
 
