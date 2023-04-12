@@ -49,12 +49,34 @@ class SheetsHelper @Inject constructor(
                     .execute().sheets[wordType.sheetIndex].properties.title
                 val englishWordsRange = "$sheetTitle!A1:A"
                 val koreanWordsRange = "$sheetTitle!B1:B"
-                val englishWords2 =
+                val engValues =
                     service.spreadsheets().values().get(SPREADSHEET_ID, englishWordsRange).execute()
-                        .getValues().map { it.toString().replace("[", "").replace("]", "") }
-                val koreanWords2 =
+                        .getValues()
+                val englishWords2 =
+                    engValues.map { it.toString().replace("[", "").replace("]", "") }
+                val koreanValues =
                     service.spreadsheets().values().get(SPREADSHEET_ID, koreanWordsRange).execute()
-                        .getValues().map { it.toString().replace("[", "").replace("]", "") }
+                        .getValues()
+                val cleanedKorValues = koreanValues.map { row ->
+                    row.map { cell ->
+                        if (cell is String) {
+                            cell.replace("[", "").replace("]", "")
+                        } else {
+                            cell
+                        }
+                    }
+                }
+                val cleanedEngValues = engValues.map { row ->
+                    row.map { cell ->
+                        if (cell is String) {
+                            cell.replace("[", "").replace("]", "")
+                        } else {
+                            cell
+                        }
+                    }
+                }
+                val koreanWords2 =
+                    koreanValues.map { it.toString().replace("[", "").replace("]", "") }
 
                 when (wordType) {
                     WordType.VERBS -> addVerbsToDB(englishWords2, koreanWords2)
@@ -66,10 +88,8 @@ class SheetsHelper @Inject constructor(
                     WordType.SOME_SENTENCES -> {}
                 }
                 return@withContext Pair(
-                    service.spreadsheets().values().get(SPREADSHEET_ID, englishWordsRange).execute()
-                        .getValues(),
-                    service.spreadsheets().values().get(SPREADSHEET_ID, koreanWordsRange).execute()
-                        .getValues()
+                    cleanedEngValues,
+                    cleanedKorValues
                 )
             } catch (e: GoogleJsonResponseException) {
                 Timber.tag("Google Sheets API").e("Error: " + e.statusCode + " " + e.statusMessage)
