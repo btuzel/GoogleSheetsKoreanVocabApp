@@ -26,11 +26,14 @@ class PositionsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<QuizUiState> = _uiState
+    private val _uiState3 = MutableStateFlow(AllPositions(Pair(listOf(), listOf())))
+    val uiState3: StateFlow<AllPositions> = _uiState3
     private lateinit var listOfPositions: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfPositions = getWordPair(SheetsHelper.WordType.POSITIONS)
+            _uiState3.value = AllPositions(listOfPositions)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -93,6 +96,9 @@ class PositionsViewModel @Inject constructor(
             val wasAnswerCorrect: AnswerState
         ) : QuizUiState()
     }
+
+    data class AllPositions(val allPositions: Pair<List<String>, List<String>>)
+
 
     sealed class AnswerState {
         data class WrongAnswer(val correctAnswer: String, val answer: Answer = Answer.INCORRECT) :

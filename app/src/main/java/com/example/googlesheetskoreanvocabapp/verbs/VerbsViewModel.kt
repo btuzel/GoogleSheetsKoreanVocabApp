@@ -26,11 +26,14 @@ class VerbsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<QuizUiState> = _uiState
+    private val _uiState3 = MutableStateFlow(VerbsViewModel.AllVerbs(Pair(listOf(), listOf())))
+    val uiState3: StateFlow<VerbsViewModel.AllVerbs> = _uiState3
     private lateinit var listOfVerbs: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
+            _uiState3.value = VerbsViewModel.AllVerbs(listOfVerbs)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -102,6 +105,9 @@ class VerbsViewModel @Inject constructor(
         object Init : AnswerState()
         object Finished : AnswerState()
     }
+
+    data class AllVerbs(val allVerbs: Pair<List<String>, List<String>>)
+
 
     sealed class Answer {
         object CORRECT : Answer()

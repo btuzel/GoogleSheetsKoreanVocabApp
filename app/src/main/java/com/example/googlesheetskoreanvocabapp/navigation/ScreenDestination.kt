@@ -39,4 +39,22 @@ sealed class ScreenDestination(val route: String) {
 
     object AddComplexSentencesScreen :
         ScreenDestination(route = "add_complexsentences")
+
+    object DisplayVerbsScreen : ScreenDestination(route = "Display_verbs")
+
+    object DisplayAdverbsScreen :
+        ScreenDestination(route = "Display_adverbs")
+
+    object DisplayNounsScreen :
+        ScreenDestination(route = "Display_nouns")
+
+
+    object DisplayPositionsScreen :
+        ScreenDestination(route = "Display_positions")
+
+    object DisplayUsefulPhrasesScreen :
+        ScreenDestination(route = "Display_phrases")
+
+    object DisplayComplexSentencesScreen :
+        ScreenDestination(route = "Display_complexsentences")
 }

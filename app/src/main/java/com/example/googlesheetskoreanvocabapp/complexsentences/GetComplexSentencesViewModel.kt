@@ -7,10 +7,10 @@ import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class GetComplexSentencesViewModel @Inject constructor(
@@ -26,11 +26,14 @@ class GetComplexSentencesViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<QuizUiState> = _uiState
+    private val _uiState3 = MutableStateFlow(AllSentences(Pair(listOf(), listOf())))
+    val uiState3: StateFlow<AllSentences> = _uiState3
     private lateinit var listOfComplexSentences: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfComplexSentences = getWordPair(SheetsHelper.WordType.COMPLEX_SENTENCES)
+            _uiState3.value = AllSentences(listOfComplexSentences)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -94,6 +97,8 @@ class GetComplexSentencesViewModel @Inject constructor(
             val wasAnswerCorrect: AnswerState
         ) : QuizUiState()
     }
+
+    data class AllSentences(val allSentences: Pair<List<String>, List<String>>)
 
     sealed class AnswerState {
         data class WrongAnswer(val correctAnswer: String, val answer: Answer = Answer.INCORRECT) :

@@ -1,10 +1,8 @@
 package com.example.googlesheetskoreanvocabapp
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -35,6 +33,12 @@ fun MainScreen(
         onAddPositionsButtonClick = { navHostController.navigate(ScreenDestination.AddPositionsScreen.route) },
         onAddPhrasesButtonClick = { navHostController.navigate(ScreenDestination.AddUsefulPhrasesScreen.route) },
         onAddComplexSentencesClick = { navHostController.navigate(ScreenDestination.AddComplexSentencesScreen.route) },
+        onDisplayNounButtonClick = { navHostController.navigate(ScreenDestination.DisplayNounsScreen.route) },
+        onDisplayAdverbButtonClick = { navHostController.navigate(ScreenDestination.DisplayAdverbsScreen.route) },
+        onDisplayVerbButtonClick = { navHostController.navigate(ScreenDestination.DisplayVerbsScreen.route) },
+        onDisplayPositionsButtonClick = { navHostController.navigate(ScreenDestination.DisplayPositionsScreen.route) },
+        onDisplayPhrasesButtonClick = { navHostController.navigate(ScreenDestination.DisplayUsefulPhrasesScreen.route) },
+        onDisplayComplexSentencesClick = { navHostController.navigate(ScreenDestination.DisplayComplexSentencesScreen.route) },
     )
 }
 
@@ -46,6 +50,12 @@ fun CombinedButtons(
     onAddPositionsButtonClick: () -> Unit,
     onAddPhrasesButtonClick: () -> Unit,
     onAddComplexSentencesClick: () -> Unit,
+    onDisplayNounButtonClick: () -> Unit,
+    onDisplayAdverbButtonClick: () -> Unit,
+    onDisplayVerbButtonClick: () -> Unit,
+    onDisplayPositionsButtonClick: () -> Unit,
+    onDisplayPhrasesButtonClick: () -> Unit,
+    onDisplayComplexSentencesClick: () -> Unit,
     onNounButtonClick: () -> Unit,
     onAdverbButtonClick: () -> Unit,
     onVerbButtonClick: () -> Unit,
@@ -56,7 +66,9 @@ fun CombinedButtons(
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Text(text = "Add Stuffs", style = MaterialTheme.typography.h2)
         Button(onClick = onAddNounButtonClick) {
@@ -106,6 +118,30 @@ fun CombinedButtons(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onComplexSentencesClick) {
             Text("Complex Sentences")
+        }
+        Text(text = "Display Stuffs", style = MaterialTheme.typography.h2)
+        Button(onClick = onDisplayNounButtonClick) {
+            Text("Display Noun")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onDisplayAdverbButtonClick) {
+            Text("Display Adverb")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onDisplayVerbButtonClick) {
+            Text("Display Verb")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onDisplayPositionsButtonClick) {
+            Text("Display Positions")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onDisplayPhrasesButtonClick) {
+            Text("Display Useful Phrases")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onDisplayComplexSentencesClick) {
+            Text("Display Complex Sentences")
         }
     }
 }
