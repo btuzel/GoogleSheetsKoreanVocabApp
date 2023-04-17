@@ -1,12 +1,12 @@
 package com.example.googlesheetskoreanvocabapp.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +18,8 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun ShowPairComposable(
     pairList: Pair<List<String>, List<String>>,
-    wordType: SheetsHelper.WordType
+    wordType: SheetsHelper.WordType,
+    onDelete: (String, String) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var showTranslations by remember { mutableStateOf(true) }
@@ -71,6 +72,13 @@ fun ShowPairComposable(
                             text = filteredSecondList[index], color = if (showTranslations) {
                                 Color.White
                             } else Color.Black
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Delete",
+                            modifier = Modifier.clickable {
+                                onDelete(it, filteredSecondList[index])
+                            }
                         )
                     }
                 }

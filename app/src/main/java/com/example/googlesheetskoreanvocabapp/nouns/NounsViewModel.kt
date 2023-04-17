@@ -34,7 +34,6 @@ class NounsViewModel @Inject constructor(
         viewModelScope.launch {
             listOfNouns = getWordPair(SheetsHelper.WordType.NOUNS)
             _uiState3.value = AllNouns(listOfNouns)
-
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -42,6 +41,8 @@ class NounsViewModel @Inject constructor(
     fun deleteNounsFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.NOUNS)
+            listOfNouns = getWordPair(SheetsHelper.WordType.NOUNS)
+            _uiState3.value = AllNouns(listOfNouns)
         }
     }
 
@@ -97,6 +98,7 @@ class NounsViewModel @Inject constructor(
             val wasAnswerCorrect: AnswerState
         ) : QuizUiState()
     }
+
     data class AllNouns(val allNouns: Pair<List<String>, List<String>>)
 
     sealed class AnswerState {
