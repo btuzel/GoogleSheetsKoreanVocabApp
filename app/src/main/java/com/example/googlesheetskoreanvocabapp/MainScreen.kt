@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -74,38 +75,47 @@ fun WordManagementScreen(buttonGroups: WordManagementButtonGroups) {
     )
 
     Column(
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
         RaindropAnimation()
-        categories.forEach { category ->
-            buttonGroups.displayButtonGroup[category]?.let { displayButton ->
-                Text(text = "Display $category", style = MaterialTheme.typography.h4)
-                Button(onClick = displayButton) {
-                    Text("Display $category")
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            categories.forEach { category ->
+                buttonGroups.displayButtonGroup[category]?.let { displayButton ->
+                    Text(text = "Display $category", style = MaterialTheme.typography.h4)
+                    Button(onClick = displayButton) {
+                        Text("Display $category")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
-        }
-        categories.forEach { category ->
-            buttonGroups.testButtonGroup[category]?.let { testButton ->
-                Text(text = "Test $category", style = MaterialTheme.typography.h4)
-                Button(onClick = testButton) {
-                    Text("Test $category")
+            categories.forEach { category ->
+                buttonGroups.testButtonGroup[category]?.let { testButton ->
+                    Text(text = "Test $category", style = MaterialTheme.typography.h4)
+                    Button(onClick = testButton) {
+                        Text("Test $category")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
-        }
-        categories.forEach { category ->
-            buttonGroups.addButtonGroup[category]?.let { addButton ->
-                Text(text = "Add $category", style = MaterialTheme.typography.h4)
-                Button(onClick = addButton) {
-                    Text("Add $category")
+            categories.forEach { category ->
+                buttonGroups.addButtonGroup[category]?.let { addButton ->
+                    Text(text = "Add $category", style = MaterialTheme.typography.h4)
+                    Button(onClick = addButton) {
+                        Text("Add $category")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -121,7 +131,9 @@ data class WordManagementButtonGroups(
 fun RaindropAnimation() {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.koreaaaa))
     LottieAnimation(
-        modifier = Modifier.size(100.dp).background(Color.White),
+        modifier = Modifier
+            .size(70.dp)
+            .background(Color.White, shape = CircleShape),
         composition = composition,
         iterations = LottieConstants.IterateForever
     )
