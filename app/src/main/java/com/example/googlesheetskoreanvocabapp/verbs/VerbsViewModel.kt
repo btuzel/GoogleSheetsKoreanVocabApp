@@ -2,6 +2,7 @@ package com.example.googlesheetskoreanvocabapp.verbs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.common.AnswerState
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
@@ -26,14 +27,14 @@ class VerbsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<QuizUiState> = _uiState
-    private val _uiState3 = MutableStateFlow(VerbsViewModel.AllVerbs(Pair(listOf(), listOf())))
-    val uiState3: StateFlow<VerbsViewModel.AllVerbs> = _uiState3
+    private val _uiState3 = MutableStateFlow(AllVerbs(Pair(listOf(), listOf())))
+    val uiState3: StateFlow<AllVerbs> = _uiState3
     private lateinit var listOfVerbs: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
-            _uiState3.value = VerbsViewModel.AllVerbs(listOfVerbs)
+            _uiState3.value = AllVerbs(listOfVerbs)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -97,20 +98,5 @@ class VerbsViewModel @Inject constructor(
 
     }
 
-    sealed class AnswerState {
-        data class WrongAnswer(val correctAnswer: String, val answer: Answer = Answer.INCORRECT) :
-            AnswerState()
-
-        data class CorrectAnswer(val answer: Answer = Answer.CORRECT) : AnswerState()
-        object Init : AnswerState()
-        object Finished : AnswerState()
-    }
-
     data class AllVerbs(val allVerbs: Pair<List<String>, List<String>>)
-
-
-    sealed class Answer {
-        object CORRECT : Answer()
-        object INCORRECT : Answer()
-    }
 }

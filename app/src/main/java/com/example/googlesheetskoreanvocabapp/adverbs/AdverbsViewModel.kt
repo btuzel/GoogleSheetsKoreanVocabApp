@@ -2,6 +2,7 @@ package com.example.googlesheetskoreanvocabapp.adverbs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.common.AnswerState
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
@@ -99,17 +100,4 @@ class AdverbsViewModel @Inject constructor(
 
     data class AllAdverbs(val allAdverbs: Pair<List<String>, List<String>>)
 
-    sealed class AnswerState {
-        data class WrongAnswer(val correctAnswer: String, val answer: Answer = Answer.INCORRECT) :
-            AnswerState()
-
-        data class CorrectAnswer(val answer: Answer = Answer.CORRECT) : AnswerState()
-        object Init : AnswerState()
-        object Finished : AnswerState()
-    }
-
-    sealed class Answer {
-        object CORRECT : Answer()
-        object INCORRECT : Answer()
-    }
 }

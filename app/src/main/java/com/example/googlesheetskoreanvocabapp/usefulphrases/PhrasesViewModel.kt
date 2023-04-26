@@ -2,6 +2,7 @@ package com.example.googlesheetskoreanvocabapp.usefulphrases
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.common.AnswerState
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
@@ -97,20 +98,7 @@ class PhrasesViewModel @Inject constructor(
         ) : QuizUiState()
     }
 
-    sealed class AnswerState {
-        data class WrongAnswer(val correctAnswer: String, val answer: Answer = Answer.INCORRECT) :
-            AnswerState()
-
-        data class CorrectAnswer(val answer: Answer = Answer.CORRECT) : AnswerState()
-        object Init : AnswerState()
-        object Finished : AnswerState()
-    }
 
     data class AllPhrases(val allPhrases: Pair<List<String>, List<String>>)
 
-
-    sealed class Answer {
-        object CORRECT : Answer()
-        object INCORRECT : Answer()
-    }
 }
