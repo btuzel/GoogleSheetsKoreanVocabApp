@@ -8,20 +8,18 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
 @Composable
 fun AdverbsScreen(
-    verbsViewModel: AdverbsViewModel = hiltViewModel(),
-    onComplete: () -> Unit,
+        verbsViewModel: AdverbsViewModel = hiltViewModel(),
+        onComplete: () -> Unit,
 ) {
     val collectedUiState = verbsViewModel.uiState.collectAsState()
-    when (val uiState = collectedUiState.value) {
-        is AdverbsViewModel.QuizUiState.GetWords -> TestPairComposable(
-            englishText = uiState.englishWord,
-            answerCorrectText = uiState.wasAnswerCorrect,
-            koreanTranslation = uiState.defaultWord,
+    TestPairComposable(
+            englishText = collectedUiState.value.englishWord,
+            answerCorrectText = collectedUiState.value.wasAnswerCorrect,
+            koreanTranslation = collectedUiState.value.defaultWord,
             koreanTranslationChanged = verbsViewModel::koreanWordChanged,
             checkAnswer = verbsViewModel::checkAnswer,
             setStateToInit = verbsViewModel::setStateToInit,
             onComplete = onComplete,
             wordType = SheetsHelper.WordType.ADVERBS
-        )
-    }
+    )
 }

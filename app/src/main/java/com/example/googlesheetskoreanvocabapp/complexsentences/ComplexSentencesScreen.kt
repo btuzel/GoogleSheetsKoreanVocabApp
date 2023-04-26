@@ -8,21 +8,19 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
 @Composable
 fun ComplexSentencesScreen(
-    getComplexSentencesViewModel: GetComplexSentencesViewModel = hiltViewModel(),
-    onComplete: () -> Unit,
+        getComplexSentencesViewModel: GetComplexSentencesViewModel = hiltViewModel(),
+        onComplete: () -> Unit,
 ) {
     val collectedUiState = getComplexSentencesViewModel.uiState.collectAsState()
-    when (val uiState = collectedUiState.value) {
-        is GetComplexSentencesViewModel.QuizUiState.GetWords -> TestPairComposable(
-            englishText = uiState.englishWord,
-            answerCorrectText = uiState.wasAnswerCorrect,
-            koreanTranslation = uiState.defaultWord,
+    TestPairComposable(
+            englishText = collectedUiState.value.englishWord,
+            answerCorrectText = collectedUiState.value.wasAnswerCorrect,
+            koreanTranslation = collectedUiState.value.defaultWord,
             koreanTranslationChanged = getComplexSentencesViewModel::koreanWordChanged,
             checkAnswer = getComplexSentencesViewModel::checkAnswer,
             setStateToInit = getComplexSentencesViewModel::setStateToInit,
             onComplete = onComplete,
             wordType = SheetsHelper.WordType.COMPLEX_SENTENCES
-        )
-    }
+    )
 }
 

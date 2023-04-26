@@ -9,16 +9,14 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun VerbsScreen(verbsViewModel: VerbsViewModel = hiltViewModel(), onComplete: () -> Unit) {
     val collectedUiState = verbsViewModel.uiState.collectAsState()
-    when (val uiState = collectedUiState.value) {
-        is VerbsViewModel.QuizUiState.GetWords -> TestPairComposable(
-            englishText = uiState.englishWord,
-            answerCorrectText = uiState.wasAnswerCorrect,
-            koreanTranslation = uiState.defaultWord,
+    TestPairComposable(
+            englishText = collectedUiState.value.englishWord,
+            answerCorrectText = collectedUiState.value.wasAnswerCorrect,
+            koreanTranslation = collectedUiState.value.defaultWord,
             koreanTranslationChanged = verbsViewModel::koreanWordChanged,
             checkAnswer = verbsViewModel::checkAnswer,
             setStateToInit = verbsViewModel::setStateToInit,
             onComplete = { onComplete() },
             wordType = SheetsHelper.WordType.VERBS
         )
-    }
 }

@@ -8,25 +8,25 @@ import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class PhrasesViewModel @Inject constructor(
-    private val getWordPair: GetWordPair,
-    private val addWordPair: AddWordPair,
-    private val deleteWordPair: DeleteWordPair
+        private val getWordPair: GetWordPair,
+        private val addWordPair: AddWordPair,
+        private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
-    private val initialUiState = QuizUiState.GetWords(
-        englishWord = "",
-        defaultWord = "",
-        wasAnswerCorrect = AnswerState.Init
+    private val initialUiState = GetWords(
+            englishWord = "",
+            defaultWord = "",
+            wasAnswerCorrect = AnswerState.Init
     )
     private val _uiState = MutableStateFlow(initialUiState)
-    val uiState: StateFlow<QuizUiState> = _uiState
+    val uiState: StateFlow<GetWords> = _uiState
     private val _uiState3 = MutableStateFlow(AllPhrases(Pair(listOf(), listOf())))
     val uiState3: StateFlow<AllPhrases> = _uiState3
     private lateinit var listOfPhrases: Pair<List<String>, List<String>>
@@ -55,7 +55,7 @@ class PhrasesViewModel @Inject constructor(
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
-        _uiState.value = QuizUiState.GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
+        _uiState.value = GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
     }
 
 
@@ -77,10 +77,10 @@ class PhrasesViewModel @Inject constructor(
     fun checkAnswer(englishWord: String, koreanTranslation: String) {
         viewModelScope.launch {
             val correctKoreanTranslation =
-                listOfPhrases.first.zip(listOfPhrases.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    listOfPhrases.first.zip(listOfPhrases.second)
+                            .find { it.first == englishWord.split("[")[0] }!!.second
             if (shownWords.size == listOfPhrases.first.size) {
-                _uiState.value = QuizUiState.GetWords("", "", AnswerState.Finished)
+                _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
@@ -91,15 +91,12 @@ class PhrasesViewModel @Inject constructor(
             }
         }
     }
-
-    sealed class QuizUiState {
-        data class GetWords(
+    
+    data class GetWords(
             val englishWord: String,
             val defaultWord: String,
             val wasAnswerCorrect: AnswerState
-        ) : QuizUiState()
-    }
-
+    )
 
     data class AllPhrases(val allPhrases: Pair<List<String>, List<String>>)
 

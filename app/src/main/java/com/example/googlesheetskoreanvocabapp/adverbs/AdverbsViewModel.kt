@@ -20,13 +20,13 @@ class AdverbsViewModel @Inject constructor(
     private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
-    private val initialUiState = QuizUiState.GetWords(
+    private val initialUiState = GetWords(
         englishWord = "",
         defaultWord = "",
         wasAnswerCorrect = AnswerState.Init
     )
     private val _uiState = MutableStateFlow(initialUiState)
-    val uiState: StateFlow<QuizUiState> = _uiState
+    val uiState: StateFlow<GetWords> = _uiState
     private val _uiState3 = MutableStateFlow(AllAdverbs(Pair(listOf(), listOf())))
     val uiState3: StateFlow<AllAdverbs> = _uiState3
     private lateinit var listOfAdverbs: Pair<List<String>, List<String>>
@@ -62,7 +62,7 @@ class AdverbsViewModel @Inject constructor(
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
-        _uiState.value = QuizUiState.GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
+        _uiState.value = GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
     }
 
     fun koreanWordChanged(koreanTranslation: String) {
@@ -80,7 +80,7 @@ class AdverbsViewModel @Inject constructor(
                 listOfAdverbs.first.zip(listOfAdverbs.second)
                     .find { it.first == englishWord.split("[")[0] }!!.second
             if (shownWords.size == listOfAdverbs.first.size) {
-                _uiState.value = QuizUiState.GetWords("", "", AnswerState.Finished)
+                _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
@@ -92,13 +92,11 @@ class AdverbsViewModel @Inject constructor(
         }
     }
 
-    sealed class QuizUiState {
         data class GetWords(
             val englishWord: String,
             val defaultWord: String,
             val wasAnswerCorrect: AnswerState
-        ) : QuizUiState()
-    }
+        ) 
 
     data class AllAdverbs(val allAdverbs: Pair<List<String>, List<String>>)
 

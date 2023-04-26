@@ -15,18 +15,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NounsViewModel @Inject constructor(
-    private val getWordPair: GetWordPair,
-    private val addWordPair: AddWordPair,
-    private val deleteWordPair: DeleteWordPair
+        private val getWordPair: GetWordPair,
+        private val addWordPair: AddWordPair,
+        private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
-    private val initialUiState = QuizUiState.GetWords(
-        englishWord = "",
-        defaultWord = "",
-        wasAnswerCorrect = AnswerState.Init
+    private val initialUiState = GetWords(
+            englishWord = "",
+            defaultWord = "",
+            wasAnswerCorrect = AnswerState.Init
     )
     private val _uiState = MutableStateFlow(initialUiState)
-    val uiState: StateFlow<QuizUiState> = _uiState
+    val uiState: StateFlow<GetWords> = _uiState
     private lateinit var listOfNouns: Pair<List<String>, List<String>>
     private val _uiState3 = MutableStateFlow(AllNouns(Pair(listOf(), listOf())))
     val uiState3: StateFlow<AllNouns> = _uiState3
@@ -62,7 +62,7 @@ class NounsViewModel @Inject constructor(
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
-        _uiState.value = QuizUiState.GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
+        _uiState.value = GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
     }
 
     fun koreanWordChanged(koreanTranslation: String) {
@@ -77,10 +77,10 @@ class NounsViewModel @Inject constructor(
     fun checkAnswer(englishWord: String, koreanTranslation: String) {
         viewModelScope.launch {
             val correctKoreanTranslation =
-                listOfNouns.first.zip(listOfNouns.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    listOfNouns.first.zip(listOfNouns.second)
+                            .find { it.first == englishWord.split("[")[0] }!!.second
             if (shownWords.size == listOfNouns.first.size) {
-                _uiState.value = QuizUiState.GetWords("", "", AnswerState.Finished)
+                _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
@@ -92,13 +92,13 @@ class NounsViewModel @Inject constructor(
         }
     }
 
-    sealed class QuizUiState {
-        data class GetWords(
+
+    data class GetWords(
             val englishWord: String,
             val defaultWord: String,
             val wasAnswerCorrect: AnswerState
-        ) : QuizUiState()
-    }
+    )
+
 
     data class AllNouns(val allNouns: Pair<List<String>, List<String>>)
 
