@@ -1,6 +1,5 @@
 package com.example.googlesheetskoreanvocabapp.common
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -33,8 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
+import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowPairComposable(
     pairList: Pair<List<String>, List<String>>,
@@ -89,30 +89,39 @@ fun ShowPairComposable(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     itemsIndexed(filteredFirstList) { index, it ->
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Row {
-                                Text(text = (index + 1).toString() + "-")
-                                Text(text = it, modifier = Modifier.padding(end = 32.dp))
-                            }
-                            Row {
-                                Text(
-                                    text = filteredSecondList[index],
-                                    lineHeight = 44.sp,
-                                    color = if (showTranslations) {
-                                        Color.White
-                                    } else Color.Black
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
+                        val snooze = SwipeAction(
+                            icon = {
                                 Icon(
                                     imageVector = Icons.Filled.Delete,
                                     contentDescription = "Delete",
-                                    modifier = Modifier.clickable {
-                                        onDelete(it, filteredSecondList[index])
-                                    }
                                 )
+                            },
+                            background = ErrorRed,
+                            isUndo = true,
+                            onSwipe = { onDelete(it, filteredSecondList[index]) },
+                        )
+                        SwipeableActionsBox(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            endActions = listOf(snooze)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(vertical = 16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Row {
+                                    Text(text = (index + 1).toString() + "-")
+                                    Text(text = it)
+                                }
+                                Row {
+                                    Text(
+                                        text = filteredSecondList[index],
+                                        lineHeight = 44.sp,
+                                        color = if (showTranslations) {
+                                            Color.White
+                                        } else Color.Black
+                                    )
+                                }
                             }
                         }
                     }
@@ -129,22 +138,36 @@ fun ShowPairComposable(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     itemsIndexed(filteredFirstList) { index, it ->
-                        Row {
-                            Text(text = (index + 1).toString() + "-")
-                            Text(text = it, modifier = Modifier.padding(end = 32.dp))
-                            Text(
-                                text = filteredSecondList[index], color = if (showTranslations) {
-                                    Color.White
-                                } else Color.Black
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Icon(
-                                imageVector = Icons.Filled.Delete,
-                                contentDescription = "Delete",
-                                modifier = Modifier.clickable {
-                                    onDelete(it, filteredSecondList[index])
-                                }
-                            )
+                        val snooze = SwipeAction(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Delete,
+                                    contentDescription = "Delete",
+                                )
+                            },
+                            background = ErrorRed,
+                            isUndo = true,
+                            onSwipe = { onDelete(it, filteredSecondList[index]) },
+                        )
+                        SwipeableActionsBox(
+                            endActions = listOf(snooze)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(vertical = 16.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(text = (index + 1).toString() + "-")
+                                Text(text = it, modifier = Modifier.padding(end = 32.dp))
+                                Text(
+                                    text = filteredSecondList[index],
+                                    color = if (showTranslations) {
+                                        Color.White
+                                    } else Color.Black
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                            }
                         }
                     }
                 }
