@@ -52,11 +52,9 @@ class SheetsHelper @Inject constructor(
             try {
                 val sheetTitle = service.spreadsheets().get(SPREADSHEET_ID)
                     .execute().sheets[wordType.sheetIndex].properties.title
-                val englishWordsRange = "$sheetTitle!A1:A"
-                val koreanWordsRange = "$sheetTitle!B1:B"
                 val engValues =
                     service.spreadsheets().values()
-                        .get(SPREADSHEET_ID, englishWordsRange).execute()
+                        .get(SPREADSHEET_ID, "$sheetTitle!A1:A").execute()
                         .getValues()
                 val emptyListengValuesIndices = engValues.indices.filter { engValues[it].size == 0 }
                 val sheetId = when (wordType) {
@@ -70,13 +68,14 @@ class SheetsHelper @Inject constructor(
                 emptyListengValuesIndices.forEach { deleteDataWithIndex(it, sheetId.sheetId) }
                 val koreanValues =
                     service.spreadsheets().values()
-                        .get(SPREADSHEET_ID, koreanWordsRange).execute()
+                        .get(
+                            SPREADSHEET_ID, "$sheetTitle!B1:B"
+                        ).execute()
                         .getValues()
                 val emptyListkoreanValuesIndices =
                     koreanValues.indices.filter { koreanValues[it].size == 0 }
                 emptyListkoreanValuesIndices.forEach { deleteDataWithIndex(it, sheetId.sheetId) }
-                val nonEmptyKoreanValues = koreanValues.filter { it.isNotEmpty() }
-                val cleanedKorValues = nonEmptyKoreanValues.map { row ->
+                val cleanedKorValues = koreanValues.filter { it.isNotEmpty() }.map { row ->
                     row.map { cell ->
                         if (cell is String && cell.isNotEmpty()) {
                             cell.replace("[", "").replace("]", "")
@@ -85,8 +84,7 @@ class SheetsHelper @Inject constructor(
                         }
                     }
                 }
-                val nonEmptyEngValues = engValues.filter { it.isNotEmpty() }
-                val cleanedEngValues = nonEmptyEngValues.map { row ->
+                val cleanedEngValues = engValues.filter { it.isNotEmpty() }.map { row ->
                     row.map { cell ->
                         if (cell is String && cell.isNotEmpty()) {
                             cell.replace("[", "").replace("]", "")
@@ -96,32 +94,38 @@ class SheetsHelper @Inject constructor(
                     }
                 }
                 when (wordType) {
-                    WordType.VERBS -> addVerbsToDB(
+                    WordType.VERBS -> addWordsToDB(
+                        wordType = wordType,
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
 
-                    WordType.ADVERBS -> addAdverbsToDB(
+                    WordType.ADVERBS -> addWordsToDB(
+                        wordType = wordType,
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
 
-                    WordType.COMPLEX_SENTENCES -> addSentenceToDB(
+                    WordType.COMPLEX_SENTENCES -> addWordsToDB(
+                        wordType = wordType,
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
 
-                    WordType.USEFUL_PHRASES -> addPhrasestoDB(
+                    WordType.USEFUL_PHRASES -> addWordsToDB(
+                        wordType = wordType,
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
 
-                    WordType.NOUNS -> addNounsToDB(
+                    WordType.NOUNS -> addWordsToDB(
+                        wordType = wordType,
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
 
-                    WordType.POSITIONS -> addPositionsToDB(
+                    WordType.POSITIONS -> addWordsToDB(
+                        wordType = wordType,
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
@@ -140,96 +144,93 @@ class SheetsHelper @Inject constructor(
             return@withContext Pair(null, null)
         }
 
-    private suspend fun addVerbsToDB(
+    private suspend fun addWordsToDB(
+        wordType: WordType,
         englishWords: List<String>,
         koreanWords: List<String>
     ) {
-        val listOfVerbs = mutableListOf<Verbs>()
-        for (i in englishWords.indices) {
-            val wordPairs =
-                Verbs(englishWord = englishWords[i], koreanWord = koreanWords[i])
-            listOfVerbs.add(wordPairs)
-        }
-        verbDatabase.verbDao().insertVerbs(
-            listOfVerbs
-        )
-    }
+        val wordList = when (wordType) {
+            WordType.VERBS -> englishWords.mapIndexed { i, word ->
+                Verbs(
+                    englishWord = word,
+                    koreanWord = koreanWords[i]
+                )
+            }
 
-    private suspend fun addPositionsToDB(
-        englishWords: List<String>,
-        koreanWords: List<String>
-    ) {
-        val listOfPositions = mutableListOf<Positions>()
-        for (i in englishWords.indices) {
-            val wordPairs =
-                Positions(englishWord = englishWords[i], koreanWord = koreanWords[i])
-            listOfPositions.add(wordPairs)
-        }
-        verbDatabase.verbDao().insertPositions(
-            listOfPositions
-        )
-    }
+            WordType.ADVERBS -> englishWords.mapIndexed { i, word ->
+                Adverbs(
+                    englishWord = word,
+                    koreanWord = koreanWords[i]
+                )
+            }
 
-    private suspend fun addPhrasestoDB(
-        englishWords: List<String>,
-        koreanWords: List<String>
-    ) {
-        val listOfPhrases = mutableListOf<Phrases>()
-        for (i in englishWords.indices) {
-            val wordPairs =
-                Phrases(englishWord = englishWords[i], koreanWord = koreanWords[i])
-            listOfPhrases.add(wordPairs)
-        }
-        verbDatabase.verbDao().insertPhrases(
-            listOfPhrases
-        )
-    }
+            WordType.COMPLEX_SENTENCES -> englishWords.mapIndexed { i, word ->
+                Sentences(
+                    englishWord = word,
+                    koreanWord = koreanWords[i]
+                )
+            }
 
-    private suspend fun addSentenceToDB(
-        englishWords: List<String>,
-        koreanWords: List<String>
-    ) {
-        val listOfSentences = mutableListOf<Sentences>()
-        for (i in englishWords.indices) {
-            val wordPairs =
-                Sentences(englishWord = englishWords[i], koreanWord = koreanWords[i])
-            listOfSentences.add(wordPairs)
-        }
-        verbDatabase.verbDao().insertSentences(
-            listOfSentences
-        )
-    }
+            WordType.USEFUL_PHRASES -> englishWords.mapIndexed { i, word ->
+                Phrases(
+                    englishWord = word,
+                    koreanWord = koreanWords[i]
+                )
+            }
 
-    private suspend fun addAdverbsToDB(
-        englishWords: List<String>,
-        koreanWords: List<String>
-    ) {
-        val listOfAdverbs = mutableListOf<Adverbs>()
-        for (i in englishWords.indices) {
-            val wordPairs =
-                Adverbs(englishWord = englishWords[i], koreanWord = koreanWords[i])
-            listOfAdverbs.add(wordPairs)
-        }
-        verbDatabase.verbDao().insertAdverbs(
-            listOfAdverbs
-        )
-    }
+            WordType.NOUNS -> englishWords.mapIndexed { i, word ->
+                Nouns(
+                    englishWord = word,
+                    koreanWord = koreanWords[i]
+                )
+            }
 
-    private suspend fun addNounsToDB(
-        englishWords: List<String>,
-        koreanWords: List<String>
-    ) {
-        val listOfNouns = mutableListOf<Nouns>()
-        for (i in englishWords.indices) {
-            val wordPairs =
-                Nouns(englishWord = englishWords[i], koreanWord = koreanWords[i])
-            listOfNouns.add(wordPairs)
-        }
-        verbDatabase.verbDao().insertNouns(
-            listOfNouns
-        )
-    }
+            WordType.POSITIONS -> englishWords.mapIndexed { i, word ->
+                Positions(
+                    englishWord = word,
+                    koreanWord = koreanWords[i]
+                )
+            }
 
+        }
+        when (wordType) {
+            WordType.VERBS -> {
+                verbDatabase.verbDao().insertVerbs(
+                    wordList as List<Verbs>
+                )
+            }
+
+            WordType.ADVERBS -> {
+                verbDatabase.verbDao().insertAdverbs(
+                    wordList as List<Adverbs>
+                )
+            }
+
+            WordType.COMPLEX_SENTENCES -> {
+                verbDatabase.verbDao().insertSentences(
+                    wordList as List<Sentences>
+                )
+            }
+
+            WordType.USEFUL_PHRASES -> {
+                verbDatabase.verbDao().insertPhrases(
+                    wordList as List<Phrases>
+                )
+            }
+
+            WordType.NOUNS -> {
+                verbDatabase.verbDao().insertNouns(
+                    wordList as List<Nouns>
+                )
+            }
+
+            WordType.POSITIONS -> {
+                verbDatabase.verbDao().insertPositions(
+                    wordList as List<Positions>
+                )
+            }
+        }
+    }
 
     suspend fun addData(wordType: WordType, pairToAdd: Pair<String, String>) =
         withContext(Dispatchers.IO) {
