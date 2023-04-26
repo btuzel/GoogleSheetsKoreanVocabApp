@@ -69,21 +69,21 @@ fun WordManagementScreen(buttonGroups: WordManagementButtonGroups) {
             .verticalScroll(rememberScrollState())
     ) {
         categories.forEach { category ->
-            Text(text = "Add $category", style = MaterialTheme.typography.h2)
+            Text(text = "Add $category", style = MaterialTheme.typography.h4)
             buttonGroups.addButtonGroup[category]?.let { addButton ->
                 Button(onClick = addButton) {
                     Text("Add $category")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            Text(text = "Test $category", style = MaterialTheme.typography.h2)
+            Text(text = "Test $category", style = MaterialTheme.typography.h4)
             buttonGroups.testButtonGroup[category]?.let { testButton ->
                 Button(onClick = testButton) {
-                    Text(category)
+                    Text("Test $category")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            Text(text = "Display $category", style = MaterialTheme.typography.h2)
+            Text(text = "Display $category", style = MaterialTheme.typography.h4)
             buttonGroups.displayButtonGroup[category]?.let { displayButton ->
                 Button(onClick = displayButton) {
                     Text("Display $category")
