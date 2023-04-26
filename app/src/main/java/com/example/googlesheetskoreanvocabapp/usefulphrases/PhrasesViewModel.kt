@@ -3,6 +3,7 @@ package com.example.googlesheetskoreanvocabapp.usefulphrases
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
@@ -49,9 +50,14 @@ class PhrasesViewModel @Inject constructor(
 
     private val shownWords = mutableSetOf<String>()
     private fun getRandomEnglishWord(): String {
-        val randomWord = listOfPhrases.first.random()
-        shownWords.add(randomWord)
-        return randomWord
+        return if(shownWords.isNotEmpty()) {
+            val filteredList = listOfPhrases.first.filter { it !in shownWords }
+            filteredList.random()
+        } else {
+            val randomWord = listOfPhrases.first.random()
+            shownWords.add(randomWord)
+            randomWord
+        }
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
@@ -84,19 +90,13 @@ class PhrasesViewModel @Inject constructor(
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
-                    shownWords.remove(englishWord)
                 } else {
+                    shownWords.remove(englishWord)
                     sendRandomEnglishWord(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
                 }
             }
         }
     }
-    
-    data class GetWords(
-            val englishWord: String,
-            val defaultWord: String,
-            val wasAnswerCorrect: AnswerState
-    )
 
     data class AllPhrases(val allPhrases: Pair<List<String>, List<String>>)
 

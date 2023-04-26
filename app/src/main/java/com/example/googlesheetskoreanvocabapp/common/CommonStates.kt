@@ -14,3 +14,9 @@ sealed class Answer {
     object CORRECT : Answer()
     object INCORRECT : Answer()
 }
+
+data class GetWords(
+    val englishWord: String,
+    val defaultWord: String,
+    val wasAnswerCorrect: AnswerState
+)

@@ -70,7 +70,7 @@ fun CombinedButtons(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Text(text = "Add Stuffs", style = MaterialTheme.typography.h2)
+        Text(text = "Add Words", style = MaterialTheme.typography.h2)
         Button(onClick = onAddNounButtonClick) {
             Text("Add Noun")
         }
@@ -95,7 +95,7 @@ fun CombinedButtons(
             Text("Add Complex Sentences")
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Text(text = "Test Stuffs", style = MaterialTheme.typography.h2)
+        Text(text = "Test Words", style = MaterialTheme.typography.h2)
         Button(onClick = onNounButtonClick) {
             Text("Noun")
         }
@@ -119,7 +119,7 @@ fun CombinedButtons(
         Button(onClick = onComplexSentencesClick) {
             Text("Complex Sentences")
         }
-        Text(text = "Display Stuffs", style = MaterialTheme.typography.h2)
+        Text(text = "Display Words", style = MaterialTheme.typography.h2)
         Button(onClick = onDisplayNounButtonClick) {
             Text("Display Noun")
         }

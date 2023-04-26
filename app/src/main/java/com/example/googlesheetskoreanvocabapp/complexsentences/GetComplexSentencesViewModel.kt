@@ -3,6 +3,7 @@ package com.example.googlesheetskoreanvocabapp.complexsentences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
@@ -15,15 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GetComplexSentencesViewModel @Inject constructor(
-    private val getWordPair: GetWordPair,
-    private val addWordPair: AddWordPair,
-    private val deleteWordPair: DeleteWordPair
+        private val getWordPair: GetWordPair,
+        private val addWordPair: AddWordPair,
+        private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = GetWords(
-        englishWord = "",
-        defaultWord = "",
-        wasAnswerCorrect = AnswerState.Init
+            englishWord = "",
+            defaultWord = "",
+            wasAnswerCorrect = AnswerState.Init
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
@@ -57,9 +58,14 @@ class GetComplexSentencesViewModel @Inject constructor(
 
 
     private fun getRandomEnglishWord(): String {
-        val randomWord = listOfComplexSentences.first.random()
-        shownWords.add(randomWord)
-        return randomWord
+        return if(shownWords.isNotEmpty()) {
+            val filteredList = listOfComplexSentences.first.filter { it !in shownWords }
+            filteredList.random()
+        } else {
+            val randomWord = listOfComplexSentences.first.random()
+            shownWords.add(randomWord)
+            randomWord
+        }
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
@@ -78,25 +84,20 @@ class GetComplexSentencesViewModel @Inject constructor(
     fun checkAnswer(englishWord: String, koreanTranslation: String) {
         viewModelScope.launch {
             val correctKoreanTranslation =
-                listOfComplexSentences.first.zip(listOfComplexSentences.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    listOfComplexSentences.first.zip(listOfComplexSentences.second)
+                            .find { it.first == englishWord.split("[")[0] }!!.second
             if (shownWords.size == listOfComplexSentences.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
-                    shownWords.remove(englishWord)
                 } else {
+                    shownWords.remove(englishWord)
                     sendRandomEnglishWord(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
                 }
             }
         }
     }
 
-        data class GetWords(
-            val englishWord: String,
-            val defaultWord: String,
-            val wasAnswerCorrect: AnswerState
-        ) 
     data class AllSentences(val allSentences: Pair<List<String>, List<String>>)
 }
