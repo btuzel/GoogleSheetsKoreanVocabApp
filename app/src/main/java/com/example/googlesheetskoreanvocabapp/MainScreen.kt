@@ -1,17 +1,29 @@
 package com.example.googlesheetskoreanvocabapp
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 
 @Composable
@@ -68,25 +80,30 @@ fun WordManagementScreen(buttonGroups: WordManagementButtonGroups) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+        RaindropAnimation()
         categories.forEach { category ->
-            Text(text = "Add $category", style = MaterialTheme.typography.h4)
-            buttonGroups.addButtonGroup[category]?.let { addButton ->
-                Button(onClick = addButton) {
-                    Text("Add $category")
+            buttonGroups.displayButtonGroup[category]?.let { displayButton ->
+                Text(text = "Display $category", style = MaterialTheme.typography.h4)
+                Button(onClick = displayButton) {
+                    Text("Display $category")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            Text(text = "Test $category", style = MaterialTheme.typography.h4)
+        }
+        categories.forEach { category ->
             buttonGroups.testButtonGroup[category]?.let { testButton ->
+                Text(text = "Test $category", style = MaterialTheme.typography.h4)
                 Button(onClick = testButton) {
                     Text("Test $category")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            Text(text = "Display $category", style = MaterialTheme.typography.h4)
-            buttonGroups.displayButtonGroup[category]?.let { displayButton ->
-                Button(onClick = displayButton) {
-                    Text("Display $category")
+        }
+        categories.forEach { category ->
+            buttonGroups.addButtonGroup[category]?.let { addButton ->
+                Text(text = "Add $category", style = MaterialTheme.typography.h4)
+                Button(onClick = addButton) {
+                    Text("Add $category")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -99,3 +116,13 @@ data class WordManagementButtonGroups(
     val testButtonGroup: Map<String, () -> Unit>,
     val displayButtonGroup: Map<String, () -> Unit>
 )
+
+@Composable
+fun RaindropAnimation() {
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.koreaaaa))
+    LottieAnimation(
+        modifier = Modifier.size(100.dp).background(Color.White),
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+}
