@@ -9,10 +9,10 @@ import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class VerbsViewModel @Inject constructor(
@@ -28,14 +28,14 @@ class VerbsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _uiState3 = MutableStateFlow(AllVerbs(Pair(listOf(), listOf())))
-    val uiState3: StateFlow<AllVerbs> = _uiState3
+    private val _displayAllVerbsUiState = MutableStateFlow(AllVerbs(Pair(listOf(), listOf())))
+    val displayAllVerbsUiState: StateFlow<AllVerbs> = _displayAllVerbsUiState
     private lateinit var listOfVerbs: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
-            _uiState3.value = AllVerbs(listOfVerbs)
+            _displayAllVerbsUiState.value = AllVerbs(listOfVerbs)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -43,7 +43,7 @@ class VerbsViewModel @Inject constructor(
     private val shownWords = mutableSetOf<String>()
 
     private fun getRandomEnglishWord(): String {
-        return if(shownWords.isNotEmpty()) {
+        return if (shownWords.isNotEmpty()) {
             val filteredList = listOfVerbs.first.filter { it !in shownWords }
             filteredList.random()
         } else {
@@ -57,7 +57,7 @@ class VerbsViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.VERBS)
             listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
-            _uiState3.value = AllVerbs(listOfVerbs)
+            _displayAllVerbsUiState.value = AllVerbs(listOfVerbs)
         }
     }
 

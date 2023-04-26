@@ -28,14 +28,14 @@ class PhrasesViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _uiState3 = MutableStateFlow(AllPhrases(Pair(listOf(), listOf())))
-    val uiState3: StateFlow<AllPhrases> = _uiState3
+    private val _displayAllPhrasesUiState = MutableStateFlow(AllPhrases(Pair(listOf(), listOf())))
+    val displayAllPhrasesUiState: StateFlow<AllPhrases> = _displayAllPhrasesUiState
     private lateinit var listOfPhrases: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfPhrases = getWordPair(SheetsHelper.WordType.USEFUL_PHRASES)
-            _uiState3.value = AllPhrases(listOfPhrases)
+            _displayAllPhrasesUiState.value = AllPhrases(listOfPhrases)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -44,7 +44,7 @@ class PhrasesViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.USEFUL_PHRASES)
             listOfPhrases = getWordPair(SheetsHelper.WordType.USEFUL_PHRASES)
-            _uiState3.value = AllPhrases(listOfPhrases)
+            _displayAllPhrasesUiState.value = AllPhrases(listOfPhrases)
         }
     }
 

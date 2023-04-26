@@ -28,14 +28,14 @@ class PositionsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _uiState3 = MutableStateFlow(AllPositions(Pair(listOf(), listOf())))
-    val uiState3: StateFlow<AllPositions> = _uiState3
+    private val _displayAllPositionsUiState = MutableStateFlow(AllPositions(Pair(listOf(), listOf())))
+    val displayAllPositionsUiState: StateFlow<AllPositions> = _displayAllPositionsUiState
     private lateinit var listOfPositions: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfPositions = getWordPair(SheetsHelper.WordType.POSITIONS)
-            _uiState3.value = AllPositions(listOfPositions)
+            _displayAllPositionsUiState.value = AllPositions(listOfPositions)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -44,7 +44,7 @@ class PositionsViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.POSITIONS)
             listOfPositions = getWordPair(SheetsHelper.WordType.POSITIONS)
-            _uiState3.value = AllPositions(listOfPositions)
+            _displayAllPositionsUiState.value = AllPositions(listOfPositions)
         }
     }
 

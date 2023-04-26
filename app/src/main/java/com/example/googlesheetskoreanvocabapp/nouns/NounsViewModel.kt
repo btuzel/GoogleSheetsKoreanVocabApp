@@ -29,13 +29,13 @@ class NounsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
     private lateinit var listOfNouns: Pair<List<String>, List<String>>
-    private val _uiState3 = MutableStateFlow(AllNouns(Pair(listOf(), listOf())))
-    val uiState3: StateFlow<AllNouns> = _uiState3
+    private val _displayAllNounsUiState = MutableStateFlow(AllNouns(Pair(listOf(), listOf())))
+    val displayAllNounsUiState: StateFlow<AllNouns> = _displayAllNounsUiState
 
     init {
         viewModelScope.launch {
             listOfNouns = getWordPair(SheetsHelper.WordType.NOUNS)
-            _uiState3.value = AllNouns(listOfNouns)
+            _displayAllNounsUiState.value = AllNouns(listOfNouns)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -44,7 +44,7 @@ class NounsViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.NOUNS)
             listOfNouns = getWordPair(SheetsHelper.WordType.NOUNS)
-            _uiState3.value = AllNouns(listOfNouns)
+            _displayAllNounsUiState.value = AllNouns(listOfNouns)
         }
     }
 

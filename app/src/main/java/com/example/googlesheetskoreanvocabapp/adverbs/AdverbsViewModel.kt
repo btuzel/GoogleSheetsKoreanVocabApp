@@ -28,14 +28,14 @@ class AdverbsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _uiState3 = MutableStateFlow(AllAdverbs(Pair(listOf(), listOf())))
-    val uiState3: StateFlow<AllAdverbs> = _uiState3
+    private val _displayAllAdverbsUiState = MutableStateFlow(AllAdverbs(Pair(listOf(), listOf())))
+    val displayAllAdverbsUiState: StateFlow<AllAdverbs> = _displayAllAdverbsUiState
     private lateinit var listOfAdverbs: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfAdverbs = getWordPair(SheetsHelper.WordType.ADVERBS)
-            _uiState3.value = AllAdverbs(listOfAdverbs)
+            _displayAllAdverbsUiState.value = AllAdverbs(listOfAdverbs)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -46,7 +46,7 @@ class AdverbsViewModel @Inject constructor(
         viewModelScope.launch {
             addWordPair(englishWord, koreanWord, SheetsHelper.WordType.ADVERBS)
             listOfAdverbs = getWordPair(SheetsHelper.WordType.ADVERBS)
-            _uiState3.value = AllAdverbs(listOfAdverbs)
+            _displayAllAdverbsUiState.value = AllAdverbs(listOfAdverbs)
         }
     }
 

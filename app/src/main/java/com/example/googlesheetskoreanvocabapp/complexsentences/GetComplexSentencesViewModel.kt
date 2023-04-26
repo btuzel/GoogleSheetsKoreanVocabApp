@@ -28,14 +28,14 @@ class GetComplexSentencesViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _uiState3 = MutableStateFlow(AllSentences(Pair(listOf(), listOf())))
-    val uiState3: StateFlow<AllSentences> = _uiState3
+    private val _displayAllSentencesUiState = MutableStateFlow(AllSentences(Pair(listOf(), listOf())))
+    val displayAllSentencesUiState: StateFlow<AllSentences> = _displayAllSentencesUiState
     private lateinit var listOfComplexSentences: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfComplexSentences = getWordPair(SheetsHelper.WordType.COMPLEX_SENTENCES)
-            _uiState3.value = AllSentences(listOfComplexSentences)
+            _displayAllSentencesUiState.value = AllSentences(listOfComplexSentences)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -52,7 +52,7 @@ class GetComplexSentencesViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.COMPLEX_SENTENCES)
             listOfComplexSentences = getWordPair(SheetsHelper.WordType.COMPLEX_SENTENCES)
-            _uiState3.value = AllSentences(listOfComplexSentences)
+            _displayAllSentencesUiState.value = AllSentences(listOfComplexSentences)
         }
     }
 
