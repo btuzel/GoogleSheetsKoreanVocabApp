@@ -106,7 +106,8 @@ fun ShowPairComposable(
                         ) {
                             Column(
                                 modifier = Modifier
-                                    .padding(vertical = 16.dp),
+                                    .padding(vertical = 16.dp)
+                                    .fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Row {
