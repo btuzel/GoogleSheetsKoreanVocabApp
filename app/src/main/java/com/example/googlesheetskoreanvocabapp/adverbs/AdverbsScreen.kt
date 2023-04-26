@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
+import com.example.googlesheetskoreanvocabapp.common.AppButton
+import com.example.googlesheetskoreanvocabapp.ui.theme.bodyMedium
 import kotlinx.coroutines.delay
 
 @Composable
@@ -56,7 +56,8 @@ fun AdverbsCheckComposable(
     ) {
         Text(
             text = englishText,
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(vertical = 16.dp),
+            style = MaterialTheme.typography.bodyMedium
         )
         when (answerCorrectText) {
             is AdverbsViewModel.AnswerState.CorrectAnswer -> {
@@ -85,11 +86,9 @@ fun AdverbsCheckComposable(
             value = koreanTranslation,
             onValueChange = koreanTranslationChanged,
             label = { Text("Korean word") },
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier.width(200.dp).padding(bottom = 32.dp)
         )
-        Button(onClick = { checkAnswer(englishText, koreanTranslation) }) {
-            Text("Submit")
-        }
+        AppButton(onClick = { checkAnswer(englishText, koreanTranslation) }, text = "Submit")
     }
 }
 
