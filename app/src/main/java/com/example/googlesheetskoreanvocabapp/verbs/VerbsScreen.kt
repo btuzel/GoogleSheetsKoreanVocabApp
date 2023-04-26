@@ -10,13 +10,13 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 fun VerbsScreen(verbsViewModel: VerbsViewModel = hiltViewModel(), onComplete: () -> Unit) {
     val collectedUiState = verbsViewModel.uiState.collectAsState()
     TestPairComposable(
-            englishText = collectedUiState.value.englishWord,
-            answerCorrectText = collectedUiState.value.wasAnswerCorrect,
-            koreanTranslation = collectedUiState.value.defaultWord,
-            koreanTranslationChanged = verbsViewModel::koreanWordChanged,
-            checkAnswer = verbsViewModel::checkAnswer,
-            setStateToInit = verbsViewModel::setStateToInit,
-            onComplete = { onComplete() },
-            wordType = SheetsHelper.WordType.VERBS
-        )
+        englishText = collectedUiState.value.englishWord,
+        answerCorrectText = collectedUiState.value.wasAnswerCorrect,
+        koreanTranslation = collectedUiState.value.defaultWord,
+        koreanTranslationChanged = verbsViewModel::koreanWordChanged,
+        checkAnswer = verbsViewModel::checkAnswer,
+        setStateToInit = verbsViewModel::setStateToInit,
+        onComplete = { onComplete() },
+        wordType = SheetsHelper.WordType.VERBS
+    )
 }

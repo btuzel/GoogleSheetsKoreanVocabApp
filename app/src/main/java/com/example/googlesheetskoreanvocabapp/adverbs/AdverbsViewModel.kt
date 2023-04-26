@@ -57,7 +57,7 @@ class AdverbsViewModel @Inject constructor(
     }
 
     private fun getRandomEnglishWord(): String {
-        return if(shownWords.isNotEmpty()) {
+        return if (shownWords.isNotEmpty()) {
             val filteredList = listOfAdverbs.first.filter { it !in shownWords }
             filteredList.random()
         } else {

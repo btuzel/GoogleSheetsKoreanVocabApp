@@ -35,11 +35,9 @@ fun NavGraph(
         composable(route = ScreenDestination.VerbsScreen.route) {
             VerbsScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
-
         composable(route = ScreenDestination.AdverbsScreen.route) {
             AdverbsScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
-
         composable(route = ScreenDestination.NounsScreen.route) {
             NounsScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
@@ -52,15 +50,12 @@ fun NavGraph(
         composable(route = ScreenDestination.ComplexSentencesScreen.route) {
             ComplexSentencesScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
-///////////////////////////////////////////
         composable(route = ScreenDestination.AddVerbsScreen.route) {
             AddVerbScreen()
         }
-
         composable(route = ScreenDestination.AddAdverbsScreen.route) {
             AddAdverbsScreen()
         }
-
         composable(route = ScreenDestination.AddNounsScreen.route) {
             AddNounsScreen()
         }
@@ -73,15 +68,12 @@ fun NavGraph(
         composable(route = ScreenDestination.AddComplexSentencesScreen.route) {
             AddComplexSentencesScreen()
         }
-
         composable(route = ScreenDestination.DisplayVerbsScreen.route) {
             DisplayVerbsScreen()
         }
-
         composable(route = ScreenDestination.DisplayAdverbsScreen.route) {
             DisplayAdverbsScreen()
         }
-
         composable(route = ScreenDestination.DisplayNounsScreen.route) {
             DisplayNounsScreen()
         }
@@ -94,13 +86,10 @@ fun NavGraph(
         composable(route = ScreenDestination.DisplayComplexSentencesScreen.route) {
             DisplaySentencesScreen()
         }
-
-
         composable(route = ScreenDestination.MainScreen.route) {
             MainScreen(navHostController)
         }
     }
-
 }
 
 fun navigateToMainScreen(navHostController: NavHostController) {

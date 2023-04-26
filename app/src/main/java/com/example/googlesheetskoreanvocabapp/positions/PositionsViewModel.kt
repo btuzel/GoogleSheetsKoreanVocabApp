@@ -16,19 +16,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PositionsViewModel @Inject constructor(
-        private val getWordPair: GetWordPair,
-        private val addWordPair: AddWordPair,
-        private val deleteWordPair: DeleteWordPair
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = GetWords(
-            englishWord = "",
-            defaultWord = "",
-            wasAnswerCorrect = AnswerState.Init
+        englishWord = "",
+        defaultWord = "",
+        wasAnswerCorrect = AnswerState.Init
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _displayAllPositionsUiState = MutableStateFlow(AllPositions(Pair(listOf(), listOf())))
+    private val _displayAllPositionsUiState =
+        MutableStateFlow(AllPositions(Pair(listOf(), listOf())))
     val displayAllPositionsUiState: StateFlow<AllPositions> = _displayAllPositionsUiState
     private lateinit var listOfPositions: Pair<List<String>, List<String>>
 
@@ -51,7 +52,7 @@ class PositionsViewModel @Inject constructor(
     private val shownWords = mutableSetOf<String>()
 
     private fun getRandomEnglishWord(): String {
-        return if(shownWords.isNotEmpty()) {
+        return if (shownWords.isNotEmpty()) {
             val filteredList = listOfPositions.first.filter { it !in shownWords }
             filteredList.random()
         } else {
@@ -84,8 +85,8 @@ class PositionsViewModel @Inject constructor(
     fun checkAnswer(englishWord: String, koreanTranslation: String) {
         viewModelScope.launch {
             val correctKoreanTranslation =
-                    listOfPositions.first.zip(listOfPositions.second)
-                            .find { it.first == englishWord.split("[")[0] }!!.second
+                listOfPositions.first.zip(listOfPositions.second)
+                    .find { it.first == englishWord.split("[")[0] }!!.second
             if (shownWords.size == listOfPositions.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {

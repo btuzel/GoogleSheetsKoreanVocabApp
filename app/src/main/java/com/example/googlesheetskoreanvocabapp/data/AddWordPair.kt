@@ -1,6 +1,12 @@
 package com.example.googlesheetskoreanvocabapp.data
 
-import com.example.googlesheetskoreanvocabapp.db.*
+import com.example.googlesheetskoreanvocabapp.db.Adverbs
+import com.example.googlesheetskoreanvocabapp.db.Nouns
+import com.example.googlesheetskoreanvocabapp.db.Phrases
+import com.example.googlesheetskoreanvocabapp.db.Positions
+import com.example.googlesheetskoreanvocabapp.db.Sentences
+import com.example.googlesheetskoreanvocabapp.db.VerbRepository
+import com.example.googlesheetskoreanvocabapp.db.Verbs
 import com.example.googlesheetskoreanvocabapp.isOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,6 +34,7 @@ class AddWordPair @Inject constructor(
                     )
                 )
             }
+
             SheetsHelper.WordType.ADVERBS -> {
                 verbRepository.insertAdverbs(
                     listOf(
@@ -38,6 +45,7 @@ class AddWordPair @Inject constructor(
                     )
                 )
             }
+
             SheetsHelper.WordType.COMPLEX_SENTENCES -> {
                 verbRepository.insertSentences(
                     listOf(
@@ -48,6 +56,7 @@ class AddWordPair @Inject constructor(
                     )
                 )
             }
+
             SheetsHelper.WordType.USEFUL_PHRASES -> {
                 verbRepository.insertPhrases(
                     listOf(
@@ -58,6 +67,7 @@ class AddWordPair @Inject constructor(
                     )
                 )
             }
+
             SheetsHelper.WordType.NOUNS -> {
                 verbRepository.insertNouns(
                     listOf(
@@ -68,6 +78,7 @@ class AddWordPair @Inject constructor(
                     )
                 )
             }
+
             SheetsHelper.WordType.POSITIONS -> {
                 verbRepository.insertPositions(
                     listOf(
@@ -85,22 +96,27 @@ class AddWordPair @Inject constructor(
                     SheetsHelper.WordType.VERBS,
                     Pair(englishWord, koreanWord)
                 )
+
                 SheetsHelper.WordType.ADVERBS -> sheetsHelper.addData(
                     SheetsHelper.WordType.ADVERBS,
                     Pair(englishWord, koreanWord)
                 )
+
                 SheetsHelper.WordType.COMPLEX_SENTENCES -> sheetsHelper.addData(
                     SheetsHelper.WordType.COMPLEX_SENTENCES,
                     Pair(englishWord, koreanWord)
                 )
+
                 SheetsHelper.WordType.USEFUL_PHRASES -> sheetsHelper.addData(
                     SheetsHelper.WordType.USEFUL_PHRASES,
                     Pair(englishWord, koreanWord)
                 )
+
                 SheetsHelper.WordType.NOUNS -> sheetsHelper.addData(
                     SheetsHelper.WordType.NOUNS,
                     Pair(englishWord, koreanWord)
                 )
+
                 SheetsHelper.WordType.POSITIONS -> sheetsHelper.addData(
                     SheetsHelper.WordType.POSITIONS,
                     Pair(englishWord, koreanWord)

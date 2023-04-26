@@ -47,6 +47,7 @@ class VerbRepository @Inject constructor(private val verbDao: VerbDao) {
     suspend fun deleteNouns(nouns: Nouns) {
         verbDao.deleteNounByEnglishWord(nouns)
     }
+
     suspend fun getPhrases(): Pair<List<String>, List<String>> {
         val phrases = verbDao.getPhrases()
         val englishWords = phrases.map { it.englishWord }

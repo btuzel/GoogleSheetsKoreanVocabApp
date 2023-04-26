@@ -16,15 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NounsViewModel @Inject constructor(
-        private val getWordPair: GetWordPair,
-        private val addWordPair: AddWordPair,
-        private val deleteWordPair: DeleteWordPair
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = GetWords(
-            englishWord = "",
-            defaultWord = "",
-            wasAnswerCorrect = AnswerState.Init
+        englishWord = "",
+        defaultWord = "",
+        wasAnswerCorrect = AnswerState.Init
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
@@ -51,7 +51,7 @@ class NounsViewModel @Inject constructor(
     private val shownWords = mutableSetOf<String>()
 
     private fun getRandomEnglishWord(): String {
-        return if(shownWords.isNotEmpty()) {
+        return if (shownWords.isNotEmpty()) {
             val filteredList = listOfNouns.first.filter { it !in shownWords }
             filteredList.random()
         } else {
@@ -83,8 +83,8 @@ class NounsViewModel @Inject constructor(
     fun checkAnswer(englishWord: String, koreanTranslation: String) {
         viewModelScope.launch {
             val correctKoreanTranslation =
-                    listOfNouns.first.zip(listOfNouns.second)
-                            .find { it.first == englishWord.split("[")[0] }!!.second
+                listOfNouns.first.zip(listOfNouns.second)
+                    .find { it.first == englishWord.split("[")[0] }!!.second
             if (shownWords.size == listOfNouns.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {

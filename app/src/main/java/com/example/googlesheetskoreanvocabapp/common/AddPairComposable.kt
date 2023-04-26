@@ -99,7 +99,11 @@ fun AddPairComposable(
             Spacer(modifier = Modifier.width(16.dp))
             AppButtonSecondary(onClick = {
                 deleteWord(englishWord, koreanWord)
-                Toast.makeText(context, "$englishWord and $koreanWord pair removed.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "$englishWord and $koreanWord pair removed.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }, text = "Remove")
         }
     }

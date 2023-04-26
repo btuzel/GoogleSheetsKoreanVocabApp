@@ -48,7 +48,9 @@ fun TestPairComposable(
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize().padding(top = 150.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 150.dp)
     ) {
         val correctText = buildAnnotatedString {
             withStyle(
@@ -99,9 +101,11 @@ fun TestPairComposable(
                     setStateToInit()
                 }
             }
+
             AnswerState.Init -> {
                 // Display nothing
             }
+
             is AnswerState.WrongAnswer -> {
                 Text(
                     text = "Incorrect answer, the right answer is ${answerCorrectText.correctAnswer}",
@@ -114,6 +118,7 @@ fun TestPairComposable(
                     setStateToInit()
                 }
             }
+
             AnswerState.Finished ->
                 LaunchedEffect(Unit) {
                     onComplete()

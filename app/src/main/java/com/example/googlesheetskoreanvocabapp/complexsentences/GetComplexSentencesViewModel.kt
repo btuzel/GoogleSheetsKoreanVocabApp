@@ -16,19 +16,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GetComplexSentencesViewModel @Inject constructor(
-        private val getWordPair: GetWordPair,
-        private val addWordPair: AddWordPair,
-        private val deleteWordPair: DeleteWordPair
+    private val getWordPair: GetWordPair,
+    private val addWordPair: AddWordPair,
+    private val deleteWordPair: DeleteWordPair
 ) : ViewModel() {
 
     private val initialUiState = GetWords(
-            englishWord = "",
-            defaultWord = "",
-            wasAnswerCorrect = AnswerState.Init
+        englishWord = "",
+        defaultWord = "",
+        wasAnswerCorrect = AnswerState.Init
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _displayAllSentencesUiState = MutableStateFlow(AllSentences(Pair(listOf(), listOf())))
+    private val _displayAllSentencesUiState =
+        MutableStateFlow(AllSentences(Pair(listOf(), listOf())))
     val displayAllSentencesUiState: StateFlow<AllSentences> = _displayAllSentencesUiState
     private lateinit var listOfComplexSentences: Pair<List<String>, List<String>>
 
@@ -58,7 +59,7 @@ class GetComplexSentencesViewModel @Inject constructor(
 
 
     private fun getRandomEnglishWord(): String {
-        return if(shownWords.isNotEmpty()) {
+        return if (shownWords.isNotEmpty()) {
             val filteredList = listOfComplexSentences.first.filter { it !in shownWords }
             filteredList.random()
         } else {
@@ -84,8 +85,8 @@ class GetComplexSentencesViewModel @Inject constructor(
     fun checkAnswer(englishWord: String, koreanTranslation: String) {
         viewModelScope.launch {
             val correctKoreanTranslation =
-                    listOfComplexSentences.first.zip(listOfComplexSentences.second)
-                            .find { it.first == englishWord.split("[")[0] }!!.second
+                listOfComplexSentences.first.zip(listOfComplexSentences.second)
+                    .find { it.first == englishWord.split("[")[0] }!!.second
             if (shownWords.size == listOfComplexSentences.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {

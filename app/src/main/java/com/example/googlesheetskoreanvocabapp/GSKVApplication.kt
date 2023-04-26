@@ -8,9 +8,9 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class GSKVApplication : Application() {
     private lateinit var verbDatabase: VerbDatabase
-
     override fun onCreate() {
         super.onCreate()
-        verbDatabase = Room.databaseBuilder(applicationContext, VerbDatabase::class.java, "my-db").build()
+        verbDatabase =
+            Room.databaseBuilder(applicationContext, VerbDatabase::class.java, "my-db").build()
     }
 }

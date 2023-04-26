@@ -10,5 +10,9 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun DisplayPositionsScreen(getPositionsViewModel: PositionsViewModel = hiltViewModel()) {
     val allPositions by getPositionsViewModel.displayAllPositionsUiState.collectAsState()
-    ShowPairComposable(allPositions.allPositions, SheetsHelper.WordType.POSITIONS, getPositionsViewModel::deletePositionsFromColumn)
+    ShowPairComposable(
+        allPositions.allPositions,
+        SheetsHelper.WordType.POSITIONS,
+        getPositionsViewModel::deletePositionsFromColumn
+    )
 }

@@ -1,7 +1,13 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import android.content.Context
-import com.example.googlesheetskoreanvocabapp.db.*
+import com.example.googlesheetskoreanvocabapp.db.Adverbs
+import com.example.googlesheetskoreanvocabapp.db.Nouns
+import com.example.googlesheetskoreanvocabapp.db.Phrases
+import com.example.googlesheetskoreanvocabapp.db.Positions
+import com.example.googlesheetskoreanvocabapp.db.Sentences
+import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
+import com.example.googlesheetskoreanvocabapp.db.Verbs
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -9,7 +15,12 @@ import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
-import com.google.api.services.sheets.v4.model.*
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest
+import com.google.api.services.sheets.v4.model.ClearValuesRequest
+import com.google.api.services.sheets.v4.model.DeleteDimensionRequest
+import com.google.api.services.sheets.v4.model.DimensionRange
+import com.google.api.services.sheets.v4.model.Request
+import com.google.api.services.sheets.v4.model.ValueRange
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -48,7 +59,7 @@ class SheetsHelper @Inject constructor(
                         .get(SPREADSHEET_ID, englishWordsRange).execute()
                         .getValues()
                 val emptyListengValuesIndices = engValues.indices.filter { engValues[it].size == 0 }
-                val sheetId = when(wordType){
+                val sheetId = when (wordType) {
                     WordType.VERBS -> SheetId.VERBS
                     WordType.ADVERBS -> SheetId.ADVERBS
                     WordType.COMPLEX_SENTENCES -> SheetId.COMPLEX_SENTENCES
@@ -85,18 +96,33 @@ class SheetsHelper @Inject constructor(
                     }
                 }
                 when (wordType) {
-                    WordType.VERBS -> addVerbsToDB(cleanedEngValues.flatten() as List<String>, cleanedKorValues.flatten() as List<String>)
-                    WordType.ADVERBS -> addAdverbsToDB(cleanedEngValues.flatten() as List<String>, cleanedKorValues.flatten() as List<String>)
+                    WordType.VERBS -> addVerbsToDB(
+                        cleanedEngValues.flatten() as List<String>,
+                        cleanedKorValues.flatten() as List<String>
+                    )
+
+                    WordType.ADVERBS -> addAdverbsToDB(
+                        cleanedEngValues.flatten() as List<String>,
+                        cleanedKorValues.flatten() as List<String>
+                    )
+
                     WordType.COMPLEX_SENTENCES -> addSentenceToDB(
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
+
                     WordType.USEFUL_PHRASES -> addPhrasestoDB(
                         cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
-                    WordType.NOUNS -> addNounsToDB(cleanedEngValues.flatten() as List<String>, cleanedKorValues.flatten() as List<String>)
-                    WordType.POSITIONS -> addPositionsToDB(cleanedEngValues.flatten() as List<String>,
+
+                    WordType.NOUNS -> addNounsToDB(
+                        cleanedEngValues.flatten() as List<String>,
+                        cleanedKorValues.flatten() as List<String>
+                    )
+
+                    WordType.POSITIONS -> addPositionsToDB(
+                        cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
                 }
@@ -253,7 +279,7 @@ class SheetsHelper @Inject constructor(
                 if (indexToDelete == 0) {
                     return@withContext
                 }
-                val sheetId = when(wordType){
+                val sheetId = when (wordType) {
                     WordType.VERBS -> SheetId.VERBS
                     WordType.ADVERBS -> SheetId.ADVERBS
                     WordType.COMPLEX_SENTENCES -> SheetId.COMPLEX_SENTENCES

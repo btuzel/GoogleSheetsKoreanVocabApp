@@ -9,5 +9,9 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun DisplaySentencesScreen(getComplexSentencesViewModel: GetComplexSentencesViewModel = hiltViewModel()) {
     val allSentences = getComplexSentencesViewModel.displayAllSentencesUiState.collectAsState()
-    ShowPairComposable(allSentences.value.allSentences, SheetsHelper.WordType.COMPLEX_SENTENCES, getComplexSentencesViewModel::deleteComplexSentencesFromColumn)
+    ShowPairComposable(
+        allSentences.value.allSentences,
+        SheetsHelper.WordType.COMPLEX_SENTENCES,
+        getComplexSentencesViewModel::deleteComplexSentencesFromColumn
+    )
 }
