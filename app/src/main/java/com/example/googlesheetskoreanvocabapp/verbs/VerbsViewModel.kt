@@ -46,9 +46,12 @@ class VerbsViewModel @Inject constructor(
         shownWords.add(randomWord)
         return randomWord
     }
+
     fun deleteVerbsFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.VERBS)
+            listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
+            _uiState3.value = AllVerbs(listOfVerbs)
         }
     }
 

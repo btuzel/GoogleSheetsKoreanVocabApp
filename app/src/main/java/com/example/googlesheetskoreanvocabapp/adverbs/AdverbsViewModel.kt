@@ -44,6 +44,8 @@ class AdverbsViewModel @Inject constructor(
     fun addAdverbsToColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             addWordPair(englishWord, koreanWord, SheetsHelper.WordType.ADVERBS)
+            listOfAdverbs = getWordPair(SheetsHelper.WordType.ADVERBS)
+            _uiState3.value = AllAdverbs(listOfAdverbs)
         }
     }
 

@@ -42,6 +42,8 @@ class PositionsViewModel @Inject constructor(
     fun deletePositionsFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.POSITIONS)
+            listOfPositions = getWordPair(SheetsHelper.WordType.POSITIONS)
+            _uiState3.value = AllPositions(listOfPositions)
         }
     }
 

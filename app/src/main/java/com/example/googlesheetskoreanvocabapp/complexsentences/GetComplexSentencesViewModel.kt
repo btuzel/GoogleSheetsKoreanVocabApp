@@ -50,6 +50,8 @@ class GetComplexSentencesViewModel @Inject constructor(
     fun deleteComplexSentencesFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.COMPLEX_SENTENCES)
+            listOfComplexSentences = getWordPair(SheetsHelper.WordType.COMPLEX_SENTENCES)
+            _uiState3.value = AllSentences(listOfComplexSentences)
         }
     }
 

@@ -8,10 +8,10 @@ import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class PhrasesViewModel @Inject constructor(
@@ -42,6 +42,8 @@ class PhrasesViewModel @Inject constructor(
     fun deletePhrasesFromColumn(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.USEFUL_PHRASES)
+            listOfPhrases = getWordPair(SheetsHelper.WordType.USEFUL_PHRASES)
+            _uiState3.value = AllPhrases(listOfPhrases)
         }
     }
 
