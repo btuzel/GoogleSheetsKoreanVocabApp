@@ -64,15 +64,6 @@ class GetWordPair @Inject constructor(
                             wordsFromSpreadsheet.second!!.map { it.toString().replace("[", "").replace("]", "") }
                         )
                     }
-                    SheetsHelper.WordType.SOME_SENTENCES -> {
-                        //TODO not implemented
-                        val wordsFromSpreadsheet =
-                            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.NOUNS)
-                        return@withContext Pair(
-                            wordsFromSpreadsheet.first!!.map { it.toString().replace("[", "").replace("]", "") },
-                            wordsFromSpreadsheet.second!!.map { it.toString().replace("[", "").replace("]", "") }
-                        )
-                    }
                 }
             } else {
                 when (wordType) {
@@ -82,7 +73,6 @@ class GetWordPair @Inject constructor(
                     SheetsHelper.WordType.USEFUL_PHRASES -> return@withContext verbRepository.getPhrases()
                     SheetsHelper.WordType.NOUNS -> return@withContext verbRepository.getNouns()
                     SheetsHelper.WordType.POSITIONS -> return@withContext verbRepository.getPositions()
-                    SheetsHelper.WordType.SOME_SENTENCES -> return@withContext verbRepository.getNouns()
                 }
             }
         }

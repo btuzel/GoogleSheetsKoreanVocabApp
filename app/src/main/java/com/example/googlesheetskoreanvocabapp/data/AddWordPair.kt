@@ -78,7 +78,6 @@ class AddWordPair @Inject constructor(
                     )
                 )
             }
-            SheetsHelper.WordType.SOME_SENTENCES -> {}
         }
         if (isOnline()) {
             when (wordType) {
@@ -106,7 +105,6 @@ class AddWordPair @Inject constructor(
                     SheetsHelper.WordType.POSITIONS,
                     Pair(englishWord, koreanWord)
                 )
-                SheetsHelper.WordType.SOME_SENTENCES -> {}
             }
         }
     }

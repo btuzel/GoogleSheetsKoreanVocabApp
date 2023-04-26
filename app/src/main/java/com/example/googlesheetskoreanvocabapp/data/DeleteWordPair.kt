@@ -66,14 +66,6 @@ class DeleteWordPair @Inject constructor(
                     )
                 )
             }
-            SheetsHelper.WordType.SOME_SENTENCES -> {
-                verbRepository.deleteSentence(
-                    Sentences(
-                        englishWord = englishWord,
-                        koreanWord = koreanWord
-                    )
-                )
-            }
         }
         if (isOnline()) {
             when (wordType) {
@@ -110,12 +102,6 @@ class DeleteWordPair @Inject constructor(
                 SheetsHelper.WordType.POSITIONS -> {
                     sheetsHelper.deleteData(
                         SheetsHelper.WordType.POSITIONS,
-                        Pair(englishWord, koreanWord)
-                    )
-                }
-                SheetsHelper.WordType.SOME_SENTENCES -> {
-                    sheetsHelper.deleteData(
-                        SheetsHelper.WordType.SOME_SENTENCES,
                         Pair(englishWord, koreanWord)
                     )
                 }

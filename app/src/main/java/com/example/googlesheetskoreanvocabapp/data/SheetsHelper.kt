@@ -55,7 +55,6 @@ class SheetsHelper @Inject constructor(
                     WordType.USEFUL_PHRASES -> SheetId.USEFUL_PHRASES
                     WordType.NOUNS -> SheetId.NOUNS
                     WordType.POSITIONS -> SheetId.POSITIONS
-                    WordType.SOME_SENTENCES -> SheetId.SOME_SENTENCES
                 }
                 emptyListengValuesIndices.forEach { deleteDataWithIndex(it, sheetId.sheetId) }
                 val koreanValues =
@@ -100,7 +99,6 @@ class SheetsHelper @Inject constructor(
                     WordType.POSITIONS -> addPositionsToDB(cleanedEngValues.flatten() as List<String>,
                         cleanedKorValues.flatten() as List<String>
                     )
-                    WordType.SOME_SENTENCES -> {}
                 }
                 return@withContext Pair(
                     cleanedEngValues,
@@ -262,7 +260,6 @@ class SheetsHelper @Inject constructor(
                     WordType.USEFUL_PHRASES -> SheetId.USEFUL_PHRASES
                     WordType.NOUNS -> SheetId.NOUNS
                     WordType.POSITIONS -> SheetId.POSITIONS
-                    WordType.SOME_SENTENCES -> SheetId.SOME_SENTENCES
                 }
                 val rangeToDelete = "$sheetTitle!A${indexToDelete}:${indexToDelete}"
                 service.spreadsheets().values()
@@ -311,7 +308,6 @@ class SheetsHelper @Inject constructor(
         USEFUL_PHRASES(sheetIndex = 3),
         NOUNS(sheetIndex = 4),
         POSITIONS(sheetIndex = 5),
-        SOME_SENTENCES(sheetIndex = 6)
     }
 
     enum class SheetId(val sheetId: Int) {
@@ -321,6 +317,5 @@ class SheetsHelper @Inject constructor(
         USEFUL_PHRASES(sheetId = 1557476308),
         NOUNS(sheetId = 1951405031),
         POSITIONS(sheetId = 378086967),
-        SOME_SENTENCES(sheetId = 516066503)
     }
 }
