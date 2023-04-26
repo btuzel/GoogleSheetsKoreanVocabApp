@@ -20,40 +20,47 @@ fun MainScreen(
     syncViewModel: SyncViewModel = hiltViewModel()
 ) {
 
-    CombinedButtons(
-        testButtonGroup = TestButtonGroup(
-            noun = { navHostController.navigate(ScreenDestination.NounsScreen.route) },
-            adverb = { navHostController.navigate(ScreenDestination.AdverbsScreen.route) },
-            verb = { navHostController.navigate(ScreenDestination.VerbsScreen.route) },
-            positions = { navHostController.navigate(ScreenDestination.PositionsScreen.route) },
-            phrases = { navHostController.navigate(ScreenDestination.UsefulPhrasesScreen.route) },
-            complexSentences = { navHostController.navigate(ScreenDestination.ComplexSentencesScreen.route) },
+    val buttonGroups = WordManagementButtonGroups(
+        addButtonGroup = mapOf(
+            "Noun" to { navHostController.navigate(ScreenDestination.AddNounsScreen.route) },
+            "Adverb" to { navHostController.navigate(ScreenDestination.AddAdverbsScreen.route) },
+            "Verb" to { navHostController.navigate(ScreenDestination.AddVerbsScreen.route) },
+            "Positions" to { navHostController.navigate(ScreenDestination.AddPositionsScreen.route) },
+            "Useful Phrases" to { navHostController.navigate(ScreenDestination.AddUsefulPhrasesScreen.route) },
+            "Complex Sentences" to { navHostController.navigate(ScreenDestination.AddComplexSentencesScreen.route) },
         ),
-        addButtonGroup = AddButtonGroup(
-            noun = { navHostController.navigate(ScreenDestination.AddNounsScreen.route) },
-            adverb = { navHostController.navigate(ScreenDestination.AddAdverbsScreen.route) },
-            verb = { navHostController.navigate(ScreenDestination.AddVerbsScreen.route) },
-            positions = { navHostController.navigate(ScreenDestination.AddPositionsScreen.route) },
-            phrases = { navHostController.navigate(ScreenDestination.AddUsefulPhrasesScreen.route) },
-            complexSentences = { navHostController.navigate(ScreenDestination.AddComplexSentencesScreen.route) },
+        testButtonGroup = mapOf(
+            "Noun" to { navHostController.navigate(ScreenDestination.NounsScreen.route) },
+            "Adverb" to { navHostController.navigate(ScreenDestination.AdverbsScreen.route) },
+            "Verb" to { navHostController.navigate(ScreenDestination.VerbsScreen.route) },
+            "Positions" to { navHostController.navigate(ScreenDestination.PositionsScreen.route) },
+            "Useful Phrases" to { navHostController.navigate(ScreenDestination.UsefulPhrasesScreen.route) },
+            "Complex Sentences" to { navHostController.navigate(ScreenDestination.ComplexSentencesScreen.route) },
         ),
-        displayButtonGroup = DisplayButtonGroup(
-            noun = { navHostController.navigate(ScreenDestination.DisplayNounsScreen.route) },
-            adverb = { navHostController.navigate(ScreenDestination.DisplayAdverbsScreen.route) },
-            verb = { navHostController.navigate(ScreenDestination.DisplayVerbsScreen.route) },
-            positions = { navHostController.navigate(ScreenDestination.DisplayPositionsScreen.route) },
-            phrases = { navHostController.navigate(ScreenDestination.DisplayUsefulPhrasesScreen.route) },
-            complexSentences = { navHostController.navigate(ScreenDestination.DisplayComplexSentencesScreen.route) },
-        )
+        displayButtonGroup = mapOf(
+            "Noun" to { navHostController.navigate(ScreenDestination.DisplayNounsScreen.route) },
+            "Adverb" to { navHostController.navigate(ScreenDestination.DisplayAdverbsScreen.route) },
+            "Verb" to { navHostController.navigate(ScreenDestination.DisplayVerbsScreen.route) },
+            "Positions" to { navHostController.navigate(ScreenDestination.DisplayPositionsScreen.route) },
+            "Useful Phrases" to { navHostController.navigate(ScreenDestination.DisplayUsefulPhrasesScreen.route) },
+            "Complex Sentences" to { navHostController.navigate(ScreenDestination.DisplayComplexSentencesScreen.route) },
+        ),
     )
+
+    WordManagementScreen(buttonGroups)
 }
 
 @Composable
-fun CombinedButtons(
-    addButtonGroup: AddButtonGroup,
-    displayButtonGroup: DisplayButtonGroup,
-    testButtonGroup: TestButtonGroup,
-) {
+fun WordManagementScreen(buttonGroups: WordManagementButtonGroups) {
+    val categories = listOf(
+        "Noun",
+        "Adverb",
+        "Verb",
+        "Positions",
+        "Useful Phrases",
+        "Complex Sentences"
+    )
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,105 +68,34 @@ fun CombinedButtons(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Text(text = "Add Words", style = MaterialTheme.typography.h2)
-        Button(onClick = addButtonGroup.noun) {
-            Text("Add Noun")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = addButtonGroup.adverb) {
-            Text("Add Adverb")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = addButtonGroup.verb) {
-            Text("Add Verb")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = addButtonGroup.positions) {
-            Text("Add Positions")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = addButtonGroup.phrases) {
-            Text("Add Useful Phrases")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = addButtonGroup.complexSentences) {
-            Text("Add Complex Sentences")
-        }
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(text = "Test Words", style = MaterialTheme.typography.h2)
-        Button(onClick = testButtonGroup.noun) {
-            Text("Noun")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = testButtonGroup.adverb) {
-            Text("Adverb")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = testButtonGroup.verb) {
-            Text("Verb")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = testButtonGroup.positions) {
-            Text("Positions")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = testButtonGroup.phrases) {
-            Text("Useful Phrases")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = testButtonGroup.complexSentences) {
-            Text("Complex Sentences")
-        }
-        Text(text = "Display Words", style = MaterialTheme.typography.h2)
-        Button(onClick = displayButtonGroup.noun) {
-            Text("Display Noun")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = displayButtonGroup.adverb) {
-            Text("Display Adverb")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = displayButtonGroup.verb) {
-            Text("Display Verb")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = displayButtonGroup.positions) {
-            Text("Display Positions")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = displayButtonGroup.phrases) {
-            Text("Display Useful Phrases")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = displayButtonGroup.complexSentences) {
-            Text("Display Complex Sentences")
+        categories.forEach { category ->
+            Text(text = "Add $category", style = MaterialTheme.typography.h2)
+            buttonGroups.addButtonGroup[category]?.let { addButton ->
+                Button(onClick = addButton) {
+                    Text("Add $category")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            Text(text = "Test $category", style = MaterialTheme.typography.h2)
+            buttonGroups.testButtonGroup[category]?.let { testButton ->
+                Button(onClick = testButton) {
+                    Text(category)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            Text(text = "Display $category", style = MaterialTheme.typography.h2)
+            buttonGroups.displayButtonGroup[category]?.let { displayButton ->
+                Button(onClick = displayButton) {
+                    Text("Display $category")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }
 
-data class TestButtonGroup(
-    val noun: () -> Unit,
-    val adverb: () -> Unit,
-    val verb: () -> Unit,
-    val positions: () -> Unit,
-    val phrases: () -> Unit,
-    val complexSentences: () -> Unit,
-)
-
-data class AddButtonGroup(
-    val noun: () -> Unit,
-    val adverb: () -> Unit,
-    val verb: () -> Unit,
-    val positions: () -> Unit,
-    val phrases: () -> Unit,
-    val complexSentences: () -> Unit,
-)
-
-data class DisplayButtonGroup(
-    val noun: () -> Unit,
-    val adverb: () -> Unit,
-    val verb: () -> Unit,
-    val positions: () -> Unit,
-    val phrases: () -> Unit,
-    val complexSentences: () -> Unit
+data class WordManagementButtonGroups(
+    val addButtonGroup: Map<String, () -> Unit>,
+    val testButtonGroup: Map<String, () -> Unit>,
+    val displayButtonGroup: Map<String, () -> Unit>
 )
