@@ -8,6 +8,7 @@ import com.example.googlesheetskoreanvocabapp.db.Positions
 import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import com.example.googlesheetskoreanvocabapp.db.Verbs
+import com.example.googlesheetskoreanvocabapp.fixStrings
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -78,7 +79,7 @@ class SheetsHelper @Inject constructor(
                 val cleanedKorValues = koreanValues.filter { it.isNotEmpty() }.map { row ->
                     row.map { cell ->
                         if (cell is String && cell.isNotEmpty()) {
-                            cell.replace("[", "").replace("]", "")
+                            cell.fixStrings()
                         } else {
                             cell
                         }
@@ -87,7 +88,7 @@ class SheetsHelper @Inject constructor(
                 val cleanedEngValues = engValues.filter { it.isNotEmpty() }.map { row ->
                     row.map { cell ->
                         if (cell is String && cell.isNotEmpty()) {
-                            cell.replace("[", "").replace("]", "")
+                            cell.fixStrings()
                         } else {
                             cell
                         }

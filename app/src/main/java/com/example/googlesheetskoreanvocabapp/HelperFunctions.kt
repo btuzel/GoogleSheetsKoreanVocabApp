@@ -1,11 +1,11 @@
 package com.example.googlesheetskoreanvocabapp
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketAddress
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 suspend fun isOnline(): Boolean {
     return try {
@@ -20,4 +20,8 @@ suspend fun isOnline(): Boolean {
     } catch (e: IOException) {
         false
     }
+}
+
+fun String.fixStrings(): String {
+    return replace("[", "").replace("]", "")
 }

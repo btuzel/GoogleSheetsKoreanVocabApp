@@ -79,12 +79,11 @@ class AdverbsViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(wasAnswerCorrect = AnswerState.Init)
     }
 
-
     fun checkAnswer(englishWord: String, koreanTranslation: String) {
         viewModelScope.launch {
             val correctKoreanTranslation =
                 listOfAdverbs.first.zip(listOfAdverbs.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    .find { it.first == englishWord }!!.second
             if (shownWords.size == listOfAdverbs.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {

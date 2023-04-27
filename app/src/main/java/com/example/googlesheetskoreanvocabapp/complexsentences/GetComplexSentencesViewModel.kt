@@ -86,7 +86,7 @@ class GetComplexSentencesViewModel @Inject constructor(
         viewModelScope.launch {
             val correctKoreanTranslation =
                 listOfComplexSentences.first.zip(listOfComplexSentences.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    .find { it.first == englishWord }!!.second
             if (shownWords.size == listOfComplexSentences.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {

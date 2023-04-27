@@ -1,6 +1,7 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
+import com.example.googlesheetskoreanvocabapp.fixStrings
 import com.example.googlesheetskoreanvocabapp.isOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,81 +18,27 @@ class GetWordPair @Inject constructor(
             if (isOnline()) {
                 when (wordType) {
                     SheetsHelper.WordType.VERBS -> {
-                        val wordsFromSpreadsheet =
-                            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.VERBS)
-                        return@withContext Pair(
-                            wordsFromSpreadsheet.first!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            },
-                            wordsFromSpreadsheet.second!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            }
-                        )
+                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.VERBS)
                     }
 
                     SheetsHelper.WordType.ADVERBS -> {
-                        val wordsFromSpreadsheet =
-                            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.ADVERBS)
-                        return@withContext Pair(
-                            wordsFromSpreadsheet.first!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            },
-                            wordsFromSpreadsheet.second!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            }
-                        )
+                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.ADVERBS)
                     }
 
                     SheetsHelper.WordType.COMPLEX_SENTENCES -> {
-                        val wordsFromSpreadsheet =
-                            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.COMPLEX_SENTENCES)
-                        return@withContext Pair(
-                            wordsFromSpreadsheet.first!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            },
-                            wordsFromSpreadsheet.second!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            }
-                        )
+                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.COMPLEX_SENTENCES)
                     }
 
                     SheetsHelper.WordType.USEFUL_PHRASES -> {
-                        val wordsFromSpreadsheet =
-                            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.USEFUL_PHRASES)
-                        return@withContext Pair(
-                            wordsFromSpreadsheet.first!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            },
-                            wordsFromSpreadsheet.second!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            }
-                        )
+                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.USEFUL_PHRASES)
                     }
 
                     SheetsHelper.WordType.NOUNS -> {
-                        val wordsFromSpreadsheet =
-                            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.NOUNS)
-                        return@withContext Pair(
-                            wordsFromSpreadsheet.first!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            },
-                            wordsFromSpreadsheet.second!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            }
-                        )
+                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.NOUNS)
                     }
 
                     SheetsHelper.WordType.POSITIONS -> {
-                        val wordsFromSpreadsheet =
-                            sheetsHelper.getWordsFromSpreadsheet(wordType = SheetsHelper.WordType.POSITIONS)
-                        return@withContext Pair(
-                            wordsFromSpreadsheet.first!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            },
-                            wordsFromSpreadsheet.second!!.map {
-                                it.toString().replace("[", "").replace("]", "")
-                            }
-                        )
+                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.POSITIONS)
                     }
                 }
             } else {
@@ -105,4 +52,17 @@ class GetWordPair @Inject constructor(
                 }
             }
         }
+
+    private suspend fun getWordsFromSpreadsheet(wordType: SheetsHelper.WordType): Pair<List<String>, List<String>> {
+        val wordsFromSpreadsheet = sheetsHelper.getWordsFromSpreadsheet(wordType = wordType)
+        return Pair(
+            wordsFromSpreadsheet.first!!.map {
+                it.toString().fixStrings()
+            },
+            wordsFromSpreadsheet.second!!.map {
+                it.toString().fixStrings()
+            }
+        )
+    }
 }
+

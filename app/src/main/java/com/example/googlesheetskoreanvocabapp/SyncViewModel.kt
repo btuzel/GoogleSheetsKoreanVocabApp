@@ -44,9 +44,9 @@ class SyncViewModel @Inject constructor(
         }
         val getWordsFromSheets = sheetsHelper.getWordsFromSpreadsheet(wordType)
         val sheetsEngWords =
-            getWordsFromSheets.first!!.map { it.toString().replace("[", "").replace("]", "") }
+            getWordsFromSheets.first!!.map { it.toString().fixStrings() }
         val sheetsKorWords =
-            getWordsFromSheets.second!!.map { it.toString().replace("[", "").replace("]", "") }
+            getWordsFromSheets.second!!.map { it.toString().fixStrings() }
         if (dbWords.first.size > sheetsEngWords.size) {
             val differencesInEngWords =
                 dbWords.first.subtract(sheetsEngWords.toSet()).toList()

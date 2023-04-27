@@ -86,7 +86,7 @@ class PositionsViewModel @Inject constructor(
         viewModelScope.launch {
             val correctKoreanTranslation =
                 listOfPositions.first.zip(listOfPositions.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    .find { it.first == englishWord }!!.second
             if (shownWords.size == listOfPositions.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {

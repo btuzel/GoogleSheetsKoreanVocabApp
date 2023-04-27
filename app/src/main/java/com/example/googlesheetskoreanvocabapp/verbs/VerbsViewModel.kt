@@ -78,7 +78,7 @@ class VerbsViewModel @Inject constructor(
         viewModelScope.launch {
             val correctKoreanTranslation =
                 listOfVerbs.first.zip(listOfVerbs.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    .find { it.first == englishWord }!!.second
             if (shownWords.size == listOfVerbs.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {

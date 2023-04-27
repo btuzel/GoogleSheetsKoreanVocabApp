@@ -84,7 +84,7 @@ class PhrasesViewModel @Inject constructor(
         viewModelScope.launch {
             val correctKoreanTranslation =
                 listOfPhrases.first.zip(listOfPhrases.second)
-                    .find { it.first == englishWord.split("[")[0] }!!.second
+                    .find { it.first == englishWord }!!.second
             if (shownWords.size == listOfPhrases.first.size) {
                 _uiState.value = GetWords("", "", AnswerState.Finished)
             } else {
