@@ -48,7 +48,7 @@ fun AddPairComposable(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 120.dp)
+            .padding(horizontal = 80.dp)
     ) {
         val context = LocalContext.current
         Text(text = "Add ${wordType.name} pair", style = MaterialTheme.typography.h4)

@@ -23,5 +23,5 @@ suspend fun isOnline(): Boolean {
 }
 
 fun String.fixStrings(): String {
-    return replace("[", "").replace("]", "")
+    return removeSurrounding(prefix = "[", suffix = "]")
 }

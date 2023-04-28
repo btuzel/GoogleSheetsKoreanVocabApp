@@ -27,7 +27,6 @@ import com.google.auth.oauth2.GoogleCredentials
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 
@@ -77,8 +76,8 @@ class SheetsHelper @Inject constructor(
                     koreanValues.indices.filter { koreanValues[it].size == 0 }
                 emptyListkoreanValuesIndices.forEach { deleteDataWithIndex(it, sheetId.sheetId) }
                 val cleanedKorValues = koreanValues.filter { it.isNotEmpty() }.map { row ->
-                    row.map { cell ->
-                        if (cell is String && cell.isNotEmpty()) {
+                    row.map { it.toString() }.map { cell ->
+                        if (cell.isNotEmpty()) {
                             cell.fixStrings()
                         } else {
                             cell
@@ -86,8 +85,8 @@ class SheetsHelper @Inject constructor(
                     }
                 }
                 val cleanedEngValues = engValues.filter { it.isNotEmpty() }.map { row ->
-                    row.map { cell ->
-                        if (cell is String && cell.isNotEmpty()) {
+                    row.map { it.toString() }.map { cell ->
+                        if (cell.isNotEmpty()) {
                             cell.fixStrings()
                         } else {
                             cell
@@ -97,38 +96,38 @@ class SheetsHelper @Inject constructor(
                 when (wordType) {
                     WordType.VERBS -> addWordsToDB(
                         wordType = wordType,
-                        cleanedEngValues.flatten() as List<String>,
-                        cleanedKorValues.flatten() as List<String>
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
                     )
 
                     WordType.ADVERBS -> addWordsToDB(
                         wordType = wordType,
-                        cleanedEngValues.flatten() as List<String>,
-                        cleanedKorValues.flatten() as List<String>
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
                     )
 
                     WordType.COMPLEX_SENTENCES -> addWordsToDB(
                         wordType = wordType,
-                        cleanedEngValues.flatten() as List<String>,
-                        cleanedKorValues.flatten() as List<String>
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
                     )
 
                     WordType.USEFUL_PHRASES -> addWordsToDB(
                         wordType = wordType,
-                        cleanedEngValues.flatten() as List<String>,
-                        cleanedKorValues.flatten() as List<String>
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
                     )
 
                     WordType.NOUNS -> addWordsToDB(
                         wordType = wordType,
-                        cleanedEngValues.flatten() as List<String>,
-                        cleanedKorValues.flatten() as List<String>
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
                     )
 
                     WordType.POSITIONS -> addWordsToDB(
                         wordType = wordType,
-                        cleanedEngValues.flatten() as List<String>,
-                        cleanedKorValues.flatten() as List<String>
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
                     )
                 }
                 return@withContext Pair(
@@ -136,8 +135,6 @@ class SheetsHelper @Inject constructor(
                     cleanedKorValues
                 )
             } catch (e: GoogleJsonResponseException) {
-                Timber.tag("Google Sheets API")
-                    .e("Error: " + e.statusCode + " " + e.statusMessage)
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -150,88 +147,75 @@ class SheetsHelper @Inject constructor(
         englishWords: List<String>,
         koreanWords: List<String>
     ) {
-        val wordList = when (wordType) {
-            WordType.VERBS -> englishWords.mapIndexed { i, word ->
-                Verbs(
-                    englishWord = word,
-                    koreanWord = koreanWords[i]
-                )
-            }
-
-            WordType.ADVERBS -> englishWords.mapIndexed { i, word ->
-                Adverbs(
-                    englishWord = word,
-                    koreanWord = koreanWords[i]
-                )
-            }
-
-            WordType.COMPLEX_SENTENCES -> englishWords.mapIndexed { i, word ->
-                Sentences(
-                    englishWord = word,
-                    koreanWord = koreanWords[i]
-                )
-            }
-
-            WordType.USEFUL_PHRASES -> englishWords.mapIndexed { i, word ->
-                Phrases(
-                    englishWord = word,
-                    koreanWord = koreanWords[i]
-                )
-            }
-
-            WordType.NOUNS -> englishWords.mapIndexed { i, word ->
-                Nouns(
-                    englishWord = word,
-                    koreanWord = koreanWords[i]
-                )
-            }
-
-            WordType.POSITIONS -> englishWords.mapIndexed { i, word ->
-                Positions(
-                    englishWord = word,
-                    koreanWord = koreanWords[i]
-                )
-            }
-
-        }
         when (wordType) {
             WordType.VERBS -> {
                 verbDatabase.verbDao().insertVerbs(
-                    wordList as List<Verbs>
+                    englishWords.mapIndexed { i, word ->
+                        Verbs(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
                 )
             }
 
             WordType.ADVERBS -> {
                 verbDatabase.verbDao().insertAdverbs(
-                    wordList as List<Adverbs>
+                    englishWords.mapIndexed { i, word ->
+                        Adverbs(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
                 )
             }
 
             WordType.COMPLEX_SENTENCES -> {
                 verbDatabase.verbDao().insertSentences(
-                    wordList as List<Sentences>
+                    englishWords.mapIndexed { i, word ->
+                        Sentences(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
                 )
             }
 
             WordType.USEFUL_PHRASES -> {
                 verbDatabase.verbDao().insertPhrases(
-                    wordList as List<Phrases>
+                    englishWords.mapIndexed { i, word ->
+                        Phrases(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
                 )
             }
 
             WordType.NOUNS -> {
                 verbDatabase.verbDao().insertNouns(
-                    wordList as List<Nouns>
+                    englishWords.mapIndexed { i, word ->
+                        Nouns(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
                 )
             }
 
             WordType.POSITIONS -> {
                 verbDatabase.verbDao().insertPositions(
-                    wordList as List<Positions>
+                    englishWords.mapIndexed { i, word ->
+                        Positions(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
                 )
             }
         }
     }
+
 
     suspend fun addData(wordType: WordType, pairToAdd: Pair<String, String>) =
         withContext(Dispatchers.IO) {
@@ -258,8 +242,6 @@ class SheetsHelper @Inject constructor(
                     .setValueInputOption("USER_ENTERED")
                     .execute()
             } catch (e: GoogleJsonResponseException) {
-                Timber.tag("Google Sheets API")
-                    .e("Error: " + e.statusCode + " " + e.statusMessage)
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -295,8 +277,6 @@ class SheetsHelper @Inject constructor(
                     .execute()
                 deleteDataWithIndex(indexToDelete, sheetId.sheetId)
             } catch (e: GoogleJsonResponseException) {
-                Timber.tag("Google Sheets API")
-                    .e("Error: " + e.statusCode + " " + e.statusMessage)
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -321,8 +301,6 @@ class SheetsHelper @Inject constructor(
                 request.requests = listOf(Request().setDeleteDimension(deleteRequest))
                 service.spreadsheets().batchUpdate(SPREADSHEET_ID, request).execute()
             } catch (e: GoogleJsonResponseException) {
-                Timber.tag("Google Sheets API")
-                    .e("Error: " + e.statusCode + " " + e.statusMessage)
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
