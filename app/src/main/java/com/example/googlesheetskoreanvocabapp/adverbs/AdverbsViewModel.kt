@@ -3,6 +3,7 @@ package com.example.googlesheetskoreanvocabapp.adverbs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.DisplayState
 import com.example.googlesheetskoreanvocabapp.common.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
@@ -28,14 +29,14 @@ class AdverbsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _displayAllAdverbsUiState = MutableStateFlow(AllAdverbs(Pair(listOf(), listOf())))
-    val displayAllAdverbsUiState: StateFlow<AllAdverbs> = _displayAllAdverbsUiState
+    private val _displayAllAdverbsUiState: MutableStateFlow<DisplayState> = MutableStateFlow(DisplayState.Loading)
+    val displayAllAdverbsUiState: StateFlow<DisplayState> = _displayAllAdverbsUiState
     private lateinit var listOfAdverbs: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfAdverbs = getWordPair(SheetsHelper.WordType.ADVERBS)
-            _displayAllAdverbsUiState.value = AllAdverbs(listOfAdverbs)
+            _displayAllAdverbsUiState.value = DisplayState.AllPairs(listOfAdverbs)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -46,7 +47,7 @@ class AdverbsViewModel @Inject constructor(
         viewModelScope.launch {
             addWordPair(englishWord, koreanWord, SheetsHelper.WordType.ADVERBS)
             listOfAdverbs = getWordPair(SheetsHelper.WordType.ADVERBS)
-            _displayAllAdverbsUiState.value = AllAdverbs(listOfAdverbs)
+            _displayAllAdverbsUiState.value = DisplayState.AllPairs(listOfAdverbs)
         }
     }
 
@@ -96,7 +97,4 @@ class AdverbsViewModel @Inject constructor(
             }
         }
     }
-
-    data class AllAdverbs(val allAdverbs: Pair<List<String>, List<String>>)
-
 }

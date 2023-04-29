@@ -3,6 +3,7 @@ package com.example.googlesheetskoreanvocabapp.verbs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.DisplayState
 import com.example.googlesheetskoreanvocabapp.common.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
@@ -28,14 +29,15 @@ class VerbsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _displayAllVerbsUiState = MutableStateFlow(AllVerbs(Pair(listOf(), listOf())))
-    val displayAllVerbsUiState: StateFlow<AllVerbs> = _displayAllVerbsUiState
+    private val _displayAllVerbsUiState: MutableStateFlow<DisplayState> = MutableStateFlow(
+        DisplayState.Loading)
+    val displayAllVerbsUiState: StateFlow<DisplayState> = _displayAllVerbsUiState
     private lateinit var listOfVerbs: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
-            _displayAllVerbsUiState.value = AllVerbs(listOfVerbs)
+            _displayAllVerbsUiState.value = DisplayState.AllPairs(listOfVerbs)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -57,7 +59,7 @@ class VerbsViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.VERBS)
             listOfVerbs = getWordPair(SheetsHelper.WordType.VERBS)
-            _displayAllVerbsUiState.value = AllVerbs(listOfVerbs)
+            _displayAllVerbsUiState.value = DisplayState.AllPairs(listOfVerbs)
         }
     }
 
@@ -98,5 +100,4 @@ class VerbsViewModel @Inject constructor(
         }
     }
 
-    data class AllVerbs(val allVerbs: Pair<List<String>, List<String>>)
 }

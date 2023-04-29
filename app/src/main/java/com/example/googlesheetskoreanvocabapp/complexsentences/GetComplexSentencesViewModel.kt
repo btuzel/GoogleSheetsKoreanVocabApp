@@ -3,6 +3,7 @@ package com.example.googlesheetskoreanvocabapp.complexsentences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.DisplayState
 import com.example.googlesheetskoreanvocabapp.common.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
@@ -28,15 +29,15 @@ class GetComplexSentencesViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _displayAllSentencesUiState =
-        MutableStateFlow(AllSentences(Pair(listOf(), listOf())))
-    val displayAllSentencesUiState: StateFlow<AllSentences> = _displayAllSentencesUiState
+    private val _displayAllSentencesUiState: MutableStateFlow<DisplayState> = MutableStateFlow(
+        DisplayState.Loading)
+    val displayAllSentencesUiState: StateFlow<DisplayState> = _displayAllSentencesUiState
     private lateinit var listOfComplexSentences: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfComplexSentences = getWordPair(SheetsHelper.WordType.COMPLEX_SENTENCES)
-            _displayAllSentencesUiState.value = AllSentences(listOfComplexSentences)
+            _displayAllSentencesUiState.value = DisplayState.AllPairs(listOfComplexSentences)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -53,7 +54,7 @@ class GetComplexSentencesViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.COMPLEX_SENTENCES)
             listOfComplexSentences = getWordPair(SheetsHelper.WordType.COMPLEX_SENTENCES)
-            _displayAllSentencesUiState.value = AllSentences(listOfComplexSentences)
+            _displayAllSentencesUiState.value = DisplayState.AllPairs(listOfComplexSentences)
         }
     }
 
@@ -99,6 +100,4 @@ class GetComplexSentencesViewModel @Inject constructor(
             }
         }
     }
-
-    data class AllSentences(val allSentences: Pair<List<String>, List<String>>)
 }

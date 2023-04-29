@@ -20,3 +20,8 @@ data class GetWords(
     val defaultWord: String,
     val wasAnswerCorrect: AnswerState
 )
+
+sealed class DisplayState {
+    object Loading : DisplayState()
+    data class AllPairs(val allPairs: Pair<List<String>, List<String>>) : DisplayState()
+}

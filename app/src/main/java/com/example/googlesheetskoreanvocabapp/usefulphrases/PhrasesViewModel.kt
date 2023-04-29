@@ -3,6 +3,7 @@ package com.example.googlesheetskoreanvocabapp.usefulphrases
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.DisplayState
 import com.example.googlesheetskoreanvocabapp.common.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
@@ -28,14 +29,15 @@ class PhrasesViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _displayAllPhrasesUiState = MutableStateFlow(AllPhrases(Pair(listOf(), listOf())))
-    val displayAllPhrasesUiState: StateFlow<AllPhrases> = _displayAllPhrasesUiState
+    private val _displayAllPhrasesUiState: MutableStateFlow<DisplayState> = MutableStateFlow(
+        DisplayState.Loading)
+    val displayAllPhrasesUiState: StateFlow<DisplayState> = _displayAllPhrasesUiState
     private lateinit var listOfPhrases: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfPhrases = getWordPair(SheetsHelper.WordType.USEFUL_PHRASES)
-            _displayAllPhrasesUiState.value = AllPhrases(listOfPhrases)
+            _displayAllPhrasesUiState.value = DisplayState.AllPairs(listOfPhrases)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -44,7 +46,7 @@ class PhrasesViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.USEFUL_PHRASES)
             listOfPhrases = getWordPair(SheetsHelper.WordType.USEFUL_PHRASES)
-            _displayAllPhrasesUiState.value = AllPhrases(listOfPhrases)
+            _displayAllPhrasesUiState.value = DisplayState.AllPairs(listOfPhrases)
         }
     }
 
@@ -97,7 +99,4 @@ class PhrasesViewModel @Inject constructor(
             }
         }
     }
-
-    data class AllPhrases(val allPhrases: Pair<List<String>, List<String>>)
-
 }

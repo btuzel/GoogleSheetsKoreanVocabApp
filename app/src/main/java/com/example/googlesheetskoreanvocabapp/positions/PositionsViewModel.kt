@@ -3,6 +3,7 @@ package com.example.googlesheetskoreanvocabapp.positions
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.DisplayState
 import com.example.googlesheetskoreanvocabapp.common.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
@@ -28,15 +29,14 @@ class PositionsViewModel @Inject constructor(
     )
     private val _uiState = MutableStateFlow(initialUiState)
     val uiState: StateFlow<GetWords> = _uiState
-    private val _displayAllPositionsUiState =
-        MutableStateFlow(AllPositions(Pair(listOf(), listOf())))
-    val displayAllPositionsUiState: StateFlow<AllPositions> = _displayAllPositionsUiState
+    private val _displayAllPositionsUiState: MutableStateFlow<DisplayState> = MutableStateFlow(DisplayState.Loading)
+    val displayAllPositionsUiState: StateFlow<DisplayState> = _displayAllPositionsUiState
     private lateinit var listOfPositions: Pair<List<String>, List<String>>
 
     init {
         viewModelScope.launch {
             listOfPositions = getWordPair(SheetsHelper.WordType.POSITIONS)
-            _displayAllPositionsUiState.value = AllPositions(listOfPositions)
+            _displayAllPositionsUiState.value = DisplayState.AllPairs(listOfPositions)
             sendRandomEnglishWord(AnswerState.Init)
         }
     }
@@ -45,7 +45,7 @@ class PositionsViewModel @Inject constructor(
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, SheetsHelper.WordType.POSITIONS)
             listOfPositions = getWordPair(SheetsHelper.WordType.POSITIONS)
-            _displayAllPositionsUiState.value = AllPositions(listOfPositions)
+            _displayAllPositionsUiState.value = DisplayState.AllPairs(listOfPositions)
         }
     }
 
@@ -99,8 +99,5 @@ class PositionsViewModel @Inject constructor(
             }
         }
     }
-
-
-    data class AllPositions(val allPositions: Pair<List<String>, List<String>>)
 
 }
