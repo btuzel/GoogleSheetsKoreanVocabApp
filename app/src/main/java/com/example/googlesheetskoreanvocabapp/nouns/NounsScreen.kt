@@ -20,7 +20,8 @@ fun NounsScreen(
         checkAnswer = nounsViewModel::checkAnswer,
         setStateToInit = nounsViewModel::setStateToInit,
         onComplete = onComplete,
-        wordType = SheetsHelper.WordType.NOUNS
+        wordType = SheetsHelper.WordType.NOUNS,
+        totalPairs = collectedUiState.value.remainingPairs
     )
 }
 

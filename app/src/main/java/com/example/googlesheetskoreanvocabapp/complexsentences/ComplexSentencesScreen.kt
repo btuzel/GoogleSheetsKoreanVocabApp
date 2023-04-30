@@ -20,7 +20,8 @@ fun ComplexSentencesScreen(
         checkAnswer = getComplexSentencesViewModel::checkAnswer,
         setStateToInit = getComplexSentencesViewModel::setStateToInit,
         onComplete = onComplete,
-        wordType = SheetsHelper.WordType.COMPLEX_SENTENCES
+        wordType = SheetsHelper.WordType.COMPLEX_SENTENCES,
+        totalPairs = collectedUiState.value.remainingPairs
     )
 }
 

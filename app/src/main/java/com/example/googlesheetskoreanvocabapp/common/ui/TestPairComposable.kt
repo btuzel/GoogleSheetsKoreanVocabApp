@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
@@ -43,7 +44,8 @@ fun TestPairComposable(
     checkAnswer: (String, String) -> Unit,
     setStateToInit: () -> Unit,
     onComplete: () -> Unit,
-    wordType: SheetsHelper.WordType
+    wordType: SheetsHelper.WordType,
+    totalPairs: Int
 ) {
     val correctAnswerCount = remember {
         mutableStateOf(0)
@@ -89,6 +91,13 @@ fun TestPairComposable(
             fontSize = 42.sp,
             fontWeight = FontWeight.Bold
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "${wordType.name} remaining: $totalPairs", modifier = Modifier.padding(vertical = 16.dp),
+            style = MaterialTheme.typography.body1,
+            fontSize = 31.sp,
+            fontWeight = FontWeight.Bold
+        )
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Text(text = correctText)
             Spacer(modifier = Modifier.width(32.dp))
@@ -131,7 +140,7 @@ fun TestPairComposable(
                     scope.launch {
                         Toast.makeText(
                             context,
-                            "You finished with $correctAnswerCount correct answers and $wrongAnswerCount incorrect answers.",
+                            "${correctAnswerCount.value} correct and ${wrongAnswerCount.value} incorrect answers.",
                             Toast.LENGTH_LONG
                         ).show()
                     }

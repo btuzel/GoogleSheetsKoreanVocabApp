@@ -28,7 +28,8 @@ abstract class BaseWordPairViewModel(
         GetWords(
             englishWord = "",
             defaultWord = "",
-            wasAnswerCorrect = AnswerState.Init
+            wasAnswerCorrect = AnswerState.Init,
+            remainingPairs = 0
         )
     )
     override val uiState: StateFlow<GetWords> = _uiState
@@ -71,7 +72,7 @@ abstract class BaseWordPairViewModel(
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
-        _uiState.value = GetWords(getRandomEnglishWord(), "", wasAnswerCorrect)
+        _uiState.value = GetWords(getRandomEnglishWord(), "", wasAnswerCorrect, wordPairs.first.filter { it !in shownWords }.size)
     }
 
     init {
@@ -88,7 +89,7 @@ abstract class BaseWordPairViewModel(
                 _wordPairs.first.zip(_wordPairs.second)
                     .find { it.first == englishWord }!!.second
             if (shownWords.size == _wordPairs.first.size) {
-                _uiState.value = GetWords("", "", AnswerState.Finished)
+                _uiState.value = GetWords("", "", AnswerState.Finished, 0)
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())

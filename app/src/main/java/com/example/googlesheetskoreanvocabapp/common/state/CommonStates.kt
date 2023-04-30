@@ -18,7 +18,8 @@ sealed class Answer {
 data class GetWords(
     val englishWord: String,
     val defaultWord: String,
-    val wasAnswerCorrect: AnswerState
+    val wasAnswerCorrect: AnswerState,
+    val remainingPairs: Int
 )
 
 sealed class DisplayState {

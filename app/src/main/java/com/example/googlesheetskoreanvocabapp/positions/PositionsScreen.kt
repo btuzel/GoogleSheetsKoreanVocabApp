@@ -20,6 +20,7 @@ fun PositionsScreen(
         checkAnswer = positionsViewModel::checkAnswer,
         setStateToInit = positionsViewModel::setStateToInit,
         onComplete = onComplete,
-        wordType = SheetsHelper.WordType.POSITIONS
+        wordType = SheetsHelper.WordType.POSITIONS,
+        totalPairs = collectedUiState.value.remainingPairs
     )
 }

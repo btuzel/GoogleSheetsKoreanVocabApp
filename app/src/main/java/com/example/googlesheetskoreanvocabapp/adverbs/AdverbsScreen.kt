@@ -20,6 +20,7 @@ fun AdverbsScreen(
         checkAnswer = adverbsViewModel::checkAnswer,
         setStateToInit = adverbsViewModel::setStateToInit,
         onComplete = onComplete,
-        wordType = SheetsHelper.WordType.ADVERBS
+        wordType = SheetsHelper.WordType.ADVERBS,
+        totalPairs = collectedUiState.value.remainingPairs
     )
 }

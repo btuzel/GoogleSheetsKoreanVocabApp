@@ -17,6 +17,7 @@ fun VerbsScreen(verbsViewModel: VerbsViewModel = hiltViewModel(), onComplete: ()
         checkAnswer = verbsViewModel::checkAnswer,
         setStateToInit = verbsViewModel::setStateToInit,
         onComplete = { onComplete() },
-        wordType = SheetsHelper.WordType.VERBS
+        wordType = SheetsHelper.WordType.VERBS,
+        totalPairs = collectedUiState.value.remainingPairs
     )
 }

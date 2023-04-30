@@ -20,6 +20,7 @@ fun PhrasesScreen(
         checkAnswer = phrasesViewModel::checkAnswer,
         setStateToInit = phrasesViewModel::setStateToInit,
         onComplete = onComplete,
-        wordType = SheetsHelper.WordType.USEFUL_PHRASES
+        wordType = SheetsHelper.WordType.USEFUL_PHRASES,
+        totalPairs = collectedUiState.value.remainingPairs
     )
 }
