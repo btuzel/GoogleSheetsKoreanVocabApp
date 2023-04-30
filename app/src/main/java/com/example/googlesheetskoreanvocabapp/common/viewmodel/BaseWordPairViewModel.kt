@@ -60,7 +60,9 @@ abstract class BaseWordPairViewModel(
     private fun getRandomEnglishWord(): String {
         return if (shownWords.isNotEmpty()) {
             val filteredList = wordPairs.first.filter { it !in shownWords }
-            filteredList.random()
+            val randomWord = filteredList.random()
+            shownWords.add(randomWord)
+            return randomWord
         } else {
             val randomWord = wordPairs.first.random()
             shownWords.add(randomWord)
