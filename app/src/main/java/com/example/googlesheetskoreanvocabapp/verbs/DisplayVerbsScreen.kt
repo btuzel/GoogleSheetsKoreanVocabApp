@@ -11,12 +11,12 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
 @Composable
 fun DisplayVerbsScreen(getVerbsViewModel: VerbsViewModel = hiltViewModel()) {
-    val allVerbs by getVerbsViewModel.displayAllVerbsUiState.collectAsState()
+    val allVerbs by getVerbsViewModel.displayAllPairsUiState.collectAsState()
     when (val value = allVerbs) {
         is DisplayState.AllPairs -> ShowPairComposable(
             value.allPairs,
-            SheetsHelper.WordType.POSITIONS,
-            getVerbsViewModel::deleteVerbsFromColumn
+            SheetsHelper.WordType.VERBS,
+            getVerbsViewModel::deleteWordPair
         )
         DisplayState.Loading -> LoadingState()
     }

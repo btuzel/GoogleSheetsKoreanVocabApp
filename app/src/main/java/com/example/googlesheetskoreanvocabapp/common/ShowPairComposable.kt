@@ -60,7 +60,7 @@ fun ShowPairComposable(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Total number of ${wordType.name} is ${filteredSecondList.size}",
+                text = "Total number of ${wordType.name} is ${pairList.first.size}",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.h3
             )

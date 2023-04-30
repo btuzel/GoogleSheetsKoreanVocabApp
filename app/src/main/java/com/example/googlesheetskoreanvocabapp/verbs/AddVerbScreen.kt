@@ -8,8 +8,8 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun AddVerbScreen(verbsViewModel: VerbsViewModel = hiltViewModel()) {
     AddPairComposable(
-        addWord = verbsViewModel::addVerbToColumn,
-        deleteWord = verbsViewModel::deleteVerbsFromColumn,
+        addWord = verbsViewModel::addWordPair,
+        deleteWord = verbsViewModel::deleteWordPair,
         wordType = SheetsHelper.WordType.VERBS
     )
 }

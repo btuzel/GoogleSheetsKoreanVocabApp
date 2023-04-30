@@ -8,17 +8,17 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
 @Composable
 fun AdverbsScreen(
-    verbsViewModel: AdverbsViewModel = hiltViewModel(),
+    adverbsViewModel: AdverbsViewModel = hiltViewModel(),
     onComplete: () -> Unit,
 ) {
-    val collectedUiState = verbsViewModel.uiState.collectAsState()
+    val collectedUiState = adverbsViewModel.uiState.collectAsState()
     TestPairComposable(
         englishText = collectedUiState.value.englishWord,
         answerCorrectText = collectedUiState.value.wasAnswerCorrect,
         koreanTranslation = collectedUiState.value.defaultWord,
-        koreanTranslationChanged = verbsViewModel::koreanWordChanged,
-        checkAnswer = verbsViewModel::checkAnswer,
-        setStateToInit = verbsViewModel::setStateToInit,
+        koreanTranslationChanged = adverbsViewModel::koreanWordChanged,
+        checkAnswer = adverbsViewModel::checkAnswer,
+        setStateToInit = adverbsViewModel::setStateToInit,
         onComplete = onComplete,
         wordType = SheetsHelper.WordType.ADVERBS
     )

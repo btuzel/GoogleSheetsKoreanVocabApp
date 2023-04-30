@@ -8,8 +8,8 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun AddComplexSentencesScreen(complexSentencesViewModel: GetComplexSentencesViewModel = hiltViewModel()) {
     AddPairComposable(
-        addWord = complexSentencesViewModel::addComplexSentencesToColumn,
-        deleteWord = complexSentencesViewModel::deleteComplexSentencesFromColumn,
+        addWord = complexSentencesViewModel::addWordPair,
+        deleteWord = complexSentencesViewModel::deleteWordPair,
         wordType = SheetsHelper.WordType.COMPLEX_SENTENCES,
     )
 }
