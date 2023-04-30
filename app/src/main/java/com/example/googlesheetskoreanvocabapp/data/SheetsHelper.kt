@@ -8,7 +8,7 @@ import com.example.googlesheetskoreanvocabapp.db.Positions
 import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import com.example.googlesheetskoreanvocabapp.db.Verbs
-import com.example.googlesheetskoreanvocabapp.fixStrings
+import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport

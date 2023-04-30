@@ -1,4 +1,4 @@
-package com.example.googlesheetskoreanvocabapp
+package com.example.googlesheetskoreanvocabapp.common
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

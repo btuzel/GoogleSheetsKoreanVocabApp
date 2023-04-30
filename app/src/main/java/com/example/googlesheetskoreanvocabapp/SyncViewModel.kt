@@ -2,6 +2,8 @@ package com.example.googlesheetskoreanvocabapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.common.fixStrings
+import com.example.googlesheetskoreanvocabapp.common.isOnline
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

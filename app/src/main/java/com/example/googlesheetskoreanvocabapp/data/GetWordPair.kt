@@ -1,8 +1,8 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
-import com.example.googlesheetskoreanvocabapp.fixStrings
-import com.example.googlesheetskoreanvocabapp.isOnline
+import com.example.googlesheetskoreanvocabapp.common.fixStrings
+import com.example.googlesheetskoreanvocabapp.common.isOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

@@ -7,7 +7,7 @@ import com.example.googlesheetskoreanvocabapp.db.Positions
 import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import com.example.googlesheetskoreanvocabapp.db.Verbs
-import com.example.googlesheetskoreanvocabapp.isOnline
+import com.example.googlesheetskoreanvocabapp.common.isOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
