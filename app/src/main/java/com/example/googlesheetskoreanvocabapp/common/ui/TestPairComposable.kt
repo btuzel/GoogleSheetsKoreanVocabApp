@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.googlesheetskoreanvocabapp.common.state.AnswerState
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
 import com.example.googlesheetskoreanvocabapp.ui.theme.bodyMedium

@@ -1,4 +1,4 @@
-package com.example.googlesheetskoreanvocabapp.common
+package com.example.googlesheetskoreanvocabapp.common.state
 
 sealed class AnswerState {
     data class WrongAnswer(val correctAnswer: String, val answer: Answer = Answer.INCORRECT) :

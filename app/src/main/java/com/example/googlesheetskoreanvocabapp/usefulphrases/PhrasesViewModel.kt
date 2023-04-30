@@ -1,6 +1,6 @@
 package com.example.googlesheetskoreanvocabapp.usefulphrases
 
-import com.example.googlesheetskoreanvocabapp.common.BaseWordPairViewModel
+import com.example.googlesheetskoreanvocabapp.common.viewmodel.BaseWordPairViewModel
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair

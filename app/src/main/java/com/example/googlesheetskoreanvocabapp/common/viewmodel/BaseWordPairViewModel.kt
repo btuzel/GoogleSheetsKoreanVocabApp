@@ -1,7 +1,10 @@
-package com.example.googlesheetskoreanvocabapp.common
+package com.example.googlesheetskoreanvocabapp.common.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.common.state.AnswerState
+import com.example.googlesheetskoreanvocabapp.common.state.DisplayState
+import com.example.googlesheetskoreanvocabapp.common.state.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
@@ -9,15 +12,6 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-interface WordPairViewModel {
-    val wordType: SheetsHelper.WordType
-    val wordPairs: Pair<List<String>, List<String>>
-    val displayAllPairsUiState: StateFlow<DisplayState>
-    val uiState: StateFlow<GetWords>
-    fun addWordPair(englishWord: String, koreanWord: String)
-    fun deleteWordPair(englishWord: String, koreanWord: String)
-}
 
 abstract class BaseWordPairViewModel(
     private val getWordPair: GetWordPair,
