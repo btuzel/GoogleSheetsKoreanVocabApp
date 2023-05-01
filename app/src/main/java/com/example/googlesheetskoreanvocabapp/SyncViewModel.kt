@@ -5,7 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.common.isOnline
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
+import com.example.googlesheetskoreanvocabapp.db.Adverbs
+import com.example.googlesheetskoreanvocabapp.db.Nouns
+import com.example.googlesheetskoreanvocabapp.db.Phrases
+import com.example.googlesheetskoreanvocabapp.db.Positions
+import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
+import com.example.googlesheetskoreanvocabapp.db.Verbs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -55,10 +61,49 @@ class SyncViewModel @Inject constructor(
             val differencesInKorWords =
                 dbWords.second.subtract(sheetsKorWords.toSet()).toList()
             differencesInEngWords.forEachIndexed { index, englishWord ->
-                sheetsHelper.addData(
-                    wordType,
-                    Pair(englishWord, differencesInKorWords[index])
-                )
+                when (wordType) {
+                    SheetsHelper.WordType.VERBS -> verbRepository.deleteVerb(
+                        Verbs(
+                            englishWord = englishWord,
+                            koreanWord = differencesInKorWords[index]
+                        )
+                    )
+
+                    SheetsHelper.WordType.ADVERBS -> verbRepository.deleteAdverbs(
+                        Adverbs(
+                            englishWord = englishWord,
+                            koreanWord = differencesInKorWords[index]
+                        )
+                    )
+
+                    SheetsHelper.WordType.COMPLEX_SENTENCES -> verbRepository.deleteSentence(
+                        Sentences(
+                            englishWord = englishWord,
+                            koreanWord = differencesInKorWords[index]
+                        )
+                    )
+
+                    SheetsHelper.WordType.USEFUL_PHRASES -> verbRepository.deletePhrases(
+                        Phrases(
+                            englishWord = englishWord,
+                            koreanWord = differencesInKorWords[index]
+                        )
+                    )
+
+                    SheetsHelper.WordType.NOUNS -> verbRepository.deleteNouns(
+                        Nouns(
+                            englishWord = englishWord,
+                            koreanWord = differencesInKorWords[index]
+                        )
+                    )
+
+                    SheetsHelper.WordType.POSITIONS -> verbRepository.deletePositions(
+                        Positions(
+                            englishWord = englishWord,
+                            koreanWord = differencesInKorWords[index]
+                        )
+                    )
+                }
             }
         }
     }
