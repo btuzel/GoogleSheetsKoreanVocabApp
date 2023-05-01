@@ -1,11 +1,14 @@
 package com.example.googlesheetskoreanvocabapp.nouns
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.googlesheetskoreanvocabapp.common.TestPairComposable
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NounsScreen(
     nounsViewModel: NounsViewModel = hiltViewModel(),
@@ -21,7 +24,8 @@ fun NounsScreen(
         setStateToInit = nounsViewModel::setStateToInit,
         onComplete = onComplete,
         wordType = SheetsHelper.WordType.NOUNS,
-        totalPairs = collectedUiState.value.remainingPairs
+        totalPairs = collectedUiState.value.remainingPairs,
+        saveResult = nounsViewModel::saveResult
     )
 }
 

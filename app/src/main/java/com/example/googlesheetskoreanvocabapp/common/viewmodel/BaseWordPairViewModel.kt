@@ -1,5 +1,7 @@
 package com.example.googlesheetskoreanvocabapp.common.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.state.AnswerState
@@ -8,15 +10,19 @@ import com.example.googlesheetskoreanvocabapp.common.state.GetWords
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
+import com.example.googlesheetskoreanvocabapp.data.SaveResult
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 abstract class BaseWordPairViewModel(
     private val getWordPair: GetWordPair,
     private val deleteWordPair: DeleteWordPair,
     private val addWordPair: AddWordPair,
+    private val saveResultUseCase: SaveResult,
     override val wordType: SheetsHelper.WordType
 ) : ViewModel(), WordPairViewModel {
     private lateinit var _wordPairs: Pair<List<String>, List<String>>
@@ -47,6 +53,8 @@ abstract class BaseWordPairViewModel(
     override fun deleteWordPair(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
             deleteWordPair(englishWord, koreanWord, wordType)
+            _wordPairs = getWordPair(wordType)
+            _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
         }
     }
 
@@ -56,6 +64,18 @@ abstract class BaseWordPairViewModel(
 
     fun setStateToInit() {
         _uiState.value = _uiState.value.copy(wasAnswerCorrect = AnswerState.Init)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun saveResult(wrongAnswerCount: String) {
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formattedDateTime = currentDateTime.format(formatter)
+        val data = mutableSetOf<String>()
+        viewModelScope.launch {
+            data.add(wrongAnswerCount.first().toString() + "%" + wrongAnswerCount.substring(1) + "%" + formattedDateTime)
+            saveResultUseCase(data)
+        }
     }
 
     private fun getRandomEnglishWord(): String {
@@ -72,7 +92,12 @@ abstract class BaseWordPairViewModel(
     }
 
     private fun sendRandomEnglishWord(wasAnswerCorrect: AnswerState) {
-        _uiState.value = GetWords(getRandomEnglishWord(), "", wasAnswerCorrect, wordPairs.first.filter { it !in shownWords }.size)
+        _uiState.value = GetWords(
+            getRandomEnglishWord(),
+            "",
+            wasAnswerCorrect,
+            wordPairs.first.filter { it !in shownWords }.size + 1
+        )
     }
 
     init {

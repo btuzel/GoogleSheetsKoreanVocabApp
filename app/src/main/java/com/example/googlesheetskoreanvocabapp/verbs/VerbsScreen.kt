@@ -1,11 +1,14 @@
 package com.example.googlesheetskoreanvocabapp.verbs
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.googlesheetskoreanvocabapp.common.TestPairComposable
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VerbsScreen(verbsViewModel: VerbsViewModel = hiltViewModel(), onComplete: () -> Unit) {
     val collectedUiState = verbsViewModel.uiState.collectAsState()
@@ -18,6 +21,7 @@ fun VerbsScreen(verbsViewModel: VerbsViewModel = hiltViewModel(), onComplete: ()
         setStateToInit = verbsViewModel::setStateToInit,
         onComplete = { onComplete() },
         wordType = SheetsHelper.WordType.VERBS,
-        totalPairs = collectedUiState.value.remainingPairs
+        totalPairs = collectedUiState.value.remainingPairs,
+        saveResult = verbsViewModel::saveResult
     )
 }

@@ -1,11 +1,14 @@
 package com.example.googlesheetskoreanvocabapp.complexsentences
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.googlesheetskoreanvocabapp.common.TestPairComposable
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ComplexSentencesScreen(
     getComplexSentencesViewModel: GetComplexSentencesViewModel = hiltViewModel(),
@@ -21,7 +24,8 @@ fun ComplexSentencesScreen(
         setStateToInit = getComplexSentencesViewModel::setStateToInit,
         onComplete = onComplete,
         wordType = SheetsHelper.WordType.COMPLEX_SENTENCES,
-        totalPairs = collectedUiState.value.remainingPairs
+        totalPairs = collectedUiState.value.remainingPairs,
+        saveResult = getComplexSentencesViewModel::saveResult
     )
 }
 

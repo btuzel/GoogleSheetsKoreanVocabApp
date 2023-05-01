@@ -4,6 +4,7 @@ import com.example.googlesheetskoreanvocabapp.common.viewmodel.BaseWordPairViewM
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
+import com.example.googlesheetskoreanvocabapp.data.SaveResult
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -13,4 +14,5 @@ class AdverbsViewModel @Inject constructor(
     getWordPair: GetWordPair,
     addWordPair: AddWordPair,
     deleteWordPair: DeleteWordPair,
-) : BaseWordPairViewModel(getWordPair, deleteWordPair, addWordPair, SheetsHelper.WordType.ADVERBS)
+    saveResult: SaveResult
+) : BaseWordPairViewModel(getWordPair, deleteWordPair, addWordPair, saveResult, SheetsHelper.WordType.ADVERBS)

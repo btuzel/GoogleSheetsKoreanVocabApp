@@ -45,7 +45,8 @@ fun TestPairComposable(
     setStateToInit: () -> Unit,
     onComplete: () -> Unit,
     wordType: SheetsHelper.WordType,
-    totalPairs: Int
+    totalPairs: Int,
+    saveResult: (String) -> Unit
 ) {
     val correctAnswerCount = remember {
         mutableStateOf(0)
@@ -144,6 +145,7 @@ fun TestPairComposable(
                             Toast.LENGTH_LONG
                         ).show()
                     }
+                    saveResult(wrongAnswerCount.value.toString() + wordType.name)
                     onComplete()
                 }
         }

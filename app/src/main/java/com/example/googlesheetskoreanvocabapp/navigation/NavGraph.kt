@@ -1,10 +1,13 @@
 package com.example.googlesheetskoreanvocabapp.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.googlesheetskoreanvocabapp.MainScreen
+import com.example.googlesheetskoreanvocabapp.ResultsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AddAdverbsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AdverbsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.DisplayAdverbsScreen
@@ -24,6 +27,7 @@ import com.example.googlesheetskoreanvocabapp.verbs.AddVerbScreen
 import com.example.googlesheetskoreanvocabapp.verbs.DisplayVerbsScreen
 import com.example.googlesheetskoreanvocabapp.verbs.VerbsScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(
     navHostController: NavHostController,
@@ -85,6 +89,9 @@ fun NavGraph(
         }
         composable(route = ScreenDestination.DisplayComplexSentencesScreen.route) {
             DisplaySentencesScreen()
+        }
+        composable(route = ScreenDestination.ResultsScreen.route) {
+            ResultsScreen()
         }
         composable(route = ScreenDestination.MainScreen.route) {
             MainScreen(navHostController)

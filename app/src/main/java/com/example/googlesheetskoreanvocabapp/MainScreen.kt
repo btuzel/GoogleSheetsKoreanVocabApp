@@ -60,11 +60,11 @@ fun MainScreen(
         ),
     )
 
-    WordManagementScreen(buttonGroups)
+    WordManagementScreen(buttonGroups) { navHostController.navigate(ScreenDestination.ResultsScreen.route) }
 }
 
 @Composable
-fun WordManagementScreen(buttonGroups: WordManagementButtonGroups) {
+fun WordManagementScreen(buttonGroups: WordManagementButtonGroups, goToResults: () -> Unit) {
     val categories = listOf(
         "Noun",
         "Adverb",
@@ -116,6 +116,9 @@ fun WordManagementScreen(buttonGroups: WordManagementButtonGroups) {
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
+            }
+            Button(onClick = goToResults) {
+                Text(text = "Go to Results", style = MaterialTheme.typography.h4)
             }
         }
     }

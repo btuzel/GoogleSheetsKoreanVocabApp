@@ -1,11 +1,14 @@
 package com.example.googlesheetskoreanvocabapp.adverbs
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.googlesheetskoreanvocabapp.common.TestPairComposable
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdverbsScreen(
     adverbsViewModel: AdverbsViewModel = hiltViewModel(),
@@ -21,6 +24,7 @@ fun AdverbsScreen(
         setStateToInit = adverbsViewModel::setStateToInit,
         onComplete = onComplete,
         wordType = SheetsHelper.WordType.ADVERBS,
-        totalPairs = collectedUiState.value.remainingPairs
+        totalPairs = collectedUiState.value.remainingPairs,
+        saveResult = adverbsViewModel::saveResult
     )
 }

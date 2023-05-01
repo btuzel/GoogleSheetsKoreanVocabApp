@@ -65,6 +65,7 @@ dependencies {
     implementation 'com.google.auth:google-auth-library-oauth2-http:0.26.0'
     implementation "me.saket.swipe:swipe:1.1.1"
     implementation 'com.airbnb.android:lottie-compose:4.2.0'
+    implementation "androidx.security:security-crypto:1.0.0"
 
 
     testImplementation 'junit:junit:4.13.2'

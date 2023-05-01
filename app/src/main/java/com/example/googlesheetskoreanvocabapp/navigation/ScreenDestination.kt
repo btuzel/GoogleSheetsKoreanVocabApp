@@ -57,4 +57,7 @@ sealed class ScreenDestination(val route: String) {
 
     object DisplayComplexSentencesScreen :
         ScreenDestination(route = "Display_complexsentences")
+
+    object ResultsScreen :
+        ScreenDestination(route = "results")
 }
