@@ -140,7 +140,7 @@ fun TestPairComposable(
                     scope.launch {
                         Toast.makeText(
                             context,
-                            "${correctAnswerCount.value} correct and ${wrongAnswerCount.value} incorrect answers.",
+                            "${wrongAnswerCount.value} incorrect answers.",
                             Toast.LENGTH_LONG
                         ).show()
                     }
