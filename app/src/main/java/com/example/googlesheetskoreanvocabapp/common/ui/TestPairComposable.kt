@@ -54,6 +54,9 @@ fun TestPairComposable(
     val wrongAnswerCount = remember {
         mutableStateOf(0)
     }
+    val attempt = remember {
+        mutableStateOf("")
+    }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     Column(
@@ -94,7 +97,8 @@ fun TestPairComposable(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "${wordType.name} remaining: $totalPairs", modifier = Modifier.padding(vertical = 16.dp),
+            text = "${wordType.name} remaining: $totalPairs",
+            modifier = Modifier.padding(vertical = 16.dp),
             style = MaterialTheme.typography.body1,
             fontSize = 31.sp,
             fontWeight = FontWeight.Bold
@@ -124,11 +128,21 @@ fun TestPairComposable(
             }
 
             is AnswerState.WrongAnswer -> {
-                Text(
-                    text = "Incorrect answer, the right answer is ${answerCorrectText.correctAnswer}",
-                    fontWeight = FontWeight.Bold,
-                    color = ErrorRed
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Incorrect answer, the right answer is ${answerCorrectText.correctAnswer}",
+                        fontWeight = FontWeight.Bold,
+                        color = ErrorRed
+                    )
+                    Text(
+                        text = "Your answer was ${attempt.value}",
+                        fontWeight = FontWeight.Bold,
+                        color = ErrorRed
+                    )
+                }
                 LaunchedEffect(answerCorrectText) {
                     wrongAnswerCount.value++
                     delay(8000L)
@@ -157,6 +171,9 @@ fun TestPairComposable(
                 .width(200.dp)
                 .padding(bottom = 32.dp)
         )
-        AppButton(onClick = { checkAnswer(englishText, koreanTranslation) }, text = "Submit")
+        AppButton(onClick = {
+            checkAnswer(englishText, koreanTranslation)
+            attempt.value = koreanTranslation
+        }, text = "Submit")
     }
 }
