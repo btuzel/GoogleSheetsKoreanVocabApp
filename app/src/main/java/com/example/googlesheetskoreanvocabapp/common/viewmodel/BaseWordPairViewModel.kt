@@ -15,9 +15,11 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 abstract class BaseWordPairViewModel(
     private val getWordPair: GetWordPair,
     private val deleteWordPair: DeleteWordPair,
@@ -41,6 +43,8 @@ abstract class BaseWordPairViewModel(
     override val uiState: StateFlow<GetWords> = _uiState
 
     private val shownWords = mutableSetOf<String>()
+
+    private lateinit var startTime : LocalDateTime
 
     override fun addWordPair(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
@@ -66,14 +70,19 @@ abstract class BaseWordPairViewModel(
         _uiState.value = _uiState.value.copy(wasAnswerCorrect = AnswerState.Init)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     fun saveResult(wrongAnswerCount: String) {
-        val currentDateTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val formattedDateTime = currentDateTime.format(formatter)
+        val now = LocalDateTime.now()
+        val formattedDateTime =
+            now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val durationMin = Duration.between(startTime, now).toMinutes()
+        val durationSec = Duration.between(startTime, now).toSeconds() % 60
         val data = mutableSetOf<String>()
         viewModelScope.launch {
-            data.add(wrongAnswerCount.first().toString() + "%" + wrongAnswerCount.substring(1) + "%" + formattedDateTime)
+            data.add(
+                wrongAnswerCount.first()
+                    .toString() + "%" + wrongAnswerCount.substring(1) + "%" + formattedDateTime + "%" + durationMin.toString() +  "%" + durationSec.toString()
+            )
             saveResultUseCase(data)
         }
     }
@@ -105,6 +114,7 @@ abstract class BaseWordPairViewModel(
             _wordPairs = getWordPair(wordType)
             _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
             sendRandomEnglishWord(AnswerState.Init)
+            startTime = LocalDateTime.now()
         }
     }
 

@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.googlesheetskoreanvocabapp.MainScreen
-import com.example.googlesheetskoreanvocabapp.ResultsScreen
+import com.example.googlesheetskoreanvocabapp.results.ResultsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AddAdverbsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AdverbsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.DisplayAdverbsScreen

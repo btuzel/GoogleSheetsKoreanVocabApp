@@ -2,9 +2,8 @@ package com.example.googlesheetskoreanvocabapp.di
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.example.googlesheetskoreanvocabapp.db.VerbDao
 import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import dagger.Module
@@ -14,7 +13,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -36,24 +34,9 @@ object VerbDaoModule {
     }
 
     @Provides
-    @Named("masterKey")
-    internal fun provideMasterKey(): String {
-        return MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-    }
-
-    @Provides
     @Singleton
-    internal fun provideEncryptedSharedPreferences(
-        @ApplicationContext context: Context,
-        @Named("masterKey") masterKey: String
-    ): EncryptedSharedPreferences {
-        return EncryptedSharedPreferences.create(
-            "settings_shared_prefs",
-            masterKey,
-            context,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        ) as EncryptedSharedPreferences
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("MySharedPreferences", Context.MODE_PRIVATE)
     }
 
     @Provides

@@ -60,11 +60,11 @@ fun MainScreen(
         ),
     )
 
-    WordManagementScreen(buttonGroups) { navHostController.navigate(ScreenDestination.ResultsScreen.route) }
+    WordManagementScreen(buttonGroups = buttonGroups, goToResults =  {navHostController.navigate(ScreenDestination.ResultsScreen.route)}, clearSharedPref = syncViewModel::clearSharedPref )
 }
 
 @Composable
-fun WordManagementScreen(buttonGroups: WordManagementButtonGroups, goToResults: () -> Unit) {
+fun WordManagementScreen(buttonGroups: WordManagementButtonGroups, goToResults: () -> Unit, clearSharedPref: () -> Unit) {
     val categories = listOf(
         "Noun",
         "Adverb",
@@ -119,6 +119,9 @@ fun WordManagementScreen(buttonGroups: WordManagementButtonGroups, goToResults: 
             }
             Button(onClick = goToResults) {
                 Text(text = "Go to Results", style = MaterialTheme.typography.h4)
+            }
+            Button(onClick = clearSharedPref) {
+                Text(text = "Clear Shared Preferences", style = MaterialTheme.typography.h4)
             }
         }
     }

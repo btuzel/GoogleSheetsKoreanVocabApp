@@ -1,4 +1,4 @@
-package com.example.googlesheetskoreanvocabapp
+package com.example.googlesheetskoreanvocabapp.results
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.googlesheetskoreanvocabapp.results.ResultsViewModel
 import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
 
 @Composable
@@ -41,11 +40,15 @@ fun ResultsScreen(resultsViewModel: ResultsViewModel = hiltViewModel()) {
                     .padding(vertical = 32.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                MistakesText(text = parts[0])
+                InfoText(type = InfoType.MISTAKES, text = parts[0])
                 Spacer(modifier = Modifier.width(8.dp))
-                WordTypeText(text = parts[1])
+                InfoText(type = InfoType.WORD_TYPE,text = parts[1])
                 Spacer(modifier = Modifier.width(8.dp))
-                DateText(text = parts[2])
+                InfoText(type = InfoType.DATE,text = parts[2])
+                Spacer(modifier = Modifier.width(8.dp))
+                InfoText(type = InfoType.MINUTES,text = parts[3])
+                Spacer(modifier = Modifier.width(8.dp))
+                InfoText(type = InfoType.SECONDS,text = parts[4])
             }
         }
     }
@@ -56,12 +59,12 @@ fun splitString(str: String): List<String> {
 }
 
 @Composable
-fun MistakesText(text: String) {
-    val mistakesText = buildAnnotatedString {
+fun InfoText(type: InfoType, text: String) {
+    val infoText = buildAnnotatedString {
         withStyle(
             style = SpanStyle(color = Color.White)
         ) {
-            append("Mistakes: ")
+            append("${type.displayName}: ")
         }
         withStyle(
             style = SpanStyle(color = ErrorRed, fontWeight = FontWeight.Bold)
@@ -69,39 +72,13 @@ fun MistakesText(text: String) {
             append(text)
         }
     }
-    Text(text = mistakesText)
+    Text(text = infoText)
 }
 
-@Composable
-fun WordTypeText(text: String) {
-    val wordTypeText = buildAnnotatedString {
-        withStyle(
-            style = SpanStyle(color = Color.White)
-        ) {
-            append("WordType: ")
-        }
-        withStyle(
-            style = SpanStyle(color = ErrorRed, fontWeight = FontWeight.Bold)
-        ) {
-            append(text)
-        }
-    }
-    Text(text = wordTypeText)
-}
-
-@Composable
-fun DateText(text: String) {
-    val dateText = buildAnnotatedString {
-        withStyle(
-            style = SpanStyle(color = Color.White)
-        ) {
-            append("Date: ")
-        }
-        withStyle(
-            style = SpanStyle(color = ErrorRed, fontWeight = FontWeight.Bold)
-        ) {
-            append(text)
-        }
-    }
-    Text(text = dateText)
+enum class InfoType(val displayName: String) {
+    MISTAKES("Mistakes"),
+    WORD_TYPE("WordType"),
+    DATE("Date"),
+    MINUTES("Minutes"),
+    SECONDS("Seconds")
 }

@@ -1,5 +1,6 @@
 package com.example.googlesheetskoreanvocabapp
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
@@ -19,13 +20,20 @@ import javax.inject.Inject
 @HiltViewModel
 class SyncViewModel @Inject constructor(
     private val verbRepository: VerbRepository,
-    private val sheetsHelper: SheetsHelper
+    private val sheetsHelper: SheetsHelper,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     init {
         viewModelScope.launch {
             syncAllData()
         }
+    }
+
+    fun clearSharedPref() {
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
     }
 
     private suspend fun syncAllData() {
