@@ -27,7 +27,7 @@ import com.example.googlesheetskoreanvocabapp.verbs.AddVerbScreen
 import com.example.googlesheetskoreanvocabapp.verbs.DisplayVerbsScreen
 import com.example.googlesheetskoreanvocabapp.verbs.VerbsScreen
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun NavGraph(
     navHostController: NavHostController,
@@ -100,9 +100,5 @@ fun NavGraph(
 }
 
 fun navigateToMainScreen(navHostController: NavHostController) {
-    navHostController.navigate(ScreenDestination.MainScreen.route) {
-        popUpTo(ScreenDestination.MainScreen.route) {
-            inclusive = true
-        }
-    }
+    navHostController.popBackStack()
 }

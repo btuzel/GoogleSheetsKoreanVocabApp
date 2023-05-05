@@ -12,8 +12,9 @@ class SaveResult @Inject constructor(
 
     suspend operator fun invoke(resultData: Set<String>) =
         withContext(coroutineDispatcher) {
-            val existingData = sharedPreferences.getStringSet("results", setOf()) ?: setOf()
-            val newData = existingData.toMutableSet().apply { addAll(resultData) }
-            sharedPreferences.edit().putStringSet("results", newData).apply()
+            sharedPreferences.edit().putStringSet(
+                "results",
+                (sharedPreferences.getStringSet("results", setOf()) ?: setOf()).toMutableSet()
+                    .apply<MutableSet<String>> { addAll(resultData) }).apply()
         }
 }

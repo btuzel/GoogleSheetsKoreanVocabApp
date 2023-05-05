@@ -8,7 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.googlesheetskoreanvocabapp.common.TestPairComposable
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AdverbsScreen(
     adverbsViewModel: AdverbsViewModel = hiltViewModel(),

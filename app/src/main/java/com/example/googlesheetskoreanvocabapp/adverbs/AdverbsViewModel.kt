@@ -15,4 +15,10 @@ class AdverbsViewModel @Inject constructor(
     addWordPair: AddWordPair,
     deleteWordPair: DeleteWordPair,
     saveResult: SaveResult
-) : BaseWordPairViewModel(getWordPair, deleteWordPair, addWordPair, saveResult, SheetsHelper.WordType.ADVERBS)
+) : BaseWordPairViewModel(
+    getWordPair,
+    deleteWordPair,
+    addWordPair,
+    saveResult,
+    SheetsHelper.WordType.ADVERBS
+)
