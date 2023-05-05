@@ -5,8 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.googlesheetskoreanvocabapp.common.state.DisplayState
-import com.example.googlesheetskoreanvocabapp.common.LoadingState
-import com.example.googlesheetskoreanvocabapp.common.ShowPairComposable
+import com.example.googlesheetskoreanvocabapp.common.ui.LoadingState
+import com.example.googlesheetskoreanvocabapp.common.ui.ShowPairComposable
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
 @Composable
@@ -18,6 +18,6 @@ fun DisplayVerbsScreen(getVerbsViewModel: VerbsViewModel = hiltViewModel()) {
             SheetsHelper.WordType.VERBS,
             getVerbsViewModel::deleteWordPair
         )
-        DisplayState.Loading -> LoadingState()
+        DisplayState.Loading -> LoadingState(wordType = SheetsHelper.WordType.VERBS)
     }
 }

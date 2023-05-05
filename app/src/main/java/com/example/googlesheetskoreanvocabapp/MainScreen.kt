@@ -3,8 +3,10 @@ package com.example.googlesheetskoreanvocabapp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +16,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +28,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.googlesheetskoreanvocabapp.common.ui.LoadingState
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 
 @Composable
@@ -32,7 +36,7 @@ fun MainScreen(
     navHostController: NavHostController,
     syncViewModel: SyncViewModel = hiltViewModel()
 ) {
-
+    val uiState by syncViewModel.uiState.collectAsState()
     val buttonGroups = WordManagementButtonGroups(
         addButtonGroup = mapOf(
             "Noun" to { navHostController.navigate(ScreenDestination.AddNounsScreen.route) },
@@ -60,11 +64,21 @@ fun MainScreen(
         ),
     )
 
-    WordManagementScreen(buttonGroups = buttonGroups, goToResults =  {navHostController.navigate(ScreenDestination.ResultsScreen.route)}, clearSharedPref = syncViewModel::clearSharedPref )
+    WordManagementScreen(
+        uiState = uiState,
+        buttonGroups = buttonGroups,
+        goToResults = { navHostController.navigate(ScreenDestination.ResultsScreen.route) },
+        clearSharedPref = syncViewModel::clearSharedPref
+    )
 }
 
 @Composable
-fun WordManagementScreen(buttonGroups: WordManagementButtonGroups, goToResults: () -> Unit, clearSharedPref: () -> Unit) {
+fun WordManagementScreen(
+    buttonGroups: WordManagementButtonGroups,
+    goToResults: () -> Unit,
+    clearSharedPref: () -> Unit,
+    uiState: SyncViewModel.SyncState
+) {
     val categories = listOf(
         "Noun",
         "Adverb",
@@ -74,56 +88,62 @@ fun WordManagementScreen(buttonGroups: WordManagementButtonGroups, goToResults: 
         "Complex Sentences"
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        RaindropAnimation()
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(
+    when (uiState) {
+        SyncViewModel.SyncState.Done -> Column(
+            modifier = Modifier
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
-            categories.forEach { category ->
-                buttonGroups.displayButtonGroup[category]?.let { displayButton ->
-                    Text(text = "Display $category", style = MaterialTheme.typography.h4)
-                    Button(onClick = displayButton) {
-                        Text("Display $category")
+            Spacer(modifier = Modifier.height(16.dp))
+            RaindropAnimation()
+            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                categories.forEach { category ->
+                    buttonGroups.displayButtonGroup[category]?.let { displayButton ->
+                        Text(text = "Display $category", style = MaterialTheme.typography.h4)
+                        Button(onClick = displayButton) {
+                            Text("Display $category")
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
-            }
-            categories.forEach { category ->
-                buttonGroups.testButtonGroup[category]?.let { testButton ->
-                    Text(text = "Test $category", style = MaterialTheme.typography.h4)
-                    Button(onClick = testButton) {
-                        Text("Test $category")
+                categories.forEach { category ->
+                    buttonGroups.testButtonGroup[category]?.let { testButton ->
+                        Text(text = "Test $category", style = MaterialTheme.typography.h4)
+                        Button(onClick = testButton) {
+                            Text("Test $category")
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
-            }
-            categories.forEach { category ->
-                buttonGroups.addButtonGroup[category]?.let { addButton ->
-                    Text(text = "Add $category", style = MaterialTheme.typography.h4)
-                    Button(onClick = addButton) {
-                        Text("Add $category")
+                categories.forEach { category ->
+                    buttonGroups.addButtonGroup[category]?.let { addButton ->
+                        Text(text = "Add $category", style = MaterialTheme.typography.h4)
+                        Button(onClick = addButton) {
+                            Text("Add $category")
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
-            }
-            Button(onClick = goToResults) {
-                Text(text = "Go to Results", style = MaterialTheme.typography.h4)
-            }
-            Button(onClick = clearSharedPref) {
-                Text(text = "Clear Shared Preferences", style = MaterialTheme.typography.h4)
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                    Button(onClick = goToResults) {
+                        Text(text = "Go to Results", style = MaterialTheme.typography.h4)
+                    }
+                    Button(onClick = clearSharedPref) {
+                        Text(text = "Clear Shared Preferences", style = MaterialTheme.typography.h4)
+                    }
+                }
             }
         }
+        SyncViewModel.SyncState.Init -> {}
+        is SyncViewModel.SyncState.Loading -> LoadingState(wordType = uiState.wordType)
     }
 }
 

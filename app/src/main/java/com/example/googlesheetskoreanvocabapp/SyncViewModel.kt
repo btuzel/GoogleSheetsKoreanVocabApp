@@ -14,6 +14,8 @@ import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import com.example.googlesheetskoreanvocabapp.db.Verbs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +26,10 @@ class SyncViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
+    private val _uiState: MutableStateFlow<SyncState> = MutableStateFlow(
+        SyncState.Init
+    )
+    val uiState: StateFlow<SyncState> = _uiState
     init {
         viewModelScope.launch {
             syncAllData()
@@ -39,13 +45,22 @@ class SyncViewModel @Inject constructor(
     private suspend fun syncAllData() {
         if (isOnline()) {
             viewModelScope.launch {
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.VERBS)
                 syncWords(SheetsHelper.WordType.VERBS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.NOUNS)
                 syncWords(SheetsHelper.WordType.NOUNS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.ADVERBS)
                 syncWords(SheetsHelper.WordType.ADVERBS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.USEFUL_PHRASES)
                 syncWords(SheetsHelper.WordType.USEFUL_PHRASES)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.POSITIONS)
                 syncWords(SheetsHelper.WordType.POSITIONS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.COMPLEX_SENTENCES)
                 syncWords(SheetsHelper.WordType.COMPLEX_SENTENCES)
+                _uiState.value = SyncState.Done
             }
+        } else {
+            _uiState.value = SyncState.Done
         }
     }
 
@@ -114,5 +129,11 @@ class SyncViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    sealed class SyncState {
+        object Done : SyncState()
+        object Init : SyncState()
+        data class Loading(val wordType: SheetsHelper.WordType) : SyncState()
     }
 }

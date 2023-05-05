@@ -1,4 +1,4 @@
-package com.example.googlesheetskoreanvocabapp.common
+package com.example.googlesheetskoreanvocabapp.common.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
