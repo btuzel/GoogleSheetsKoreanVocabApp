@@ -12,11 +12,13 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun DisplayPositionsScreen(getPositionsViewModel: PositionsViewModel = hiltViewModel()) {
     val allPositions by getPositionsViewModel.displayAllPairsUiState.collectAsState()
+    val wordState = getPositionsViewModel.wordState.collectAsState()
     when (val value = allPositions) {
         is DisplayState.AllPairs -> ShowPairComposable(
-            value.allPairs,
-            SheetsHelper.WordType.POSITIONS,
-            getPositionsViewModel::deleteWordPair
+            pairList = value.allPairs,
+            wordType = SheetsHelper.WordType.POSITIONS,
+            onDelete = getPositionsViewModel::deleteWordPair,
+            wordState = wordState.value
         )
         DisplayState.Loading -> LoadingState(wordType = SheetsHelper.WordType.POSITIONS)
     }

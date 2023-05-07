@@ -12,11 +12,13 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun DisplayAdverbsScreen(adverbsViewModel: AdverbsViewModel = hiltViewModel()) {
     val allAdverbs by adverbsViewModel.displayAllPairsUiState.collectAsState()
+    val wordState = adverbsViewModel.wordState.collectAsState()
     when (val value = allAdverbs) {
         is DisplayState.AllPairs -> ShowPairComposable(
-            value.allPairs,
-            SheetsHelper.WordType.ADVERBS,
-            adverbsViewModel::deleteWordPair
+            pairList = value.allPairs,
+            wordType = SheetsHelper.WordType.ADVERBS,
+            onDelete = adverbsViewModel::deleteWordPair,
+            wordState = wordState.value
         )
         DisplayState.Loading -> LoadingState(wordType = SheetsHelper.WordType.ADVERBS)
     }

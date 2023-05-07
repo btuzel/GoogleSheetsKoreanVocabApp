@@ -1,5 +1,6 @@
 package com.example.googlesheetskoreanvocabapp.common.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,18 +21,23 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.googlesheetskoreanvocabapp.common.viewmodel.BaseWordPairViewModel
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
+import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -39,11 +45,30 @@ import me.saket.swipe.SwipeableActionsBox
 fun ShowPairComposable(
     pairList: Pair<List<String>, List<String>>,
     wordType: SheetsHelper.WordType,
-    onDelete: (String, String) -> Unit
+    onDelete: (String, String) -> Unit,
+    wordState: BaseWordPairViewModel.WordState
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var showTranslations by remember { mutableStateOf(true) }
-
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    when (wordState) {
+        is BaseWordPairViewModel.WordState.AddWordState -> {
+        }
+        is BaseWordPairViewModel.WordState.DeleteWordState -> {
+            if (wordState.added) {
+                LaunchedEffect(wordState.word) {
+                    scope.launch {
+                        Toast.makeText(
+                            context,
+                            "${wordState.word} has been succesfully deleted from sheets.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
     val filteredFirstList = pairList.first.filterIndexed { _, it ->
         it.contains(searchQuery, ignoreCase = true)
     }

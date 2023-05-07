@@ -12,11 +12,13 @@ import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 @Composable
 fun DisplayPhrasesScreen(getPhrasesViewModel: PhrasesViewModel = hiltViewModel()) {
     val allPhrases by getPhrasesViewModel.displayAllPairsUiState.collectAsState()
+    val wordState = getPhrasesViewModel.wordState.collectAsState()
     when (val value = allPhrases) {
         is DisplayState.AllPairs -> ShowPairComposable(
-            value.allPairs,
-            SheetsHelper.WordType.USEFUL_PHRASES,
-            getPhrasesViewModel::deleteWordPair
+            pairList = value.allPairs,
+            wordType = SheetsHelper.WordType.USEFUL_PHRASES,
+            onDelete = getPhrasesViewModel::deleteWordPair,
+            wordState = wordState.value
         )
         DisplayState.Loading -> LoadingState(wordType = SheetsHelper.WordType.USEFUL_PHRASES)
     }
