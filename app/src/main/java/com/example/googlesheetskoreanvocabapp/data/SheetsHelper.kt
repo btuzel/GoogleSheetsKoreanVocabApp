@@ -1,6 +1,7 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import android.content.Context
+import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.db.Adverbs
 import com.example.googlesheetskoreanvocabapp.db.Nouns
 import com.example.googlesheetskoreanvocabapp.db.Phrases
@@ -8,7 +9,6 @@ import com.example.googlesheetskoreanvocabapp.db.Positions
 import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import com.example.googlesheetskoreanvocabapp.db.Verbs
-import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -217,7 +217,7 @@ class SheetsHelper @Inject constructor(
     }
 
 
-    suspend fun addData(wordType: WordType, pairToAdd: Pair<String, String>) =
+    suspend fun addData(wordType: WordType, pairToAdd: Pair<String, String>): Boolean =
         withContext(Dispatchers.IO) {
             try {
                 val sheetTitle = service.spreadsheets().get(SPREADSHEET_ID)
@@ -241,14 +241,16 @@ class SheetsHelper @Inject constructor(
                     )
                     .setValueInputOption("USER_ENTERED")
                     .execute()
+                return@withContext true
             } catch (e: GoogleJsonResponseException) {
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        }!!
+            return@withContext false // Return false if the update was not successful
+        }
 
-    suspend fun deleteData(wordType: WordType, pairToDelete: Pair<String, String>) =
+    suspend fun deleteData(wordType: WordType, pairToDelete: Pair<String, String>) : Boolean =
         withContext(Dispatchers.IO) {
             try {
                 val sheetTitle = service.spreadsheets().get(SPREADSHEET_ID)
@@ -261,7 +263,7 @@ class SheetsHelper @Inject constructor(
                 val indexToDelete =
                     values.indexOfFirst { it[0] == pairToDelete.first && it[1] == pairToDelete.second } + 1
                 if (indexToDelete == 0) {
-                    return@withContext
+                    return@withContext false
                 }
                 val sheetId = when (wordType) {
                     WordType.VERBS -> SheetId.VERBS
@@ -276,11 +278,13 @@ class SheetsHelper @Inject constructor(
                     .clear(SPREADSHEET_ID, rangeToDelete, ClearValuesRequest())
                     .execute()
                 deleteDataWithIndex(indexToDelete, sheetId.sheetId)
+                return@withContext true
             } catch (e: GoogleJsonResponseException) {
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+            return@withContext false
         }
 
 

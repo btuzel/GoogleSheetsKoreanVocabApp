@@ -1,4 +1,4 @@
-package com.example.googlesheetskoreanvocabapp.common
+package com.example.googlesheetskoreanvocabapp.common.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -24,25 +24,31 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.googlesheetskoreanvocabapp.common.viewmodel.BaseWordPairViewModel
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddPairComposable(
     addWord: (String, String) -> Unit,
     deleteWord: (String, String) -> Unit,
     wordType: SheetsHelper.WordType,
+    wordState: BaseWordPairViewModel.WordState,
 ) {
     var englishWord by remember { mutableStateOf("") }
     var koreanWord by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -51,6 +57,35 @@ fun AddPairComposable(
             .padding(horizontal = 80.dp)
     ) {
         val context = LocalContext.current
+        when (wordState) {
+            is BaseWordPairViewModel.WordState.AddWordState -> {
+                if (wordState.added) {
+                    LaunchedEffect(wordState.word) {
+                        scope.launch {
+                            Toast.makeText(
+                                context,
+                                "${wordState.word} has been succesfully added to sheets.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+
+            is BaseWordPairViewModel.WordState.DeleteWordState -> {
+                if (wordState.added) {
+                    LaunchedEffect(wordState.word) {
+                        scope.launch {
+                            Toast.makeText(
+                                context,
+                                "${wordState.word} has been succesfully deleted from sheets.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+        }
         Text(text = "Add ${wordType.name} pair", style = MaterialTheme.typography.h4)
         Divider(color = Color.White, thickness = 1.dp)
         Spacer(modifier = Modifier.height(32.dp))
@@ -99,11 +134,6 @@ fun AddPairComposable(
             Spacer(modifier = Modifier.width(16.dp))
             AppButtonSecondary(onClick = {
                 deleteWord(englishWord, koreanWord)
-                Toast.makeText(
-                    context,
-                    "$englishWord and $koreanWord pair removed.",
-                    Toast.LENGTH_SHORT
-                ).show()
             }, text = "Remove")
         }
     }

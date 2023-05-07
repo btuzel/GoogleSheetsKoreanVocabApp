@@ -92,36 +92,50 @@ class AddWordPair @Inject constructor(
         }
         if (isOnline()) {
             when (wordType) {
-                SheetsHelper.WordType.VERBS -> sheetsHelper.addData(
-                    SheetsHelper.WordType.VERBS,
-                    Pair(englishWord, koreanWord)
-                )
+                SheetsHelper.WordType.VERBS -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.VERBS,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
 
-                SheetsHelper.WordType.ADVERBS -> sheetsHelper.addData(
-                    SheetsHelper.WordType.ADVERBS,
-                    Pair(englishWord, koreanWord)
-                )
+                SheetsHelper.WordType.ADVERBS -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.ADVERBS,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
 
-                SheetsHelper.WordType.COMPLEX_SENTENCES -> sheetsHelper.addData(
-                    SheetsHelper.WordType.COMPLEX_SENTENCES,
-                    Pair(englishWord, koreanWord)
-                )
+                SheetsHelper.WordType.COMPLEX_SENTENCES -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.COMPLEX_SENTENCES,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
 
-                SheetsHelper.WordType.USEFUL_PHRASES -> sheetsHelper.addData(
-                    SheetsHelper.WordType.USEFUL_PHRASES,
-                    Pair(englishWord, koreanWord)
-                )
+                SheetsHelper.WordType.USEFUL_PHRASES -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.USEFUL_PHRASES,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
 
-                SheetsHelper.WordType.NOUNS -> sheetsHelper.addData(
-                    SheetsHelper.WordType.NOUNS,
-                    Pair(englishWord, koreanWord)
-                )
+                SheetsHelper.WordType.NOUNS -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.NOUNS,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
 
-                SheetsHelper.WordType.POSITIONS -> sheetsHelper.addData(
-                    SheetsHelper.WordType.POSITIONS,
-                    Pair(englishWord, koreanWord)
-                )
+                SheetsHelper.WordType.POSITIONS -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.POSITIONS,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
             }
+        } else {
+            return@withContext false
         }
     }
 }

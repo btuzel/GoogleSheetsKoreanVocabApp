@@ -19,7 +19,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 abstract class BaseWordPairViewModel(
     private val getWordPair: GetWordPair,
     private val deleteWordPair: DeleteWordPair,
@@ -42,13 +41,19 @@ abstract class BaseWordPairViewModel(
     )
     override val uiState: StateFlow<GetWords> = _uiState
 
+    private val _wordState: MutableStateFlow<WordState> = MutableStateFlow(
+        WordState.AddWordState("", false)
+    )
+    val wordState: StateFlow<WordState> = _wordState
+
     private val shownWords = mutableSetOf<String>()
 
-    private lateinit var startTime : LocalDateTime
+    private lateinit var startTime: LocalDateTime
 
     override fun addWordPair(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            addWordPair(englishWord, koreanWord, wordType)
+            val awp = addWordPair(englishWord, koreanWord, wordType)
+            _wordState.value = WordState.AddWordState(englishWord, awp)
             _wordPairs = getWordPair(wordType)
             _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
         }
@@ -56,7 +61,8 @@ abstract class BaseWordPairViewModel(
 
     override fun deleteWordPair(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
-            deleteWordPair(englishWord, koreanWord, wordType)
+            val dwp = deleteWordPair(englishWord, koreanWord, wordType)
+            _wordState.value = WordState.DeleteWordState(englishWord, dwp)
             _wordPairs = getWordPair(wordType)
             _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
         }
@@ -81,7 +87,7 @@ abstract class BaseWordPairViewModel(
         viewModelScope.launch {
             data.add(
                 wrongAnswerCount.first()
-                    .toString() + "%" + wrongAnswerCount.substring(1) + "%" + formattedDateTime + "%" + durationMin.toString() +  "%" + durationSec.toString()
+                    .toString() + "%" + wrongAnswerCount.substring(1) + "%" + formattedDateTime + "%" + durationMin.toString() + "%" + durationSec.toString()
             )
             saveResultUseCase(data)
         }
@@ -134,5 +140,10 @@ abstract class BaseWordPairViewModel(
                 }
             }
         }
+    }
+
+    sealed interface WordState {
+        data class AddWordState(val word: String, val added: Boolean) : WordState
+        data class DeleteWordState(val word: String, val added: Boolean) : WordState
     }
 }

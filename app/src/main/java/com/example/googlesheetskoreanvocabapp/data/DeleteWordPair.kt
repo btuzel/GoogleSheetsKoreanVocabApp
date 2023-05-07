@@ -81,47 +81,49 @@ class DeleteWordPair @Inject constructor(
         if (isOnline()) {
             when (wordType) {
                 SheetsHelper.WordType.VERBS -> {
-                    sheetsHelper.deleteData(
+                    return@withContext sheetsHelper.deleteData(
                         SheetsHelper.WordType.VERBS,
                         Pair(englishWord, koreanWord)
                     )
                 }
 
                 SheetsHelper.WordType.ADVERBS -> {
-                    sheetsHelper.deleteData(
+                    return@withContext sheetsHelper.deleteData(
                         SheetsHelper.WordType.ADVERBS,
                         Pair(englishWord, koreanWord)
                     )
                 }
 
                 SheetsHelper.WordType.COMPLEX_SENTENCES -> {
-                    sheetsHelper.deleteData(
+                    return@withContext sheetsHelper.deleteData(
                         SheetsHelper.WordType.COMPLEX_SENTENCES,
                         Pair(englishWord, koreanWord)
                     )
                 }
 
                 SheetsHelper.WordType.USEFUL_PHRASES -> {
-                    sheetsHelper.deleteData(
+                    return@withContext sheetsHelper.deleteData(
                         SheetsHelper.WordType.USEFUL_PHRASES,
                         Pair(englishWord, koreanWord)
                     )
                 }
 
                 SheetsHelper.WordType.NOUNS -> {
-                    sheetsHelper.deleteData(
+                    return@withContext sheetsHelper.deleteData(
                         SheetsHelper.WordType.NOUNS,
                         Pair(englishWord, koreanWord)
                     )
                 }
 
                 SheetsHelper.WordType.POSITIONS -> {
-                    sheetsHelper.deleteData(
+                    return@withContext sheetsHelper.deleteData(
                         SheetsHelper.WordType.POSITIONS,
                         Pair(englishWord, koreanWord)
                     )
                 }
             }
+        } else {
+            return@withContext false
         }
     }
 }
