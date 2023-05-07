@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +32,26 @@ fun LoadingState(wordType: SheetsHelper.WordType) {
             color = MaterialTheme.colors.primary,
             modifier = Modifier
                 .size(128.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "Loading ${wordType.name}", style = MaterialTheme.typography.h3)
+    }
+}
+
+@Composable
+fun LinearLoadingState(wordType: SheetsHelper.WordType, progress: Float) {
+    LocalFocusManager.current.clearFocus()
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LinearProgressIndicator(
+            progress = progress,
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier
+                .width(128.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Loading ${wordType.name}", style = MaterialTheme.typography.h3)

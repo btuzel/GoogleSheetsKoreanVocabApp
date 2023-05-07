@@ -30,6 +30,7 @@ class SyncViewModel @Inject constructor(
         SyncState.Init
     )
     val uiState: StateFlow<SyncState> = _uiState
+
     init {
         viewModelScope.launch {
             syncAllData()
@@ -45,17 +46,17 @@ class SyncViewModel @Inject constructor(
     private suspend fun syncAllData() {
         if (isOnline()) {
             viewModelScope.launch {
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.VERBS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.VERBS, 1 / 6f)
                 syncWords(SheetsHelper.WordType.VERBS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.NOUNS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.NOUNS, 2 / 6f)
                 syncWords(SheetsHelper.WordType.NOUNS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.ADVERBS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.ADVERBS, 3 / 6f)
                 syncWords(SheetsHelper.WordType.ADVERBS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.USEFUL_PHRASES)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.USEFUL_PHRASES, 4 / 6f)
                 syncWords(SheetsHelper.WordType.USEFUL_PHRASES)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.POSITIONS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.POSITIONS, 5 / 6f)
                 syncWords(SheetsHelper.WordType.POSITIONS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.COMPLEX_SENTENCES)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.COMPLEX_SENTENCES, 6 / 6f)
                 syncWords(SheetsHelper.WordType.COMPLEX_SENTENCES)
                 _uiState.value = SyncState.Done
             }
@@ -134,6 +135,6 @@ class SyncViewModel @Inject constructor(
     sealed class SyncState {
         object Done : SyncState()
         object Init : SyncState()
-        data class Loading(val wordType: SheetsHelper.WordType) : SyncState()
+        data class Loading(val wordType: SheetsHelper.WordType, val percentage: Float) : SyncState()
     }
 }

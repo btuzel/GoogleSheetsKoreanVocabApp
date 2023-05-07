@@ -28,7 +28,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.googlesheetskoreanvocabapp.common.ui.LoadingState
+import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 
 @Composable
@@ -143,7 +143,7 @@ fun WordManagementScreen(
             }
         }
         SyncViewModel.SyncState.Init -> {}
-        is SyncViewModel.SyncState.Loading -> LoadingState(wordType = uiState.wordType)
+        is SyncViewModel.SyncState.Loading -> LinearLoadingState(wordType = uiState.wordType, progress = uiState.percentage)
     }
 }
 
