@@ -1,4 +1,4 @@
-package com.example.googlesheetskoreanvocabapp.common
+package com.example.googlesheetskoreanvocabapp.common.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.googlesheetskoreanvocabapp.common.state.AnswerState
-import com.example.googlesheetskoreanvocabapp.common.ui.AppButton
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
 import com.example.googlesheetskoreanvocabapp.ui.theme.bodyMedium

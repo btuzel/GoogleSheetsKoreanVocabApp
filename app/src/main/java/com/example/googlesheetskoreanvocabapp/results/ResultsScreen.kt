@@ -49,6 +49,10 @@ fun ResultsScreen(resultsViewModel: ResultsViewModel = hiltViewModel()) {
                 InfoText(type = InfoType.MINUTES,text = parts[3])
                 Spacer(modifier = Modifier.width(8.dp))
                 InfoText(type = InfoType.SECONDS,text = parts[4])
+                Spacer(modifier = Modifier.width(8.dp))
+                if(parts.size == 6) {
+                    InfoText(type = InfoType.WORDS, text = parts[5])
+                }
             }
         }
     }
@@ -80,5 +84,6 @@ enum class InfoType(val displayName: String) {
     WORD_TYPE("WordType"),
     DATE("Date"),
     MINUTES("Minutes"),
-    SECONDS("Seconds")
+    SECONDS("Seconds"),
+    WORDS("Incorrect Words")
 }

@@ -47,6 +47,7 @@ abstract class BaseWordPairViewModel(
     val wordState: StateFlow<WordState> = _wordState
 
     private val shownWords = mutableSetOf<String>()
+    private val incorrectWords = mutableListOf<String>()
 
     private lateinit var startTime: LocalDateTime
 
@@ -85,10 +86,24 @@ abstract class BaseWordPairViewModel(
         val durationSec = Duration.between(startTime, now).toSeconds() % 60
         val data = mutableSetOf<String>()
         viewModelScope.launch {
-            data.add(
-                wrongAnswerCount.first()
-                    .toString() + "%" + wrongAnswerCount.substring(1) + "%" + formattedDateTime + "%" + durationMin.toString() + "%" + durationSec.toString()
-            )
+            if(incorrectWords.isNotEmpty()) {
+                data.add(
+                    wrongAnswerCount.first().toString()
+                            + "%" + wrongAnswerCount.substring(1)
+                            + "%" + formattedDateTime
+                            + "%" + durationMin.toString()
+                            + "%" + durationSec.toString()
+                            + "%" + turnListIntoString(incorrectWords)
+                )
+            } else {
+                data.add(
+                    wrongAnswerCount.first().toString()
+                            + "%" + wrongAnswerCount.substring(1)
+                            + "%" + formattedDateTime
+                            + "%" + durationMin.toString()
+                            + "%" + durationSec.toString()
+                )
+            }
             saveResultUseCase(data)
         }
     }
@@ -136,6 +151,7 @@ abstract class BaseWordPairViewModel(
                     sendRandomEnglishWord(AnswerState.CorrectAnswer())
                 } else {
                     shownWords.remove(englishWord)
+                    incorrectWords.add(englishWord)
                     sendRandomEnglishWord(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
                 }
             }
@@ -145,5 +161,9 @@ abstract class BaseWordPairViewModel(
     sealed interface WordState {
         data class AddWordState(val word: String, val added: Boolean) : WordState
         data class DeleteWordState(val word: String, val added: Boolean) : WordState
+    }
+
+    private fun turnListIntoString(list: List<String>) : String {
+        return list.joinToString("/")
     }
 }

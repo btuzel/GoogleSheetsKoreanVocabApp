@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.googlesheetskoreanvocabapp.common.TestPairComposable
+import com.example.googlesheetskoreanvocabapp.common.ui.TestPairComposable
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 
 @RequiresApi(Build.VERSION_CODES.S)
