@@ -144,7 +144,7 @@ abstract class BaseWordPairViewModel(
             val correctKoreanTranslation =
                 _wordPairs.first.zip(_wordPairs.second)
                     .find { it.first == englishWord }!!.second
-            if (shownWords.size == _wordPairs.first.size) {
+            if (shownWords.size == _wordPairs.first.size && correctKoreanTranslation == koreanTranslation) {
                 _uiState.value = GetWords("", "", AnswerState.Finished, 0)
             } else {
                 if (correctKoreanTranslation == koreanTranslation) {
