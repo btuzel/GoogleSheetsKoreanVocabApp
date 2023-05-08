@@ -57,6 +57,10 @@ fun TestPairComposable(
     val attempt = remember {
         mutableStateOf("")
     }
+    val previousIncorrectAnswer = remember {
+        mutableStateOf("")
+    }
+
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     Column(
@@ -115,39 +119,39 @@ fun TestPairComposable(
         )
         when (answerCorrectText) {
             is AnswerState.CorrectAnswer -> {
-                Text(text = "Your answer was correct!", color = Color.Cyan)
+                Text(text = "Correct!", color = Color.Cyan)
                 LaunchedEffect(answerCorrectText) {
+                    previousIncorrectAnswer.value = ""
                     correctAnswerCount.value++
-                    delay(2000L)
+                    delay(500L)
                     setStateToInit()
                 }
             }
 
             AnswerState.Init -> {
-                // Display nothing
+                if(previousIncorrectAnswer.value.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Incorrect answer, the right answer is ${previousIncorrectAnswer.value}",
+                            fontWeight = FontWeight.Bold,
+                            color = ErrorRed
+                        )
+                        Text(
+                            text = "Your answer was ${attempt.value}",
+                            fontWeight = FontWeight.Bold,
+                            color = ErrorRed
+                        )
+                    }
+                }
             }
 
             is AnswerState.WrongAnswer -> {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Incorrect answer, the right answer is ${answerCorrectText.correctAnswer}",
-                        fontWeight = FontWeight.Bold,
-                        color = ErrorRed
-                    )
-                    Text(
-                        text = "Your answer was ${attempt.value}",
-                        fontWeight = FontWeight.Bold,
-                        color = ErrorRed
-                    )
-                }
-                LaunchedEffect(answerCorrectText) {
-                    wrongAnswerCount.value++
-                    delay(8000L)
-                    setStateToInit()
-                }
+                wrongAnswerCount.value++
+                previousIncorrectAnswer.value = answerCorrectText.correctAnswer
+                setStateToInit()
             }
 
             AnswerState.Finished ->
