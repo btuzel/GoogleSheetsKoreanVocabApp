@@ -32,7 +32,9 @@ class ResultsViewModel @Inject constructor(private val getResult: GetResult) : V
     }
 
     private fun sendResultsAccordingToDate(setOfStr: Set<String>): List<String> {
-        return setOfStr.toList().sortedByDescending { it.split("%")[1] }
+        val setToList = setOfStr.toList()
+        val x = setToList.sortedByDescending { it.split("%")[2] }
+        return x
     }
 
     data class SendResults(
