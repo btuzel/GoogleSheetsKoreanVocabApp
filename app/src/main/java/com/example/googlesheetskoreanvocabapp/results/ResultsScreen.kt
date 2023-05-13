@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,29 +28,31 @@ import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
 fun ResultsScreen(resultsViewModel: ResultsViewModel = hiltViewModel()) {
     val collectedUiState = resultsViewModel.uiState.collectAsState()
 
+    val categories = listOf("Nouns", "Verbs", "Adverbs", "Positions", "Phrases", "Sentences")
+
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        itemsIndexed(collectedUiState.value) { _, it ->
+        itemsIndexed(collectedUiState.value) { index, it ->
+            val spacerModifier = Modifier.width(8.dp)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 32.dp),
-                verticalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = it.savedResultState.wordType, textAlign = TextAlign.Center, style = MaterialTheme.typography.h3)
+                Text(text = categories[index], style = MaterialTheme.typography.h3, color = Color.Green)
+                Spacer(modifier = spacerModifier)
                 InfoText(type = InfoType.MISTAKES, text = it.savedResultState.wrongAnswerCount)
-                Spacer(modifier = Modifier.width(8.dp))
-                InfoText(type = InfoType.WORD_TYPE, text = it.savedResultState.wordType)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = spacerModifier)
                 InfoText(type = InfoType.DATE, text = it.formattedDateTime)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = spacerModifier)
                 InfoText(type = InfoType.MINUTES, text = it.minDuration)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = spacerModifier)
                 InfoText(type = InfoType.SECONDS, text = it.secDuration)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = spacerModifier)
                 InfoText(type = InfoType.WORDS, text = it.incorrectStrings)
             }
         }
@@ -77,7 +78,6 @@ fun InfoText(type: InfoType, text: String) {
 
 enum class InfoType(val displayName: String) {
     MISTAKES("Mistakes"),
-    WORD_TYPE("WordType"),
     DATE("Date"),
     MINUTES("Minutes"),
     SECONDS("Seconds"),

@@ -14,22 +14,21 @@ import javax.inject.Inject
 @HiltViewModel
 class ResultsViewModel @Inject constructor(private val getResult: GetResult) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        listOf(
-            BaseWordPairViewModel.SaveResultCompleteState(
-                SaveResultState("", ""),
-                "",
-                "",
-                "",
-                ""
-            )
+    private val initialUiState = listOf(
+        BaseWordPairViewModel.SaveResultCompleteState(
+            SaveResultState("", ""),
+            "",
+            "",
+            "",
+            ""
         )
     )
-    val uiState: StateFlow<List<BaseWordPairViewModel.SaveResultCompleteState>> = _uiState
+    val uiState: StateFlow<List<BaseWordPairViewModel.SaveResultCompleteState>> =
+        MutableStateFlow(initialUiState)
 
     init {
         viewModelScope.launch {
-            _uiState.value = getResult()
+            (uiState as MutableStateFlow).value = getResult()
         }
     }
 }
