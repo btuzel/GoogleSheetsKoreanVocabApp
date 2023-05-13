@@ -91,7 +91,7 @@ abstract class BaseWordPairViewModel(
                 formattedDateTime,
                 durationMin.toString(),
                 durationSec.toString(),
-                if (incorrectWords.isNotEmpty()) turnListIntoString(incorrectWords) else "0"
+                incorrectWords.ifEmpty { listOf() }
             )
             saveResultUseCase(saveResultState)
         }
@@ -157,10 +157,7 @@ abstract class BaseWordPairViewModel(
         val formattedDateTime: String,
         val minDuration: String,
         val secDuration: String,
-        val incorrectStrings: String,
+        val incorrectStrings: List<String>,
     )
 
-    private fun turnListIntoString(list: List<String>): String {
-        return list.joinToString("/")
-    }
 }

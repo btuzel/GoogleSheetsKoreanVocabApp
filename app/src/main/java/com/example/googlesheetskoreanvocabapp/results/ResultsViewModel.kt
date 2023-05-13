@@ -20,7 +20,7 @@ class ResultsViewModel @Inject constructor(private val getResult: GetResult) : V
             "",
             "",
             "",
-            ""
+            listOf()
         )
     )
     val uiState: StateFlow<List<BaseWordPairViewModel.SaveResultCompleteState>> =

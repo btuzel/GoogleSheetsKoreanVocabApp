@@ -43,7 +43,11 @@ fun ResultsScreen(resultsViewModel: ResultsViewModel = hiltViewModel()) {
                     .padding(vertical = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = categories[index], style = MaterialTheme.typography.h3, color = Color.Green)
+                Text(
+                    text = categories[index],
+                    style = MaterialTheme.typography.h3,
+                    color = Color.Green
+                )
                 Spacer(modifier = spacerModifier)
                 InfoText(type = InfoType.MISTAKES, text = it.savedResultState.wrongAnswerCount)
                 Spacer(modifier = spacerModifier)
@@ -53,7 +57,7 @@ fun ResultsScreen(resultsViewModel: ResultsViewModel = hiltViewModel()) {
                 Spacer(modifier = spacerModifier)
                 InfoText(type = InfoType.SECONDS, text = it.secDuration)
                 Spacer(modifier = spacerModifier)
-                InfoText(type = InfoType.WORDS, text = it.incorrectStrings)
+                InfoText(type = InfoType.WORDS, text = it.incorrectStrings.joinToString(","))
             }
         }
     }

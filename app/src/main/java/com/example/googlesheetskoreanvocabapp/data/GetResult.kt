@@ -19,7 +19,7 @@ class GetResult @Inject constructor(
                 "",
                 "",
                 "",
-                ""
+                listOf()
             )
             val nouns = Gson().fromJson(
                 sharedPreferences.getString("nouns", ""),
