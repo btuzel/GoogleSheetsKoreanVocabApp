@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.state.AnswerState
 import com.example.googlesheetskoreanvocabapp.common.state.DisplayState
 import com.example.googlesheetskoreanvocabapp.common.state.GetWords
+import com.example.googlesheetskoreanvocabapp.common.ui.SaveResultState
 import com.example.googlesheetskoreanvocabapp.data.AddWordPair
 import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
@@ -78,33 +79,21 @@ abstract class BaseWordPairViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
-    fun saveResult(wrongAnswerCount: String) {
+    fun saveResult(savedResultState: SaveResultState) {
         val now = LocalDateTime.now()
         val formattedDateTime =
             now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         val durationMin = Duration.between(startTime, now).toMinutes()
         val durationSec = Duration.between(startTime, now).toSeconds() % 60
-        val data = mutableSetOf<String>()
         viewModelScope.launch {
-            if(incorrectWords.isNotEmpty()) {
-                data.add(
-                    wrongAnswerCount.first().toString()
-                            + "%" + wrongAnswerCount.substring(1)
-                            + "%" + formattedDateTime
-                            + "%" + durationMin.toString()
-                            + "%" + durationSec.toString()
-                            + "%" + turnListIntoString(incorrectWords)
-                )
-            } else {
-                data.add(
-                    wrongAnswerCount.first().toString()
-                            + "%" + wrongAnswerCount.substring(1)
-                            + "%" + formattedDateTime
-                            + "%" + durationMin.toString()
-                            + "%" + durationSec.toString()
-                )
-            }
-            saveResultUseCase(data)
+            val saveResultState = SaveResultCompleteState(
+                savedResultState,
+                formattedDateTime,
+                durationMin.toString(),
+                durationSec.toString(),
+                if (incorrectWords.isNotEmpty()) turnListIntoString(incorrectWords) else "0"
+            )
+            saveResultUseCase(saveResultState)
         }
     }
 
@@ -163,7 +152,15 @@ abstract class BaseWordPairViewModel(
         data class DeleteWordState(val word: String, val added: Boolean) : WordState
     }
 
-    private fun turnListIntoString(list: List<String>) : String {
+    data class SaveResultCompleteState(
+        val savedResultState: SaveResultState,
+        val formattedDateTime: String,
+        val minDuration: String,
+        val secDuration: String,
+        val incorrectStrings: String,
+    )
+
+    private fun turnListIntoString(list: List<String>): String {
         return list.joinToString("/")
     }
 }

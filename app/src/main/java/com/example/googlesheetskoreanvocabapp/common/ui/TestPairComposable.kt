@@ -46,7 +46,7 @@ fun TestPairComposable(
     onComplete: () -> Unit,
     wordType: SheetsHelper.WordType,
     totalPairs: Int,
-    saveResult: (String) -> Unit
+    saveResult: (SaveResultState) -> Unit
 ) {
     val correctAnswerCount = remember {
         mutableStateOf(0)
@@ -129,7 +129,7 @@ fun TestPairComposable(
             }
 
             AnswerState.Init -> {
-                if(previousIncorrectAnswer.value.isNotEmpty()) {
+                if (previousIncorrectAnswer.value.isNotEmpty()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -163,7 +163,7 @@ fun TestPairComposable(
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    saveResult(wrongAnswerCount.value.toString() + wordType.name)
+                    saveResult(SaveResultState(wrongAnswerCount.value.toString(), wordType.name))
                     onComplete()
                 }
         }
@@ -181,3 +181,5 @@ fun TestPairComposable(
         }, text = "Submit")
     }
 }
+
+data class SaveResultState(val wrongAnswerCount: String, val wordType: String)
