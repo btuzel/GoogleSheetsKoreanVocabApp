@@ -21,32 +21,21 @@ class GetResult @Inject constructor(
                 "",
                 listOf()
             )
-            val nouns = Gson().fromJson(
-                sharedPreferences.getString("nouns", ""),
-                BaseWordPairViewModel.SaveResultCompleteState::class.java
-            ) ?: x
-            val verbs = Gson().fromJson(
-                sharedPreferences.getString("verbs", ""),
-                BaseWordPairViewModel.SaveResultCompleteState::class.java
-            ) ?: x
-            val adverbs = Gson().fromJson(
-                sharedPreferences.getString("adverbs", ""),
-                BaseWordPairViewModel.SaveResultCompleteState::class.java
-            ) ?: x
-            val phrases = Gson().fromJson(
-                sharedPreferences.getString("phrases", ""),
-                BaseWordPairViewModel.SaveResultCompleteState::class.java
-            ) ?: x
-            val sentences = Gson().fromJson(
-                sharedPreferences.getString("sentences", ""),
-                BaseWordPairViewModel.SaveResultCompleteState::class.java
-            ) ?: x
-            val positions = Gson().fromJson(
-                sharedPreferences.getString("positions", ""),
-                BaseWordPairViewModel.SaveResultCompleteState::class.java
-            ) ?: x
-            return@withContext listOf<BaseWordPairViewModel.SaveResultCompleteState>(
-                nouns, verbs, adverbs, positions, phrases, sentences
+            val sharedPreferencesKeys = listOf(
+                "nouns", "verbs", "adverbs", "phrases", "sentences", "positions"
             )
+            val gson = Gson()
+            val resultList = mutableListOf<BaseWordPairViewModel.SaveResultCompleteState>()
+
+            for (key in sharedPreferencesKeys) {
+                val jsonString = sharedPreferences.getString(key, "")
+                val saveResultCompleteState = gson.fromJson(
+                    jsonString,
+                    BaseWordPairViewModel.SaveResultCompleteState::class.java
+                ) ?: x
+                resultList.add(saveResultCompleteState)
+            }
+
+            return@withContext resultList
         }
 }
