@@ -1,8 +1,8 @@
 package com.example.googlesheetskoreanvocabapp.data
 
-import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.common.isOnline
+import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,7 +18,16 @@ class GetWordPair @Inject constructor(
             if (isOnline()) {
                 when (wordType) {
                     SheetsHelper.WordType.VERBS -> {
-                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.VERBS)
+                        val verbs =
+                            getWordsFromSpreadsheet(SheetsHelper.WordType.VERBS)
+                        if (ShowLastTwenty.shouldShowLast20) {
+                            return@withContext Pair(
+                                verbs.first.takeLast(20),
+                                verbs.second.takeLast(20)
+                            )
+                        } else {
+                            return@withContext verbs
+                        }
                     }
 
                     SheetsHelper.WordType.ADVERBS -> {
@@ -64,5 +73,9 @@ class GetWordPair @Inject constructor(
             }
         )
     }
+}
+
+object ShowLastTwenty {
+    var shouldShowLast20: Boolean = false
 }
 

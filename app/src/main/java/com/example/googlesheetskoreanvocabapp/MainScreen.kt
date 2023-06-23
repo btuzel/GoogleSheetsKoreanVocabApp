@@ -15,12 +15,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +34,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
+import com.example.googlesheetskoreanvocabapp.data.ShowLastTwenty
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 import com.example.googlesheetskoreanvocabapp.ui.theme.CloudBurst
 import com.example.googlesheetskoreanvocabapp.ui.theme.CyanCobaltBlue
@@ -200,6 +203,7 @@ fun WordManagementScreen(
                     ) {
                         Text(text = "Results", style = MaterialTheme.typography.h3)
                     }
+                    ToggleComponent()
                 } else {
                     if (showTest.value) {
                         categories.forEach { category ->
@@ -279,5 +283,18 @@ fun RaindropAnimation() {
             .background(Color.White, shape = CircleShape),
         composition = composition,
         iterations = LottieConstants.IterateForever
+    )
+}
+
+@Composable
+fun ToggleComponent() {
+    var showLastTwenty by remember { mutableStateOf(ShowLastTwenty.shouldShowLast20) }
+
+    Switch(
+        checked = showLastTwenty,
+        onCheckedChange = {
+            showLastTwenty = !showLastTwenty
+            ShowLastTwenty.shouldShowLast20 = !ShowLastTwenty.shouldShowLast20
+        }
     )
 }
