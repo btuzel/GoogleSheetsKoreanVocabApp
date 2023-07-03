@@ -20,10 +20,15 @@ class GetWordPair @Inject constructor(
                     SheetsHelper.WordType.VERBS -> {
                         val verbs =
                             getWordsFromSpreadsheet(SheetsHelper.WordType.VERBS)
-                        if (ShowLastTwenty.shouldShowLast20) {
+                        if (WhatDoMEN.doOld) {
                             return@withContext Pair(
-                                verbs.first.takeLast(20),
-                                verbs.second.takeLast(20)
+                                verbs.first.take(80),
+                                verbs.second.take(80)
+                            )
+                        } else if(WhatDoMEN.doNew) {
+                            return@withContext Pair(
+                                verbs.first.takeLast(verbs.first.size - 80),
+                                verbs.second.takeLast(verbs.first.size - 80)
                             )
                         } else {
                             return@withContext verbs
@@ -75,7 +80,7 @@ class GetWordPair @Inject constructor(
     }
 }
 
-object ShowLastTwenty {
-    var shouldShowLast20: Boolean = false
+object WhatDoMEN{
+    var doOld : Boolean = false
+    var doNew : Boolean = false
 }
-

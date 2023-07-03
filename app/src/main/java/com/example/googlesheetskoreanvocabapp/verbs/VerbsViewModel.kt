@@ -14,4 +14,10 @@ class VerbsViewModel @Inject constructor(
     getWordPair: GetWordPair,
     addWordPair: AddWordPair,
     deleteWordPair: DeleteWordPair, saveResult: SaveResult
-) : BaseWordPairViewModel(getWordPair, deleteWordPair, addWordPair, saveResult, SheetsHelper.WordType.VERBS)
+) : BaseWordPairViewModel(
+    getWordPair = getWordPair,
+    deleteWordPair = deleteWordPair,
+    addWordPair = addWordPair,
+    saveResultUseCase = saveResult,
+    wordType = SheetsHelper.WordType.VERBS
+)

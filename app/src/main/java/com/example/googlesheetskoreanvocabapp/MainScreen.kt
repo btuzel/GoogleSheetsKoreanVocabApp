@@ -3,26 +3,26 @@ package com.example.googlesheetskoreanvocabapp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +34,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
-import com.example.googlesheetskoreanvocabapp.data.ShowLastTwenty
+import com.example.googlesheetskoreanvocabapp.data.WhatDoMEN
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 import com.example.googlesheetskoreanvocabapp.ui.theme.CloudBurst
 import com.example.googlesheetskoreanvocabapp.ui.theme.CyanCobaltBlue
@@ -203,16 +203,43 @@ fun WordManagementScreen(
                     ) {
                         Text(text = "Results", style = MaterialTheme.typography.h3)
                     }
-                    ToggleComponent()
                 } else {
                     if (showTest.value) {
                         categories.forEach { category ->
                             buttonGroups.testButtonGroup[category]?.let { testButton ->
-                                Text(text = "Test $category", style = MaterialTheme.typography.h4)
-                                Button(onClick = testButton) {
-                                    Text("Test $category")
+                                if (category == "Verb") {
+                                    Text(
+                                        text = "Test $category",
+                                        style = MaterialTheme.typography.h4
+                                    )
+                                    Row {
+                                        Button(onClick = {
+                                            testButton()
+                                            WhatDoMEN.doOld = true
+                                            WhatDoMEN.doNew = false
+                                        }) {
+                                            Text("Test $category old")
+                                        }
+                                        Spacer(modifier = Modifier.width(32.dp))
+                                        Button(onClick = {
+                                            testButton()
+                                            WhatDoMEN.doNew = true
+                                            WhatDoMEN.doOld = false
+                                        }) {
+                                            Text("Test $category new")
+                                        }
+                                        Spacer(modifier = Modifier.height(32.dp))
+                                    }
+                                } else {
+                                    Text(
+                                        text = "Test $category",
+                                        style = MaterialTheme.typography.h4
+                                    )
+                                    Button(onClick = testButton) {
+                                        Text("Test $category")
+                                    }
+                                    Spacer(modifier = Modifier.height(16.dp))
                                 }
-                                Spacer(modifier = Modifier.height(16.dp))
                             }
                         }
                     } else if (showDisplay.value) {
@@ -283,18 +310,5 @@ fun RaindropAnimation() {
             .background(Color.White, shape = CircleShape),
         composition = composition,
         iterations = LottieConstants.IterateForever
-    )
-}
-
-@Composable
-fun ToggleComponent() {
-    var showLastTwenty by remember { mutableStateOf(ShowLastTwenty.shouldShowLast20) }
-
-    Switch(
-        checked = showLastTwenty,
-        onCheckedChange = {
-            showLastTwenty = !showLastTwenty
-            ShowLastTwenty.shouldShowLast20 = !ShowLastTwenty.shouldShowLast20
-        }
     )
 }
