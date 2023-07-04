@@ -13,12 +13,14 @@ import com.example.googlesheetskoreanvocabapp.data.DeleteWordPair
 import com.example.googlesheetskoreanvocabapp.data.GetWordPair
 import com.example.googlesheetskoreanvocabapp.data.SaveResult
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.properties.Delegates
 
 abstract class BaseWordPairViewModel(
     private val getWordPair: GetWordPair,
@@ -27,6 +29,9 @@ abstract class BaseWordPairViewModel(
     private val saveResultUseCase: SaveResult,
     override val wordType: SheetsHelper.WordType
 ) : ViewModel(), WordPairViewModel {
+
+    lateinit var wordLimitOffset: WordLimitOffset
+
     private lateinit var _wordPairs: Pair<List<String>, List<String>>
     override val wordPairs: Pair<List<String>, List<String>> get() = _wordPairs
     private val _displayAllPairsUiState: MutableStateFlow<DisplayState> =
@@ -56,7 +61,7 @@ abstract class BaseWordPairViewModel(
         viewModelScope.launch {
             val awp = addWordPair(englishWord, koreanWord, wordType)
             _wordState.value = WordState.AddWordState(englishWord, awp)
-            _wordPairs = getWordPair(wordType)
+            _wordPairs = getWordPair(wordType, 0, 3000)
             _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
         }
     }
@@ -65,7 +70,7 @@ abstract class BaseWordPairViewModel(
         viewModelScope.launch {
             val dwp = deleteWordPair(englishWord, koreanWord, wordType)
             _wordState.value = WordState.DeleteWordState(englishWord, dwp)
-            _wordPairs = getWordPair(wordType)
+            _wordPairs = getWordPair(wordType, 0 , 3000)
             _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
         }
     }
@@ -121,7 +126,12 @@ abstract class BaseWordPairViewModel(
 
     init {
         viewModelScope.launch {
-            _wordPairs = getWordPair(wordType)
+            delay(1000)
+            _wordPairs = getWordPair(
+                wordType = wordType,
+                offset = wordLimitOffset.offset,
+                limit = wordLimitOffset.limit
+            )
             _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
             sendRandomEnglishWord(AnswerState.Init)
             startTime = LocalDateTime.now()
@@ -158,6 +168,11 @@ abstract class BaseWordPairViewModel(
         val minDuration: String,
         val secDuration: String,
         val incorrectStrings: List<String>,
+    )
+
+    data class WordLimitOffset(
+        val limit: Int,
+        val offset: Int
     )
 
 }

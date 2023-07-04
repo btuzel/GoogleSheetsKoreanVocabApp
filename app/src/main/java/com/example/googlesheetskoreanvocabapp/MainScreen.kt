@@ -34,7 +34,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
-import com.example.googlesheetskoreanvocabapp.data.WhatDo
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 import com.example.googlesheetskoreanvocabapp.ui.theme.CloudBurst
 import com.example.googlesheetskoreanvocabapp.ui.theme.CyanCobaltBlue
@@ -58,7 +57,7 @@ fun MainScreen(
         testButtonGroup = mapOf(
             "Noun" to { navHostController.navigate(ScreenDestination.NounsScreen.route) },
             "Adverb" to { navHostController.navigate(ScreenDestination.AdverbsScreen.route) },
-            "Verb" to { navHostController.navigate(ScreenDestination.VerbsScreen.route) },
+            "Verb" to { navHostController.navigate(ScreenDestination.VerbsScreen.withArgs()) },
             "Positions" to { navHostController.navigate(ScreenDestination.PositionsScreen.route) },
             "Useful Phrases" to { navHostController.navigate(ScreenDestination.UsefulPhrasesScreen.route) },
             "Complex Sentences" to { navHostController.navigate(ScreenDestination.ComplexSentencesScreen.route) },
@@ -74,6 +73,7 @@ fun MainScreen(
     )
 
     WordManagementScreen(
+        navHostController = navHostController,
         uiState = uiState,
         buttonGroups = buttonGroups,
         goToResults = { navHostController.navigate(ScreenDestination.ResultsScreen.route) },
@@ -83,6 +83,7 @@ fun MainScreen(
 
 @Composable
 fun WordManagementScreen(
+    navHostController: NavHostController,
     buttonGroups: WordManagementButtonGroups,
     goToResults: () -> Unit,
     clearSharedPref: () -> Unit,
@@ -207,30 +208,7 @@ fun WordManagementScreen(
                     if (showTest.value) {
                         categories.forEach { category ->
                             buttonGroups.testButtonGroup[category]?.let { testButton ->
-                                if (category == "Verb") {
-                                    Text(
-                                        text = "Test $category",
-                                        style = MaterialTheme.typography.h4
-                                    )
-                                    Row {
-                                        Button(onClick = {
-                                            testButton()
-                                            WhatDo.doOld = true
-                                            WhatDo.doNew = false
-                                        }) {
-                                            Text("Test $category old")
-                                        }
-                                        Spacer(modifier = Modifier.width(32.dp))
-                                        Button(onClick = {
-                                            testButton()
-                                            WhatDo.doNew = true
-                                            WhatDo.doOld = false
-                                        }) {
-                                            Text("Test $category new")
-                                        }
-                                        Spacer(modifier = Modifier.height(32.dp))
-                                    }
-                                } else {
+                                if (category != "Verb") {
                                     Text(
                                         text = "Test $category",
                                         style = MaterialTheme.typography.h4
@@ -239,6 +217,37 @@ fun WordManagementScreen(
                                         Text("Test $category")
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
+                                } else {
+                                    Text(
+                                        text = "Test $category",
+                                        style = MaterialTheme.typography.h4
+                                    )
+                                    Row {
+                                        Button(onClick = {
+                                            navHostController.navigate(
+                                                ScreenDestination.VerbsScreen.returnVerbsRoute(80,0)
+                                            )
+                                        }) {
+                                            Text("Test $category old")
+                                        }
+                                        Spacer(modifier = Modifier.width(32.dp))
+                                        Button(onClick = {
+                                            navHostController.navigate(
+                                                ScreenDestination.VerbsScreen.returnVerbsRoute(2000,80)
+                                            )
+                                        }) {
+                                            Text("Test $category new")
+                                        }
+                                        Spacer(modifier = Modifier.width(32.dp))
+                                        Button(onClick = {
+                                            navHostController.navigate(
+                                                ScreenDestination.VerbsScreen.returnVerbsRoute(2000,0)
+                                            )
+                                        }) {
+                                            Text("Test $category all")
+                                        }
+                                        Spacer(modifier = Modifier.height(32.dp))
+                                    }
                                 }
                             }
                         }

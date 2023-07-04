@@ -2,7 +2,11 @@ package com.example.googlesheetskoreanvocabapp.navigation
 
 sealed class ScreenDestination(val route: String) {
 
-    object VerbsScreen : ScreenDestination(route = "verbs")
+    object VerbsScreen : ScreenDestination(route = "verbs?limit={limit}/offset={offset}") {
+        fun returnVerbsRoute(limit: Int, offset: Int) : String{
+            return "verbs?limit=$limit/offset=$offset"
+        }
+    }
 
     object AdverbsScreen :
         ScreenDestination(route = "adverbs")
@@ -60,4 +64,13 @@ sealed class ScreenDestination(val route: String) {
 
     object ResultsScreen :
         ScreenDestination(route = "results")
+
+    fun withArgs(vararg args:Int) : String {
+        return buildString {
+            append(route)
+            args.forEach {
+                append("/$it")
+            }
+        }
+    }
 }
