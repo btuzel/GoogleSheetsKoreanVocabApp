@@ -34,7 +34,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
-import com.example.googlesheetskoreanvocabapp.data.WhatDoMEN
+import com.example.googlesheetskoreanvocabapp.data.WhatDo
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 import com.example.googlesheetskoreanvocabapp.ui.theme.CloudBurst
 import com.example.googlesheetskoreanvocabapp.ui.theme.CyanCobaltBlue
@@ -215,16 +215,16 @@ fun WordManagementScreen(
                                     Row {
                                         Button(onClick = {
                                             testButton()
-                                            WhatDoMEN.doOld = true
-                                            WhatDoMEN.doNew = false
+                                            WhatDo.doOld = true
+                                            WhatDo.doNew = false
                                         }) {
                                             Text("Test $category old")
                                         }
                                         Spacer(modifier = Modifier.width(32.dp))
                                         Button(onClick = {
                                             testButton()
-                                            WhatDoMEN.doNew = true
-                                            WhatDoMEN.doOld = false
+                                            WhatDo.doNew = true
+                                            WhatDo.doOld = false
                                         }) {
                                             Text("Test $category new")
                                         }
