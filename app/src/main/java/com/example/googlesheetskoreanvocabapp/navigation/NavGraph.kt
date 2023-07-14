@@ -3,34 +3,30 @@ package com.example.googlesheetskoreanvocabapp.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.googlesheetskoreanvocabapp.MainScreen
+import com.example.googlesheetskoreanvocabapp.results.ResultsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AddAdverbsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.AdverbsScreen
 import com.example.googlesheetskoreanvocabapp.adverbs.DisplayAdverbsScreen
-import com.example.googlesheetskoreanvocabapp.common.viewmodel.BaseWordPairViewModel
 import com.example.googlesheetskoreanvocabapp.complexsentences.AddComplexSentencesScreen
 import com.example.googlesheetskoreanvocabapp.complexsentences.ComplexSentencesScreen
 import com.example.googlesheetskoreanvocabapp.complexsentences.DisplaySentencesScreen
 import com.example.googlesheetskoreanvocabapp.nouns.AddNounsScreen
 import com.example.googlesheetskoreanvocabapp.nouns.DisplayNounsScreen
 import com.example.googlesheetskoreanvocabapp.nouns.NounsScreen
+import com.example.googlesheetskoreanvocabapp.numbers.NumbersScreen
 import com.example.googlesheetskoreanvocabapp.positions.AddPositionsScreen
 import com.example.googlesheetskoreanvocabapp.positions.DisplayPositionsScreen
 import com.example.googlesheetskoreanvocabapp.positions.PositionsScreen
-import com.example.googlesheetskoreanvocabapp.results.ResultsScreen
 import com.example.googlesheetskoreanvocabapp.usefulphrases.AddPhrasesScreen
 import com.example.googlesheetskoreanvocabapp.usefulphrases.DisplayPhrasesScreen
 import com.example.googlesheetskoreanvocabapp.usefulphrases.PhrasesScreen
 import com.example.googlesheetskoreanvocabapp.verbs.AddVerbScreen
 import com.example.googlesheetskoreanvocabapp.verbs.DisplayVerbsScreen
 import com.example.googlesheetskoreanvocabapp.verbs.VerbsScreen
-import com.example.googlesheetskoreanvocabapp.verbs.VerbsViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -41,33 +37,9 @@ fun NavGraph(
         navController = navHostController,
         startDestination = ScreenDestination.MainScreen.route
     ) {
-        composable(
-            route = ScreenDestination.VerbsScreen.route,
-            arguments = listOf(
-                navArgument("offset") {
-                    type = NavType.IntType
-                    defaultValue = 0
-                    nullable = false
-                },
-                navArgument("limit") {
-                    type = NavType.IntType
-                    defaultValue = 0
-                    nullable = false
-                }
-            )
-        ) {
-            val viewModel = hiltViewModel<VerbsViewModel>().apply {
-                wordLimitOffset = BaseWordPairViewModel.WordLimitOffset(limit = it.arguments?.getInt("limit")!!, offset = it.arguments?.getInt("offset")!!)
-            }
-
-            VerbsScreen(viewModel, limit = it.arguments?.getInt("limit")!!, offset = it.arguments?.getInt("offset")!!) {
-                navigateToMainScreen(
-                    navHostController
-                )
-            }
-
+        composable(route = ScreenDestination.VerbsScreen.route) {
+            VerbsScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
-
         composable(route = ScreenDestination.AdverbsScreen.route) {
             AdverbsScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
@@ -121,6 +93,9 @@ fun NavGraph(
         }
         composable(route = ScreenDestination.ResultsScreen.route) {
             ResultsScreen()
+        }
+        composable(route = ScreenDestination.NumbersScreen.route) {
+            NumbersScreen()
         }
         composable(route = ScreenDestination.MainScreen.route) {
             MainScreen(navHostController)

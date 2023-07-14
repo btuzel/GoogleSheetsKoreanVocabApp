@@ -11,11 +11,7 @@ class GetWordPair @Inject constructor(
     private val sheetsHelper: SheetsHelper,
     private val verbRepository: VerbRepository
 ) {
-    suspend operator fun invoke(
-        wordType: SheetsHelper.WordType,
-        offset: Int,
-        limit: Int
-    ): Pair<List<String>, List<String>> =
+    suspend operator fun invoke(wordType: SheetsHelper.WordType): Pair<List<String>, List<String>> =
         withContext(
             Dispatchers.IO
         ) {
@@ -24,11 +20,19 @@ class GetWordPair @Inject constructor(
                     SheetsHelper.WordType.VERBS -> {
                         val verbs =
                             getWordsFromSpreadsheet(SheetsHelper.WordType.VERBS)
-
-                        return@withContext Pair(
-                            verbs.first.subList(offset, if(verbs.first.size < limit) verbs.first.size else limit), //0,80    80,2000     0,2000
-                            verbs.second.subList(offset, verbs.second.size)
-                        )
+                        if (WhatDoMEN.doOld) {
+                            return@withContext Pair(
+                                verbs.first.take(80),
+                                verbs.second.take(80)
+                            )
+                        } else if(WhatDoMEN.doNew) {
+                            return@withContext Pair(
+                                verbs.first.takeLast(verbs.first.size - 80),
+                                verbs.second.takeLast(verbs.first.size - 80)
+                            )
+                        } else {
+                            return@withContext verbs
+                        }
                     }
 
                     SheetsHelper.WordType.ADVERBS -> {
@@ -74,4 +78,9 @@ class GetWordPair @Inject constructor(
             }
         )
     }
+}
+
+object WhatDoMEN{
+    var doOld : Boolean = false
+    var doNew : Boolean = false
 }

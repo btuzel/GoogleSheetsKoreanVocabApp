@@ -34,6 +34,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
+import com.example.googlesheetskoreanvocabapp.data.WhatDoMEN
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 import com.example.googlesheetskoreanvocabapp.ui.theme.CloudBurst
 import com.example.googlesheetskoreanvocabapp.ui.theme.CyanCobaltBlue
@@ -57,7 +58,7 @@ fun MainScreen(
         testButtonGroup = mapOf(
             "Noun" to { navHostController.navigate(ScreenDestination.NounsScreen.route) },
             "Adverb" to { navHostController.navigate(ScreenDestination.AdverbsScreen.route) },
-            "Verb" to { navHostController.navigate(ScreenDestination.VerbsScreen.withArgs()) },
+            "Verb" to { navHostController.navigate(ScreenDestination.VerbsScreen.route) },
             "Positions" to { navHostController.navigate(ScreenDestination.PositionsScreen.route) },
             "Useful Phrases" to { navHostController.navigate(ScreenDestination.UsefulPhrasesScreen.route) },
             "Complex Sentences" to { navHostController.navigate(ScreenDestination.ComplexSentencesScreen.route) },
@@ -76,6 +77,7 @@ fun MainScreen(
         navHostController = navHostController,
         uiState = uiState,
         buttonGroups = buttonGroups,
+        goToNumbers = { navHostController.navigate(ScreenDestination.NumbersScreen.route) },
         goToResults = { navHostController.navigate(ScreenDestination.ResultsScreen.route) },
         clearSharedPref = syncViewModel::clearSharedPref
     )
@@ -86,6 +88,7 @@ fun WordManagementScreen(
     navHostController: NavHostController,
     buttonGroups: WordManagementButtonGroups,
     goToResults: () -> Unit,
+    goToNumbers: () -> Unit,
     clearSharedPref: () -> Unit,
     uiState: SyncViewModel.SyncState
 ) {
@@ -114,187 +117,195 @@ fun WordManagementScreen(
     }
 
     when (uiState) {
-        SyncViewModel.SyncState.Done -> Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            RaindropAnimation()
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {
-                showButtons.value = true
-                showDisplay.value = false
-                showTest.value = false
-                showResults.value = false
-                showAdd.value = false
-            }) {
-                Text(text = "Go to Main Screen")
-            }
+        SyncViewModel.SyncState.Done ->
             Column(
+                modifier = Modifier
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
             ) {
-                if (showButtons.value) {
-                    Button(
-                        onClick = {
-                            showTest.value = true
-                            showButtons.value = false
-                        },
-                        modifier = Modifier
-                            .size(180.dp)
-                            .padding(16.dp),
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = CloudBurst,
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Test", style = MaterialTheme.typography.h3)
-                    }
-                    Button(
-                        onClick = {
-                            showAdd.value = true
-                            showButtons.value = false
-                        },
-                        modifier = Modifier
-                            .size(180.dp)
-                            .padding(16.dp),
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Blue,
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Add", style = MaterialTheme.typography.h3)
-                    }
-                    Button(
-                        onClick = {
-                            showDisplay.value = true
-                            showButtons.value = false
-                        },
-                        modifier = Modifier
-                            .size(180.dp)
-                            .padding(16.dp),
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = SonicSilver,
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Display", style = MaterialTheme.typography.h3)
-                    }
-                    Button(
-                        onClick = {
-                            showResults.value = true
-                            showButtons.value = false
-                        },
-                        modifier = Modifier
-                            .size(180.dp)
-                            .padding(16.dp),
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = CyanCobaltBlue,
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Results", style = MaterialTheme.typography.h3)
-                    }
-                } else {
-                    if (showTest.value) {
-                        categories.forEach { category ->
-                            buttonGroups.testButtonGroup[category]?.let { testButton ->
-                                if (category != "Verb") {
+                Spacer(modifier = Modifier.height(16.dp))
+                RaindropAnimation()
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = {
+                    showButtons.value = true
+                    showDisplay.value = false
+                    showTest.value = false
+                    showResults.value = false
+                    showAdd.value = false
+                }) {
+                    Text(text = "Go to Main Screen")
+                }
+
+                Button(onClick = { goToNumbers() }) {
+                    Text(text = "SinoKorean numbers")
+                }
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    if (showButtons.value) {
+                        Button(
+                            onClick = {
+                                showTest.value = true
+                                showButtons.value = false
+                            },
+                            modifier = Modifier
+                                .size(180.dp)
+                                .padding(16.dp),
+                            shape = CircleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = CloudBurst,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Test", style = MaterialTheme.typography.h3)
+                        }
+                        Button(
+                            onClick = {
+                                showAdd.value = true
+                                showButtons.value = false
+                            },
+                            modifier = Modifier
+                                .size(180.dp)
+                                .padding(16.dp),
+                            shape = CircleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color.Blue,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Add", style = MaterialTheme.typography.h3)
+                        }
+                        Button(
+                            onClick = {
+                                showDisplay.value = true
+                                showButtons.value = false
+                            },
+                            modifier = Modifier
+                                .size(180.dp)
+                                .padding(16.dp),
+                            shape = CircleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = SonicSilver,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Display", style = MaterialTheme.typography.h3)
+                        }
+                        Button(
+                            onClick = {
+                                showResults.value = true
+                                showButtons.value = false
+                            },
+                            modifier = Modifier
+                                .size(180.dp)
+                                .padding(16.dp),
+                            shape = CircleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = CyanCobaltBlue,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Results", style = MaterialTheme.typography.h3)
+                        }
+                    } else {
+                        if (showTest.value) {
+                            categories.forEach { category ->
+                                buttonGroups.testButtonGroup[category]?.let { testButton ->
+                                    if (category == "Verb") {
+                                        Text(
+                                            text = "Test $category",
+                                            style = MaterialTheme.typography.h4
+                                        )
+                                        Row {
+                                            Button(onClick = {
+                                                testButton()
+                                                WhatDoMEN.doOld = false
+                                                WhatDoMEN.doNew = false
+                                            }) {
+                                                Text("Test $category all")
+                                            }
+                                            Spacer(modifier = Modifier.width(32.dp))
+                                            Button(onClick = {
+                                                testButton()
+                                                WhatDoMEN.doOld = true
+                                                WhatDoMEN.doNew = false
+                                            }) {
+                                                Text("Test $category old")
+                                            }
+                                            Spacer(modifier = Modifier.width(32.dp))
+                                            Button(onClick = {
+                                                testButton()
+                                                WhatDoMEN.doNew = true
+                                                WhatDoMEN.doOld = false
+                                            }) {
+                                                Text("Test $category new")
+                                            }
+                                            Spacer(modifier = Modifier.height(32.dp))
+                                        }
+                                    } else {
+                                        Text(
+                                            text = "Test $category",
+                                            style = MaterialTheme.typography.h4
+                                        )
+                                        Button(onClick = testButton) {
+                                            Text("Test $category")
+                                        }
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
+                                }
+                            }
+                        } else if (showDisplay.value) {
+                            categories.forEach { category ->
+                                buttonGroups.displayButtonGroup[category]?.let { displayButton ->
                                     Text(
-                                        text = "Test $category",
+                                        text = "Display $category",
                                         style = MaterialTheme.typography.h4
                                     )
-                                    Button(onClick = testButton) {
-                                        Text("Test $category")
+                                    Button(onClick = displayButton) {
+                                        Text("Display $category")
                                     }
                                     Spacer(modifier = Modifier.height(16.dp))
-                                } else {
+                                }
+                            }
+                        } else if (showAdd.value) {
+                            categories.forEach { category ->
+                                buttonGroups.addButtonGroup[category]?.let { addButton ->
                                     Text(
-                                        text = "Test $category",
+                                        text = "Add $category",
                                         style = MaterialTheme.typography.h4
                                     )
-                                    Row {
-                                        Button(onClick = {
-                                            navHostController.navigate(
-                                                ScreenDestination.VerbsScreen.returnVerbsRoute(80,0)
-                                            )
-                                        }) {
-                                            Text("Test $category old")
-                                        }
-                                        Spacer(modifier = Modifier.width(32.dp))
-                                        Button(onClick = {
-                                            navHostController.navigate(
-                                                ScreenDestination.VerbsScreen.returnVerbsRoute(2000,80)
-                                            )
-                                        }) {
-                                            Text("Test $category new")
-                                        }
-                                        Spacer(modifier = Modifier.width(32.dp))
-                                        Button(onClick = {
-                                            navHostController.navigate(
-                                                ScreenDestination.VerbsScreen.returnVerbsRoute(2000,0)
-                                            )
-                                        }) {
-                                            Text("Test $category all")
-                                        }
-                                        Spacer(modifier = Modifier.height(32.dp))
+                                    Button(onClick = addButton) {
+                                        Text("Add $category")
                                     }
+                                    Spacer(modifier = Modifier.height(16.dp))
                                 }
                             }
-                        }
-                    } else if (showDisplay.value) {
-                        categories.forEach { category ->
-                            buttonGroups.displayButtonGroup[category]?.let { displayButton ->
-                                Text(
-                                    text = "Display $category",
-                                    style = MaterialTheme.typography.h4
-                                )
-                                Button(onClick = displayButton) {
-                                    Text("Display $category")
+                        } else if (showResults.value) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Button(onClick = goToResults) {
+                                    Text(text = "Show Results", style = MaterialTheme.typography.h4)
                                 }
-                                Spacer(modifier = Modifier.height(16.dp))
-                            }
-                        }
-                    } else if (showAdd.value) {
-                        categories.forEach { category ->
-                            buttonGroups.addButtonGroup[category]?.let { addButton ->
-                                Text(text = "Add $category", style = MaterialTheme.typography.h4)
-                                Button(onClick = addButton) {
-                                    Text("Add $category")
+                                Spacer(modifier = Modifier.height(48.dp))
+                                Button(onClick = clearSharedPref) {
+                                    Text(
+                                        text = "Clear Shared Preferences",
+                                        style = MaterialTheme.typography.h4
+                                    )
                                 }
-                                Spacer(modifier = Modifier.height(16.dp))
-                            }
-                        }
-                    } else if (showResults.value) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Button(onClick = goToResults) {
-                                Text(text = "Show Results", style = MaterialTheme.typography.h4)
-                            }
-                            Spacer(modifier = Modifier.height(48.dp))
-                            Button(onClick = clearSharedPref) {
-                                Text(
-                                    text = "Clear Shared Preferences",
-                                    style = MaterialTheme.typography.h4
-                                )
                             }
                         }
                     }
                 }
             }
-        }
 
         SyncViewModel.SyncState.Init -> {}
         is SyncViewModel.SyncState.Loading -> LinearLoadingState(
