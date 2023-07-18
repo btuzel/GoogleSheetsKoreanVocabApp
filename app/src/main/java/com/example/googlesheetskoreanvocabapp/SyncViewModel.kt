@@ -3,14 +3,11 @@ package com.example.googlesheetskoreanvocabapp
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
+import com.example.googlesheetskoreanvocabapp.common.VerbInstance
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.common.isOnline
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
-import com.example.googlesheetskoreanvocabapp.db.Adverbs
-import com.example.googlesheetskoreanvocabapp.db.Nouns
-import com.example.googlesheetskoreanvocabapp.db.Phrases
-import com.example.googlesheetskoreanvocabapp.db.Positions
-import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import com.example.googlesheetskoreanvocabapp.db.Verbs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +20,8 @@ import javax.inject.Inject
 class SyncViewModel @Inject constructor(
     private val verbRepository: VerbRepository,
     private val sheetsHelper: SheetsHelper,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val verbInstance: VerbInstance
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SyncState> = MutableStateFlow(
@@ -46,18 +44,8 @@ class SyncViewModel @Inject constructor(
     private suspend fun syncAllData() {
         if (isOnline()) {
             viewModelScope.launch {
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.VERBS, 1 / 6f)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.VERBS, 6 / 6f)
                 syncWords(SheetsHelper.WordType.VERBS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.NOUNS, 2 / 6f)
-                syncWords(SheetsHelper.WordType.NOUNS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.ADVERBS, 3 / 6f)
-                syncWords(SheetsHelper.WordType.ADVERBS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.USEFUL_PHRASES, 4 / 6f)
-                syncWords(SheetsHelper.WordType.USEFUL_PHRASES)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.POSITIONS, 5 / 6f)
-                syncWords(SheetsHelper.WordType.POSITIONS)
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.COMPLEX_SENTENCES, 6 / 6f)
-                syncWords(SheetsHelper.WordType.COMPLEX_SENTENCES)
                 _uiState.value = SyncState.Done
             }
         } else {
@@ -68,11 +56,6 @@ class SyncViewModel @Inject constructor(
     private suspend fun syncWords(wordType: SheetsHelper.WordType) {
         val dbWords = when (wordType) {
             SheetsHelper.WordType.VERBS -> verbRepository.getVerbs()
-            SheetsHelper.WordType.NOUNS -> verbRepository.getNouns()
-            SheetsHelper.WordType.ADVERBS -> verbRepository.getAdverbs()
-            SheetsHelper.WordType.USEFUL_PHRASES -> verbRepository.getPhrases()
-            SheetsHelper.WordType.POSITIONS -> verbRepository.getPositions()
-            SheetsHelper.WordType.COMPLEX_SENTENCES -> verbRepository.getSentences()
         }
         val getWordsFromSheets = sheetsHelper.getWordsFromSpreadsheet(wordType)
         val sheetsEngWords =
@@ -92,44 +75,13 @@ class SyncViewModel @Inject constructor(
                             koreanWord = differencesInKorWords[index]
                         )
                     )
-
-                    SheetsHelper.WordType.ADVERBS -> verbRepository.deleteAdverbs(
-                        Adverbs(
-                            englishWord = englishWord,
-                            koreanWord = differencesInKorWords[index]
-                        )
-                    )
-
-                    SheetsHelper.WordType.COMPLEX_SENTENCES -> verbRepository.deleteSentence(
-                        Sentences(
-                            englishWord = englishWord,
-                            koreanWord = differencesInKorWords[index]
-                        )
-                    )
-
-                    SheetsHelper.WordType.USEFUL_PHRASES -> verbRepository.deletePhrases(
-                        Phrases(
-                            englishWord = englishWord,
-                            koreanWord = differencesInKorWords[index]
-                        )
-                    )
-
-                    SheetsHelper.WordType.NOUNS -> verbRepository.deleteNouns(
-                        Nouns(
-                            englishWord = englishWord,
-                            koreanWord = differencesInKorWords[index]
-                        )
-                    )
-
-                    SheetsHelper.WordType.POSITIONS -> verbRepository.deletePositions(
-                        Positions(
-                            englishWord = englishWord,
-                            koreanWord = differencesInKorWords[index]
-                        )
-                    )
                 }
             }
         }
+    }
+
+    fun setVerbGroup(verbGroupType: VerbGroupType) {
+        verbInstance.setVerbGroupType(verbGroupType)
     }
 
     sealed class SyncState {

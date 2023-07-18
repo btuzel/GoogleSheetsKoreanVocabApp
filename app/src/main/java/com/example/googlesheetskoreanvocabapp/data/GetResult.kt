@@ -22,7 +22,7 @@ class GetResult @Inject constructor(
                 listOf()
             )
             val sharedPreferencesKeys = listOf(
-                "nouns", "verbs", "adverbs", "phrases", "sentences", "positions"
+              "verbs"
             )
             val gson = Gson()
             val resultList = mutableListOf<BaseWordPairViewModel.SaveResultCompleteState>()

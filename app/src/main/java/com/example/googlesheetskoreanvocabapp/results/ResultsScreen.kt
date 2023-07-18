@@ -28,7 +28,7 @@ import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
 fun ResultsScreen(resultsViewModel: ResultsViewModel = hiltViewModel()) {
     val collectedUiState = resultsViewModel.uiState.collectAsState()
 
-    val categories = listOf("Nouns", "Verbs", "Adverbs", "Positions", "Phrases", "Sentences")
+    val categories = listOf("Verbs")
 
     LazyColumn(
         contentPadding = PaddingValues(16.dp),

@@ -159,5 +159,4 @@ abstract class BaseWordPairViewModel(
         val secDuration: String,
         val incorrectStrings: List<String>,
     )
-
 }

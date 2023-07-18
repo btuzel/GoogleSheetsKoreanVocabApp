@@ -2,11 +2,6 @@ package com.example.googlesheetskoreanvocabapp.data
 
 import android.content.Context
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
-import com.example.googlesheetskoreanvocabapp.db.Adverbs
-import com.example.googlesheetskoreanvocabapp.db.Nouns
-import com.example.googlesheetskoreanvocabapp.db.Phrases
-import com.example.googlesheetskoreanvocabapp.db.Positions
-import com.example.googlesheetskoreanvocabapp.db.Sentences
 import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
 import com.example.googlesheetskoreanvocabapp.db.Verbs
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
@@ -59,11 +54,6 @@ class SheetsHelper @Inject constructor(
                 val emptyListengValuesIndices = engValues.indices.filter { engValues[it].size == 0 }
                 val sheetId = when (wordType) {
                     WordType.VERBS -> SheetId.VERBS
-                    WordType.ADVERBS -> SheetId.ADVERBS
-                    WordType.COMPLEX_SENTENCES -> SheetId.COMPLEX_SENTENCES
-                    WordType.USEFUL_PHRASES -> SheetId.USEFUL_PHRASES
-                    WordType.NOUNS -> SheetId.NOUNS
-                    WordType.POSITIONS -> SheetId.POSITIONS
                 }
                 emptyListengValuesIndices.forEach { deleteDataWithIndex(it, sheetId.sheetId) }
                 val koreanValues =
@@ -99,36 +89,6 @@ class SheetsHelper @Inject constructor(
                         cleanedEngValues.flatten(),
                         cleanedKorValues.flatten()
                     )
-
-                    WordType.ADVERBS -> addWordsToDB(
-                        wordType = wordType,
-                        cleanedEngValues.flatten(),
-                        cleanedKorValues.flatten()
-                    )
-
-                    WordType.COMPLEX_SENTENCES -> addWordsToDB(
-                        wordType = wordType,
-                        cleanedEngValues.flatten(),
-                        cleanedKorValues.flatten()
-                    )
-
-                    WordType.USEFUL_PHRASES -> addWordsToDB(
-                        wordType = wordType,
-                        cleanedEngValues.flatten(),
-                        cleanedKorValues.flatten()
-                    )
-
-                    WordType.NOUNS -> addWordsToDB(
-                        wordType = wordType,
-                        cleanedEngValues.flatten(),
-                        cleanedKorValues.flatten()
-                    )
-
-                    WordType.POSITIONS -> addWordsToDB(
-                        wordType = wordType,
-                        cleanedEngValues.flatten(),
-                        cleanedKorValues.flatten()
-                    )
                 }
                 return@withContext Pair(
                     cleanedEngValues,
@@ -152,61 +112,6 @@ class SheetsHelper @Inject constructor(
                 verbDatabase.verbDao().insertVerbs(
                     englishWords.mapIndexed { i, word ->
                         Verbs(
-                            englishWord = word,
-                            koreanWord = koreanWords[i]
-                        )
-                    }
-                )
-            }
-
-            WordType.ADVERBS -> {
-                verbDatabase.verbDao().insertAdverbs(
-                    englishWords.mapIndexed { i, word ->
-                        Adverbs(
-                            englishWord = word,
-                            koreanWord = koreanWords[i]
-                        )
-                    }
-                )
-            }
-
-            WordType.COMPLEX_SENTENCES -> {
-                verbDatabase.verbDao().insertSentences(
-                    englishWords.mapIndexed { i, word ->
-                        Sentences(
-                            englishWord = word,
-                            koreanWord = koreanWords[i]
-                        )
-                    }
-                )
-            }
-
-            WordType.USEFUL_PHRASES -> {
-                verbDatabase.verbDao().insertPhrases(
-                    englishWords.mapIndexed { i, word ->
-                        Phrases(
-                            englishWord = word,
-                            koreanWord = koreanWords[i]
-                        )
-                    }
-                )
-            }
-
-            WordType.NOUNS -> {
-                verbDatabase.verbDao().insertNouns(
-                    englishWords.mapIndexed { i, word ->
-                        Nouns(
-                            englishWord = word,
-                            koreanWord = koreanWords[i]
-                        )
-                    }
-                )
-            }
-
-            WordType.POSITIONS -> {
-                verbDatabase.verbDao().insertPositions(
-                    englishWords.mapIndexed { i, word ->
-                        Positions(
                             englishWord = word,
                             koreanWord = koreanWords[i]
                         )
@@ -250,7 +155,7 @@ class SheetsHelper @Inject constructor(
             return@withContext false // Return false if the update was not successful
         }
 
-    suspend fun deleteData(wordType: WordType, pairToDelete: Pair<String, String>) : Boolean =
+    suspend fun deleteData(wordType: WordType, pairToDelete: Pair<String, String>): Boolean =
         withContext(Dispatchers.IO) {
             try {
                 val sheetTitle = service.spreadsheets().get(SPREADSHEET_ID)
@@ -267,11 +172,6 @@ class SheetsHelper @Inject constructor(
                 }
                 val sheetId = when (wordType) {
                     WordType.VERBS -> SheetId.VERBS
-                    WordType.ADVERBS -> SheetId.ADVERBS
-                    WordType.COMPLEX_SENTENCES -> SheetId.COMPLEX_SENTENCES
-                    WordType.USEFUL_PHRASES -> SheetId.USEFUL_PHRASES
-                    WordType.NOUNS -> SheetId.NOUNS
-                    WordType.POSITIONS -> SheetId.POSITIONS
                 }
                 val rangeToDelete = "$sheetTitle!A${indexToDelete}:${indexToDelete}"
                 service.spreadsheets().values()
@@ -313,19 +213,9 @@ class SheetsHelper @Inject constructor(
 
     enum class WordType(val sheetIndex: Int) {
         VERBS(sheetIndex = 0),
-        ADVERBS(sheetIndex = 1),
-        COMPLEX_SENTENCES(sheetIndex = 2),
-        USEFUL_PHRASES(sheetIndex = 3),
-        NOUNS(sheetIndex = 4),
-        POSITIONS(sheetIndex = 5),
     }
 
     enum class SheetId(val sheetId: Int) {
         VERBS(sheetId = 0),
-        ADVERBS(sheetId = 1607057609),
-        COMPLEX_SENTENCES(sheetId = 1322873134),
-        USEFUL_PHRASES(sheetId = 1557476308),
-        NOUNS(sheetId = 1951405031),
-        POSITIONS(sheetId = 378086967),
     }
 }

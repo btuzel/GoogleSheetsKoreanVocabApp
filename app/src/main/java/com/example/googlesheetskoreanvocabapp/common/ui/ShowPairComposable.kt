@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.googlesheetskoreanvocabapp.common.viewmodel.BaseWordPairViewModel
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.ui.theme.ErrorRed
@@ -55,6 +54,7 @@ fun ShowPairComposable(
     when (wordState) {
         is BaseWordPairViewModel.WordState.AddWordState -> {
         }
+
         is BaseWordPairViewModel.WordState.DeleteWordState -> {
             if (wordState.added) {
                 LaunchedEffect(wordState.word) {
@@ -103,97 +103,46 @@ fun ShowPairComposable(
                 Text("Show/Hide translations")
             }
         }
-        if (wordType == SheetsHelper.WordType.COMPLEX_SENTENCES) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    itemsIndexed(filteredFirstList) { index, it ->
-                        val snooze = SwipeAction(
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Filled.Delete,
-                                    contentDescription = "Delete",
-                                )
-                            },
-                            background = ErrorRed,
-                            isUndo = true,
-                            onSwipe = { onDelete(it, filteredSecondList[index]) },
-                        )
-                        SwipeableActionsBox(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            endActions = listOf(snooze)
+                itemsIndexed(filteredFirstList) { index, it ->
+                    val snooze = SwipeAction(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "Delete",
+                            )
+                        },
+                        background = ErrorRed,
+                        isUndo = true,
+                        onSwipe = { onDelete(it, filteredSecondList[index]) },
+                    )
+                    SwipeableActionsBox(
+                        endActions = listOf(snooze)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(vertical = 16.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .padding(vertical = 16.dp)
-                                    .fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Row {
-                                    Text(text = (index + 1).toString() + "-")
-                                    Text(text = it)
-                                }
-                                Row {
-                                    Text(
-                                        text = filteredSecondList[index],
-                                        lineHeight = 44.sp,
-                                        color = if (showTranslations) {
-                                            Color.White
-                                        } else Color.Black
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    itemsIndexed(filteredFirstList) { index, it ->
-                        val snooze = SwipeAction(
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Filled.Delete,
-                                    contentDescription = "Delete",
-                                )
-                            },
-                            background = ErrorRed,
-                            isUndo = true,
-                            onSwipe = { onDelete(it, filteredSecondList[index]) },
-                        )
-                        SwipeableActionsBox(
-                            endActions = listOf(snooze)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(vertical = 16.dp)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Text(text = (index + 1).toString() + "-")
-                                Text(text = it, modifier = Modifier.padding(end = 32.dp))
-                                Text(
-                                    text = filteredSecondList[index],
-                                    color = if (showTranslations) {
-                                        Color.White
-                                    } else Color.Black
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                            }
+                            Text(text = (index + 1).toString() + "-")
+                            Text(text = it, modifier = Modifier.padding(end = 32.dp))
+                            Text(
+                                text = filteredSecondList[index],
+                                color = if (showTranslations) {
+                                    Color.White
+                                } else Color.Black
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
                         }
                     }
                 }
@@ -201,3 +150,4 @@ fun ShowPairComposable(
         }
     }
 }
+

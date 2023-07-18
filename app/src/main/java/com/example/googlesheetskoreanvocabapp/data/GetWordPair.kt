@@ -1,5 +1,7 @@
 package com.example.googlesheetskoreanvocabapp.data
 
+import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
+import com.example.googlesheetskoreanvocabapp.common.VerbInstance
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.common.isOnline
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
@@ -9,7 +11,8 @@ import javax.inject.Inject
 
 class GetWordPair @Inject constructor(
     private val sheetsHelper: SheetsHelper,
-    private val verbRepository: VerbRepository
+    private val verbRepository: VerbRepository,
+    private val verbInstance: VerbInstance
 ) {
     suspend operator fun invoke(wordType: SheetsHelper.WordType): Pair<List<String>, List<String>> =
         withContext(
@@ -20,12 +23,14 @@ class GetWordPair @Inject constructor(
                     SheetsHelper.WordType.VERBS -> {
                         val verbs =
                             getWordsFromSpreadsheet(SheetsHelper.WordType.VERBS)
-                        if (WhatDoMEN.doOld) {
+                        if(verbInstance.returnGroupType() == VerbGroupType.OLD) {
                             return@withContext Pair(
                                 verbs.first.take(80),
                                 verbs.second.take(80)
                             )
-                        } else if(WhatDoMEN.doNew) {
+                        } else if (verbInstance.returnGroupType() == VerbGroupType.ALL) {
+                            return@withContext verbs
+                        } else if (verbInstance.returnGroupType() == VerbGroupType.NEW){
                             return@withContext Pair(
                                 verbs.first.takeLast(verbs.first.size - 80),
                                 verbs.second.takeLast(verbs.first.size - 80)
@@ -34,35 +39,10 @@ class GetWordPair @Inject constructor(
                             return@withContext verbs
                         }
                     }
-
-                    SheetsHelper.WordType.ADVERBS -> {
-                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.ADVERBS)
-                    }
-
-                    SheetsHelper.WordType.COMPLEX_SENTENCES -> {
-                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.COMPLEX_SENTENCES)
-                    }
-
-                    SheetsHelper.WordType.USEFUL_PHRASES -> {
-                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.USEFUL_PHRASES)
-                    }
-
-                    SheetsHelper.WordType.NOUNS -> {
-                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.NOUNS)
-                    }
-
-                    SheetsHelper.WordType.POSITIONS -> {
-                        return@withContext getWordsFromSpreadsheet(SheetsHelper.WordType.POSITIONS)
-                    }
                 }
             } else {
                 when (wordType) {
                     SheetsHelper.WordType.VERBS -> return@withContext verbRepository.getVerbs()
-                    SheetsHelper.WordType.ADVERBS -> return@withContext verbRepository.getAdverbs()
-                    SheetsHelper.WordType.COMPLEX_SENTENCES -> return@withContext verbRepository.getSentences()
-                    SheetsHelper.WordType.USEFUL_PHRASES -> return@withContext verbRepository.getPhrases()
-                    SheetsHelper.WordType.NOUNS -> return@withContext verbRepository.getNouns()
-                    SheetsHelper.WordType.POSITIONS -> return@withContext verbRepository.getPositions()
                 }
             }
         }
@@ -78,9 +58,4 @@ class GetWordPair @Inject constructor(
             }
         )
     }
-}
-
-object WhatDoMEN{
-    var doOld : Boolean = false
-    var doNew : Boolean = false
 }
