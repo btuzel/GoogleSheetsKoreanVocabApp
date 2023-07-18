@@ -30,6 +30,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
 import com.example.googlesheetskoreanvocabapp.common.ui.KoreanButton
 import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
+import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
 import com.example.googlesheetskoreanvocabapp.ui.theme.CyanCobaltBlue
 import com.example.googlesheetskoreanvocabapp.ui.theme.SonicSilver
@@ -65,90 +66,137 @@ fun WordManagementScreen(
     clearSharedPref: () -> Unit,
     uiState: SyncViewModel.SyncState
 ) {
-
     when (uiState) {
-        SyncViewModel.SyncState.Done -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                RaindropAnimation()
+        SyncViewModel.SyncState.Done -> DoneStateScreen(
+            goToNumbers = goToNumbers,
+            goTestVerb = goTestVerb,
+            doVerbs = doVerbs,
+            goToAdd = goToAdd,
+            goToDisplay = goToDisplay,
+            goToResults = goToResults,
+            clearSharedPref = clearSharedPref
+        )
 
-                Spacer(modifier = Modifier.height(16.dp))
+        SyncViewModel.SyncState.Init -> InitStateScreen()
+        is SyncViewModel.SyncState.Loading -> LoadingStateScreen(
+            uiState.wordType,
+            uiState.percentage
+        )
+    }
+}
 
-                Button(onClick = { goToNumbers() }) {
-                    Text(text = "SinoKorean numbers")
-                }
+@Composable
+fun DoneStateScreen(
+    goToNumbers: () -> Unit,
+    goTestVerb: () -> Unit,
+    doVerbs: (VerbGroupType) -> Unit,
+    goToAdd: () -> Unit,
+    goToDisplay: () -> Unit,
+    goToResults: () -> Unit,
+    clearSharedPref: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        RaindropAnimation()
 
-                Text(
-                    text = "Test Verb",
-                    style = MaterialTheme.typography.h4,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
+        Spacer(modifier = Modifier.height(16.dp))
 
-                Row {
-                    Button(onClick = {
-                        doVerbs(VerbGroupType.ALL)
-                        goTestVerb()
-                    }) {
-                        Text("Test Verb all")
-                    }
-                    Spacer(modifier = Modifier.width(32.dp))
-                    Button(onClick = {
-                        doVerbs(VerbGroupType.OLD)
-                        goTestVerb()
-                    }) {
-                        Text("Test Verb old")
-                    }
-                    Spacer(modifier = Modifier.width(32.dp))
-                    Button(onClick = {
-                        doVerbs(VerbGroupType.NEW)
-                        goTestVerb()
-                    }) {
-                        Text("Test Verb new")
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
-
-                KoreanButton(
-                    onClick = { goToAdd() },
-                    backgroundColor = Teal200,
-                    buttonText = "Add"
-                )
-
-                KoreanButton(
-                    onClick = { goToDisplay() },
-                    backgroundColor = SonicSilver,
-                    buttonText = "Display"
-                )
-                KoreanButton(
-                    onClick = { goToResults() },
-                    backgroundColor = CyanCobaltBlue,
-                    buttonText = "Results"
-                )
-
-                Spacer(modifier = Modifier.height(48.dp))
-                Button(onClick = clearSharedPref) {
-                    Text(
-                        text = "Clear Shared Preferences",
-                        style = MaterialTheme.typography.h4
-                    )
-                }
-            }
+        Button(onClick = { goToNumbers() }) {
+            Text(text = "SinoKorean numbers")
         }
 
-        SyncViewModel.SyncState.Init -> {
-            // Handle initialization state if needed
-        }
+        TestVerbButtons(
+            doVerbs = doVerbs,
+            goTestVerb = goTestVerb
+        )
 
-        is SyncViewModel.SyncState.Loading -> {
-            LinearLoadingState(
-                wordType = uiState.wordType,
-                progress = uiState.percentage
+        KoreanButtonsGroup(goToAdd = goToAdd, goToDisplay = goToDisplay, goToResults = goToResults)
+
+        Spacer(modifier = Modifier.height(48.dp))
+
+        Button(onClick = clearSharedPref) {
+            Text(
+                text = "Clear Shared Preferences",
+                style = MaterialTheme.typography.h4
             )
         }
     }
+}
+
+@Composable
+fun TestVerbButtons(
+    doVerbs: (VerbGroupType) -> Unit,
+    goTestVerb: () -> Unit
+) {
+    Text(
+        text = "Test Verb",
+        style = MaterialTheme.typography.h4,
+        modifier = Modifier.padding(top = 16.dp)
+    )
+
+    Row {
+        Button(onClick = {
+            doVerbs(VerbGroupType.ALL)
+            goTestVerb()
+        }) {
+            Text("Test Verb all")
+        }
+        Spacer(modifier = Modifier.width(32.dp))
+        Button(onClick = {
+            doVerbs(VerbGroupType.OLD)
+            goTestVerb()
+        }) {
+            Text("Test Verb old")
+        }
+        Spacer(modifier = Modifier.width(32.dp))
+        Button(onClick = {
+            doVerbs(VerbGroupType.NEW)
+            goTestVerb()
+        }) {
+            Text("Test Verb new")
+        }
+        Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+fun KoreanButtonsGroup(
+    goToAdd: () -> Unit,
+    goToDisplay: () -> Unit,
+    goToResults: () -> Unit
+) {
+    KoreanButton(
+        onClick = { goToAdd() },
+        backgroundColor = Teal200,
+        buttonText = "Add"
+    )
+
+    KoreanButton(
+        onClick = { goToDisplay() },
+        backgroundColor = SonicSilver,
+        buttonText = "Display"
+    )
+    KoreanButton(
+        onClick = { goToResults() },
+        backgroundColor = CyanCobaltBlue,
+        buttonText = "Results"
+    )
+}
+
+@Composable
+fun InitStateScreen() {
+    // Handle initialization state if needed
+}
+
+@Composable
+fun LoadingStateScreen(wordType: SheetsHelper.WordType, percentage: Float) {
+    LinearLoadingState(
+        wordType = wordType,
+        progress = percentage
+    )
 }
 
 @Composable
