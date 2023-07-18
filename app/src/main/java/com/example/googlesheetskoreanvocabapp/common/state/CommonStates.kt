@@ -10,9 +10,8 @@ sealed class AnswerState {
 }
 
 
-sealed class Answer {
-    object CORRECT : Answer()
-    object INCORRECT : Answer()
+enum class Answer {
+     CORRECT, INCORRECT
 }
 
 data class GetWords(
