@@ -4,9 +4,12 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.googlesheetskoreanvocabapp.MainScreen
+import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
 import com.example.googlesheetskoreanvocabapp.numbers.NumbersScreen
 import com.example.googlesheetskoreanvocabapp.results.ResultsScreen
 import com.example.googlesheetskoreanvocabapp.verbs.AddVerbScreen
@@ -22,8 +25,15 @@ fun NavGraph(
         navController = navHostController,
         startDestination = ScreenDestination.MainScreen.route
     ) {
-        composable(route = ScreenDestination.VerbsScreen.route) {
-            VerbsScreen(onComplete = { navigateToMainScreen(navHostController) })
+        composable(
+            route = ScreenDestination.VerbsScreen.route,
+            arguments = listOf(navArgument(VERB_TYPE) {
+                type = NavType.StringType
+            })
+        ) {
+            VerbsScreen(onComplete = { navigateToMainScreen(navHostController) },
+                verbGroupType = it.arguments?.getString(VERB_TYPE)?.let { it1 -> stringToEnum(it1) }!!
+            )
         }
         composable(route = ScreenDestination.AddVerbsScreen.route) {
             AddVerbScreen()
@@ -40,6 +50,14 @@ fun NavGraph(
         composable(route = ScreenDestination.MainScreen.route) {
             MainScreen(navHostController)
         }
+    }
+}
+
+fun stringToEnum(input: String): VerbGroupType? {
+    return try {
+        VerbGroupType.valueOf(input)
+    } catch (e: IllegalArgumentException) {
+        null
     }
 }
 

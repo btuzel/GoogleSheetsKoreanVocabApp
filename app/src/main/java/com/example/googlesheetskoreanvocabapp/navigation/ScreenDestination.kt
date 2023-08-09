@@ -1,8 +1,14 @@
 package com.example.googlesheetskoreanvocabapp.navigation
 
+const val VERB_TYPE = "verbType"
+
 sealed class ScreenDestination(val route: String) {
 
-    object VerbsScreen : ScreenDestination(route = "verbs")
+    object VerbsScreen : ScreenDestination(route = "verbs/{$VERB_TYPE}") {
+        fun passType(type: String): String {
+            return this.route.replace(oldValue = "{$VERB_TYPE}", newValue = type)
+        }
+    }
 
     object MainScreen :
         ScreenDestination(route = "main")

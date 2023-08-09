@@ -48,8 +48,8 @@ fun MainScreen(
         goToNumbers = { navHostController.navigate(ScreenDestination.NumbersScreen.route) },
         goToResults = { navHostController.navigate(ScreenDestination.ResultsScreen.route) },
         clearSharedPref = syncViewModel::clearSharedPref,
-        doVerbs = syncViewModel::setVerbGroup,
-        goTestVerb = { navHostController.navigate(ScreenDestination.VerbsScreen.route) },
+        //doVerbs = syncViewModel::setVerbGroup,
+        goTestVerb = { navHostController.navigate(route = ScreenDestination.VerbsScreen.passType(it.name)) },
         goToDisplay = { navHostController.navigate(ScreenDestination.DisplayVerbsScreen.route) },
         goToAdd = { navHostController.navigate(ScreenDestination.AddVerbsScreen.route) }
     )
@@ -61,8 +61,8 @@ fun WordManagementScreen(
     goToNumbers: () -> Unit,
     goToDisplay: () -> Unit,
     goToAdd: () -> Unit,
-    goTestVerb: () -> Unit,
-    doVerbs: (VerbGroupType) -> Unit,
+    goTestVerb: (VerbGroupType) -> Unit,
+    //doVerbs: (VerbGroupType) -> Unit,
     clearSharedPref: () -> Unit,
     uiState: SyncViewModel.SyncState
 ) {
@@ -70,7 +70,7 @@ fun WordManagementScreen(
         SyncViewModel.SyncState.Done -> DoneStateScreen(
             goToNumbers = goToNumbers,
             goTestVerb = goTestVerb,
-            doVerbs = doVerbs,
+            //doVerbs = doVerbs,
             goToAdd = goToAdd,
             goToDisplay = goToDisplay,
             goToResults = goToResults,
@@ -88,8 +88,8 @@ fun WordManagementScreen(
 @Composable
 fun DoneStateScreen(
     goToNumbers: () -> Unit,
-    goTestVerb: () -> Unit,
-    doVerbs: (VerbGroupType) -> Unit,
+    goTestVerb: (VerbGroupType) -> Unit,
+    //doVerbs: (VerbGroupType) -> Unit,
     goToAdd: () -> Unit,
     goToDisplay: () -> Unit,
     goToResults: () -> Unit,
@@ -109,7 +109,7 @@ fun DoneStateScreen(
         }
 
         TestVerbButtons(
-            doVerbs = doVerbs,
+            //doVerbs = doVerbs,
             goTestVerb = goTestVerb
         )
 
@@ -128,8 +128,8 @@ fun DoneStateScreen(
 
 @Composable
 fun TestVerbButtons(
-    doVerbs: (VerbGroupType) -> Unit,
-    goTestVerb: () -> Unit
+    //doVerbs: (VerbGroupType) -> Unit,
+    goTestVerb: (VerbGroupType) -> Unit
 ) {
     Text(
         text = "Test Verb",
@@ -139,26 +139,43 @@ fun TestVerbButtons(
 
     Row {
         Button(onClick = {
-            doVerbs(VerbGroupType.ALL)
-            goTestVerb()
+            goTestVerb(VerbGroupType.ALL)
         }) {
             Text("Test Verb all")
         }
-        Spacer(modifier = Modifier.width(32.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = {
-            doVerbs(VerbGroupType.OLD)
-            goTestVerb()
+            goTestVerb(VerbGroupType.OLD)
         }) {
             Text("Test Verb old")
         }
-        Spacer(modifier = Modifier.width(32.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = {
-            doVerbs(VerbGroupType.NEW)
-            goTestVerb()
+            goTestVerb(VerbGroupType.NEW)
         }) {
             Text("Test Verb new")
         }
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    Row {
+        Button(onClick = {
+            goTestVerb(VerbGroupType.COLORS)
+        }) {
+            Text("Test COLOR")
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Button(onClick = {
+            goTestVerb(VerbGroupType.UPDOWNLEFTRIGHT)
+        }) {
+            Text("Test UPDOWN")
+        }
+        Button(onClick = {
+            goTestVerb(VerbGroupType.WEEKDAYS)
+        }) {
+            Text("Test DAYSOFWEEK")
+        }
+        Spacer(modifier = Modifier.width(8.dp))
     }
 }
 

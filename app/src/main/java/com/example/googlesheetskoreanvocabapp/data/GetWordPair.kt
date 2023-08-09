@@ -1,7 +1,6 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
-import com.example.googlesheetskoreanvocabapp.common.VerbInstance
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.common.isOnline
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
@@ -12,9 +11,12 @@ import javax.inject.Inject
 class GetWordPair @Inject constructor(
     private val sheetsHelper: SheetsHelper,
     private val verbRepository: VerbRepository,
-    private val verbInstance: VerbInstance
+    //private val verbInstance: VerbInstance
 ) {
-    suspend operator fun invoke(wordType: SheetsHelper.WordType): Pair<List<String>, List<String>> =
+    suspend operator fun invoke(
+        wordType: SheetsHelper.WordType,
+        verbGroupType: VerbGroupType = VerbGroupType.ALL
+    ): Pair<List<String>, List<String>> =
         withContext(
             Dispatchers.IO
         ) {
@@ -23,20 +25,44 @@ class GetWordPair @Inject constructor(
                     SheetsHelper.WordType.VERBS -> {
                         val verbs =
                             getWordsFromSpreadsheet(SheetsHelper.WordType.VERBS)
-                        if(verbInstance.returnGroupType() == VerbGroupType.OLD) {
-                            return@withContext Pair(
-                                verbs.first.take(80),
-                                verbs.second.take(80)
+                        when (verbGroupType) {
+                            VerbGroupType.OLD -> {
+                                return@withContext Pair(
+                                    verbs.first.take(130),
+                                    verbs.second.take(130)
+                                )
+                            }
+
+                            VerbGroupType.ALL -> {
+                                return@withContext verbs
+                            }
+
+                            VerbGroupType.NEW -> {
+                                return@withContext Pair(
+                                    verbs.first.takeLast(verbs.first.size - 130),
+                                    verbs.second.takeLast(verbs.first.size - 130)
+                                )
+                            }
+
+                            VerbGroupType.COLORS -> {
+                                return@withContext Pair(
+                                    verbs.first.subList(247, 258),
+                                    verbs.first.subList(247, 258)
+                                )
+                            }
+
+                            VerbGroupType.UPDOWNLEFTRIGHT -> return@withContext Pair(
+                                verbs.first.subList(235,247),
+                                verbs.first.subList(235,247)
                             )
-                        } else if (verbInstance.returnGroupType() == VerbGroupType.ALL) {
-                            return@withContext verbs
-                        } else if (verbInstance.returnGroupType() == VerbGroupType.NEW){
-                            return@withContext Pair(
-                                verbs.first.takeLast(verbs.first.size - 80),
-                                verbs.second.takeLast(verbs.first.size - 80)
+
+                            VerbGroupType.WEEKDAYS -> return@withContext Pair(
+                                verbs.first.subList(217,224),
+                                verbs.first.subList(217,224)
                             )
-                        } else {
-                            return@withContext verbs
+                            else -> {
+                                return@withContext verbs
+                            }
                         }
                     }
                 }

@@ -134,15 +134,24 @@ fun ShowPairComposable(
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            Text(text = (index + 1).toString() + "-")
-                            Text(text = it, modifier = Modifier.padding(end = 32.dp))
                             Text(
-                                text = filteredSecondList[index],
-                                color = if (showTranslations) {
-                                    Color.White
-                                } else Color.Black
+                                text = (index + 1).toString() + "-",
+                                modifier = Modifier.padding(end = 8.dp)
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = it,
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
+                                Text(
+                                    text = filteredSecondList[index],
+                                    color = if (showTranslations) {
+                                        Color.White
+                                    } else Color.Black
+                                )
+                            }
                         }
                     }
                 }
