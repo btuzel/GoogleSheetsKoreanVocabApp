@@ -41,9 +41,13 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun NumbersScreen(numbersViewModel: NumbersViewModel = hiltViewModel()) {
+fun NumbersScreen(numbersViewModel: NumbersViewModel = hiltViewModel(), isPureKorean: String) {
     val collectedUiState = numbersViewModel.uiState.collectAsState()
+    LaunchedEffect(key1 = Unit) {
+        numbersViewModel.isPureKorean = isPureKorean
+    }
     TestPairComposable2(
+        isPureKorean = isPureKorean,
         englishText = collectedUiState.value.englishNumber,
         answerCorrectText = collectedUiState.value.wasAnswerCorrect,
         koreanTranslation = collectedUiState.value.defaultNumber,
@@ -55,11 +59,12 @@ fun NumbersScreen(numbersViewModel: NumbersViewModel = hiltViewModel()) {
 
 @Composable
 fun TestPairComposable2(
+    isPureKorean: String,
     englishText: Int,
     answerCorrectText: AnswerState,
     koreanTranslation: String,
     koreanTranslationChanged: (String) -> Unit,
-    checkAnswer: (String, String) -> Unit,
+    checkAnswer: (String, String, Boolean) -> Unit,
     setStateToInit: () -> Unit,
 ) {
     val correctAnswerCount = remember {
@@ -107,7 +112,8 @@ fun TestPairComposable2(
             }
         }
         Text(
-            text = "Numba", modifier = Modifier.padding(vertical = 16.dp),
+            text = if (isPureKorean == "true") "Pure Korean" else "Sino Korean",
+            modifier = Modifier.padding(vertical = 16.dp),
             style = MaterialTheme.typography.body1,
             fontSize = 42.sp,
             fontWeight = FontWeight.Bold
@@ -180,11 +186,14 @@ fun TestPairComposable2(
                 .padding(bottom = 32.dp)
         )
         AppButton(onClick = {
-            checkAnswer(englishText.toString(), koreanTranslation)
+            checkAnswer(
+                englishText.toString(),
+                koreanTranslation,
+                isPureKorean == "true"
+            )
             attempt.value = koreanTranslation
         }, text = "Submit")
     }
-
 
 
 }

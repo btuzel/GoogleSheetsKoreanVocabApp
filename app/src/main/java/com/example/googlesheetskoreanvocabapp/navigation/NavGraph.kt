@@ -44,8 +44,17 @@ fun NavGraph(
         composable(route = ScreenDestination.ResultsScreen.route) {
             ResultsScreen()
         }
-        composable(route = ScreenDestination.NumbersScreen.route) {
-            NumbersScreen()
+        composable(
+            route = ScreenDestination.NumbersScreen.route,
+            arguments = listOf(navArgument(NUMBER_TYPE) {
+                type = NavType.StringType
+            })
+        ) {
+            it.arguments?.getString(NUMBER_TYPE)?.let { it1 ->
+                NumbersScreen(
+                    isPureKorean = it1
+                )
+            }
         }
         composable(route = ScreenDestination.MainScreen.route) {
             MainScreen(navHostController)

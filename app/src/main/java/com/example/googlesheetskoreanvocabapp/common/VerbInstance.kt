@@ -17,5 +17,5 @@ class VerbInstance @Inject constructor() {
 }
 
 enum class VerbGroupType {
-    OLD, NEW, ALL, COLORS, WEEKDAYS, UPDOWNLEFTRIGHT
+    OLD, NEW, ALL, COLORS, WEEKDAYS, UPDOWNLEFTRIGHT, TIME
 }

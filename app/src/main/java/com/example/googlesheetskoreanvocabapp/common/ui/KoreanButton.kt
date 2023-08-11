@@ -24,7 +24,7 @@ fun KoreanButton(
         },
         modifier = Modifier
             .size(180.dp)
-            .padding(16.dp),
+            .padding(8.dp),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,

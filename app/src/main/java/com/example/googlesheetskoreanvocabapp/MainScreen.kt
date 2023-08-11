@@ -45,10 +45,15 @@ fun MainScreen(
 
     WordManagementScreen(
         uiState = uiState,
-        goToNumbers = { navHostController.navigate(ScreenDestination.NumbersScreen.route) },
+        goToNumbers = {
+            navHostController.navigate(
+                route = ScreenDestination.NumbersScreen.passType(
+                    it.toString()
+                )
+            )
+        },
         goToResults = { navHostController.navigate(ScreenDestination.ResultsScreen.route) },
         clearSharedPref = syncViewModel::clearSharedPref,
-        //doVerbs = syncViewModel::setVerbGroup,
         goTestVerb = { navHostController.navigate(route = ScreenDestination.VerbsScreen.passType(it.name)) },
         goToDisplay = { navHostController.navigate(ScreenDestination.DisplayVerbsScreen.route) },
         goToAdd = { navHostController.navigate(ScreenDestination.AddVerbsScreen.route) }
@@ -58,11 +63,10 @@ fun MainScreen(
 @Composable
 fun WordManagementScreen(
     goToResults: () -> Unit,
-    goToNumbers: () -> Unit,
+    goToNumbers: (Boolean) -> Unit,
     goToDisplay: () -> Unit,
     goToAdd: () -> Unit,
     goTestVerb: (VerbGroupType) -> Unit,
-    //doVerbs: (VerbGroupType) -> Unit,
     clearSharedPref: () -> Unit,
     uiState: SyncViewModel.SyncState
 ) {
@@ -70,7 +74,6 @@ fun WordManagementScreen(
         SyncViewModel.SyncState.Done -> DoneStateScreen(
             goToNumbers = goToNumbers,
             goTestVerb = goTestVerb,
-            //doVerbs = doVerbs,
             goToAdd = goToAdd,
             goToDisplay = goToDisplay,
             goToResults = goToResults,
@@ -87,9 +90,8 @@ fun WordManagementScreen(
 
 @Composable
 fun DoneStateScreen(
-    goToNumbers: () -> Unit,
+    goToNumbers: (Boolean) -> Unit,
     goTestVerb: (VerbGroupType) -> Unit,
-    //doVerbs: (VerbGroupType) -> Unit,
     goToAdd: () -> Unit,
     goToDisplay: () -> Unit,
     goToResults: () -> Unit,
@@ -104,18 +106,21 @@ fun DoneStateScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { goToNumbers() }) {
+        Button(onClick = { goToNumbers(false) }) {
             Text(text = "SinoKorean numbers")
         }
 
+        Button(onClick = { goToNumbers(true) }) {
+            Text(text = "PureKorean numbers")
+        }
+
         TestVerbButtons(
-            //doVerbs = doVerbs,
             goTestVerb = goTestVerb
         )
 
         KoreanButtonsGroup(goToAdd = goToAdd, goToDisplay = goToDisplay, goToResults = goToResults)
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = clearSharedPref) {
             Text(
@@ -128,7 +133,6 @@ fun DoneStateScreen(
 
 @Composable
 fun TestVerbButtons(
-    //doVerbs: (VerbGroupType) -> Unit,
     goTestVerb: (VerbGroupType) -> Unit
 ) {
     Text(
@@ -176,6 +180,14 @@ fun TestVerbButtons(
             Text("Test DAYSOFWEEK")
         }
         Spacer(modifier = Modifier.width(8.dp))
+    }
+
+    Row {
+        Button(onClick = {
+            goTestVerb(VerbGroupType.TIME)
+        }) {
+            Text("Test TIME")
+        }
     }
 }
 

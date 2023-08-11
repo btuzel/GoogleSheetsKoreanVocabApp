@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.state.AnswerState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NumbersViewModel @Inject constructor(): ViewModel() {
 
+    var isPureKorean = ""
     private val shownNumbers = mutableSetOf<Int>()
     private val incorrectNumbers = mutableListOf<Int>()
 
@@ -25,7 +27,7 @@ class NumbersViewModel @Inject constructor(): ViewModel() {
     )
     val uiState: StateFlow<GetNumbers> = _uiState
 
-    private fun numberToKorean(number: Int): String {
+    private fun numberToKoreanChinese(number: Int): String {
         val units = arrayOf(
             "", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구", "십",
             "십일", "십이", "십삼", "십사", "십오", "십육", "십칠", "십팔", "십구"
@@ -78,18 +80,44 @@ class NumbersViewModel @Inject constructor(): ViewModel() {
         throw IllegalArgumentException("Number out of range")
     }
 
+    private fun numberToKoreanPureKorean(number: Int): String {
+        val units = arrayOf(
+            "", "하나", "둘", "셋", "넷", "다섯", "여섯", "일곱", "여덟", "아홉", "열",
+            "열하나", "열둘", "열셋" ,"열넷", "열다섯", "열여섯", "열일곱", "열여덟", "열아홉"
+        )
+
+        val tens = arrayOf("", "", "스물", "서른", "마흔", "쉰", "예순", "일흔", "여든", "아흔")
+
+
+        if (number < 20) {
+            return units[number]
+        }
+
+        if (number < 100) {
+            return tens[number / 10] + if (number % 10 != 0) units[number % 10] else ""
+        }
+
+        throw IllegalArgumentException("Number out of range")
+    }
+
     private fun getSecondDigit(number: Int): Int {
         return (number % 100) / 10
     }
 
-    fun checkAnswer(englishWord: String, koreanTranslation: String) {
+    fun checkAnswer(englishWord: String, koreanTranslation: String, isPureKorean : Boolean) {
         viewModelScope.launch {
-            val correctKoreanTranslation = numberToKorean(englishWord.toInt())
-            if (correctKoreanTranslation == koreanTranslation) {
+            val correctKoreanTranslation = if (isPureKorean) {
+                numberToKoreanPureKorean(englishWord.toInt())
+            } else {
+                numberToKoreanChinese(englishWord.toInt())
+            }
+            val isCorrect = correctKoreanTranslation == koreanTranslation
+            if (isCorrect) {
                 sendRandomNumber(AnswerState.CorrectAnswer())
             } else {
-                shownNumbers.remove(englishWord.toInt())
-                incorrectNumbers.add(englishWord.toInt())
+                val number = englishWord.toInt()
+                shownNumbers.remove(number)
+                incorrectNumbers.add(number)
                 sendRandomNumber(AnswerState.WrongAnswer(correctAnswer = correctKoreanTranslation))
             }
         }
@@ -97,6 +125,7 @@ class NumbersViewModel @Inject constructor(): ViewModel() {
 
     init {
         viewModelScope.launch {
+            delay(500L)
             sendRandomNumber(AnswerState.Init)
         }
     }
@@ -111,13 +140,16 @@ class NumbersViewModel @Inject constructor(): ViewModel() {
 
     private fun sendRandomNumber(wasAnswerCorrect: AnswerState) {
         _uiState.value = GetNumbers(
-            getRandomNumberInKorean(),
+            getRandomNumberInKorean(isPureKorean=="true"),
             "",
             wasAnswerCorrect,
         )
     }
 
-    private fun getRandomNumberInKorean(): Int {
+    private fun getRandomNumberInKorean(isPureKorean: Boolean): Int {
+        if(isPureKorean) {
+            return Random().nextInt(99) + 1
+        }
         val randomNumber: Int = if (Random().nextBoolean()) {
             Random().nextInt(101) + 1
         } else {

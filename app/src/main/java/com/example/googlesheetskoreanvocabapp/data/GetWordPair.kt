@@ -47,18 +47,28 @@ class GetWordPair @Inject constructor(
                             VerbGroupType.COLORS -> {
                                 return@withContext Pair(
                                     verbs.first.subList(247, 258),
-                                    verbs.first.subList(247, 258)
+                                    verbs.second.subList(247, 258)
                                 )
                             }
 
-                            VerbGroupType.UPDOWNLEFTRIGHT -> return@withContext Pair(
-                                verbs.first.subList(235,247),
-                                verbs.first.subList(235,247)
-                            )
+                            VerbGroupType.UPDOWNLEFTRIGHT -> {
+                                return@withContext Pair(
+                                    verbs.first.subList(235,247),
+                                    verbs.second.subList(235,247)
+                                )
+                            }
 
-                            VerbGroupType.WEEKDAYS -> return@withContext Pair(
-                                verbs.first.subList(217,224),
-                                verbs.first.subList(217,224)
+                            VerbGroupType.WEEKDAYS -> {
+                                return@withContext Pair(
+                                    verbs.first.subList(217,224),
+                                    verbs.second.subList(217,224)
+                                )
+                            }
+
+                            VerbGroupType.TIME ->
+                                return@withContext Pair(
+                                verbs.first.subList(258,288),
+                                verbs.second.subList(258,288)
                             )
                             else -> {
                                 return@withContext verbs
