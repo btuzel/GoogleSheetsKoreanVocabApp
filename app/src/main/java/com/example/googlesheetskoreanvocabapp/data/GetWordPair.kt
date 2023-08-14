@@ -45,31 +45,41 @@ class GetWordPair @Inject constructor(
                             }
 
                             VerbGroupType.COLORS -> {
+                                val fromIndex = verbs.first.indexOf("Red")
+                                val toIndex = verbs.first.indexOf("White") + 1
                                 return@withContext Pair(
-                                    verbs.first.subList(247, 258),
-                                    verbs.second.subList(247, 258)
+                                    verbs.first.subList(fromIndex, toIndex),
+                                    verbs.second.subList(fromIndex, toIndex)
                                 )
                             }
 
                             VerbGroupType.UPDOWNLEFTRIGHT -> {
+                                val fromIndex = verbs.first.indexOf("yan")
+                                val toIndex = verbs.first.indexOf("binanin arkasi") + 1
                                 return@withContext Pair(
-                                    verbs.first.subList(235,247),
-                                    verbs.second.subList(235,247)
+                                    verbs.first.subList(fromIndex, toIndex),
+                                    verbs.second.subList(fromIndex, toIndex)
                                 )
                             }
 
                             VerbGroupType.WEEKDAYS -> {
+                                val fromIndex = verbs.first.indexOf("monday")
+                                val toIndex = verbs.first.indexOf("sunday") + 1
                                 return@withContext Pair(
-                                    verbs.first.subList(217,224),
-                                    verbs.second.subList(217,224)
+                                    verbs.first.subList(fromIndex, toIndex),
+                                    verbs.second.subList(fromIndex, toIndex)
                                 )
                             }
 
-                            VerbGroupType.TIME ->
+                            VerbGroupType.TIME -> {
+                                val fromIndex = verbs.first.indexOf("1 o clock")
+                                val toIndex = verbs.first.indexOf("twelve hours and a half, half word not number") + 1
                                 return@withContext Pair(
-                                verbs.first.subList(258,288),
-                                verbs.second.subList(258,288)
-                            )
+                                    verbs.first.subList(fromIndex, toIndex),
+                                    verbs.second.subList(fromIndex, toIndex)
+                                )
+                            }
+
                             else -> {
                                 return@withContext verbs
                             }
