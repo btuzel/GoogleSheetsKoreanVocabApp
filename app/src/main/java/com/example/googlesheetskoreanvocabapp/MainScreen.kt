@@ -188,6 +188,11 @@ fun TestVerbButtons(
         }) {
             Text("Test TIME")
         }
+        Button(onClick = {
+            goTestVerb(VerbGroupType.ANIMAL)
+        }) {
+            Text("Test ANIMAL")
+        }
     }
 }
 

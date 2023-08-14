@@ -80,6 +80,15 @@ class GetWordPair @Inject constructor(
                                 )
                             }
 
+                            VerbGroupType.ANIMAL -> {
+                                val fromIndex = verbs.first.indexOf("Dog")
+                                val toIndex = verbs.first.indexOf("Gorilla") + 1
+                                return@withContext Pair(
+                                    verbs.first.subList(fromIndex, toIndex),
+                                    verbs.second.subList(fromIndex, toIndex)
+                                )
+                            }
+
                             else -> {
                                 return@withContext verbs
                             }
