@@ -1,27 +1,30 @@
 package com.example.googlesheetskoreanvocabapp
 
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
-import com.example.googlesheetskoreanvocabapp.common.VerbInstance
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.common.isOnline
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.db.VerbRepository
 import com.example.googlesheetskoreanvocabapp.db.Verbs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class SyncViewModel @Inject constructor(
     private val verbRepository: VerbRepository,
     private val sheetsHelper: SheetsHelper,
     private val sharedPreferences: SharedPreferences,
-    private val verbInstance: VerbInstance
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SyncState> = MutableStateFlow(
@@ -67,21 +70,42 @@ class SyncViewModel @Inject constructor(
                 dbWords.first.subtract(sheetsEngWords.toSet()).toList()
             val differencesInKorWords =
                 dbWords.second.subtract(sheetsKorWords.toSet()).toList()
-            differencesInEngWords.forEachIndexed { index, englishWord ->
-                when (wordType) {
-                    SheetsHelper.WordType.VERBS -> verbRepository.deleteVerb(
-                        Verbs(
-                            englishWord = englishWord,
-                            koreanWord = differencesInKorWords[index]
+            try {
+                differencesInEngWords.forEachIndexed { index, englishWord ->
+                    when (wordType) {
+                        SheetsHelper.WordType.VERBS -> verbRepository.deleteVerb(
+                            Verbs(
+                                englishWord = englishWord,
+                                koreanWord = differencesInKorWords[index]
+                            )
                         )
-                    )
+                    }
                 }
+            }
+            catch (e: Exception) {
+                clearCache()
+                clearData()
             }
         }
     }
 
-    fun setVerbGroup(verbGroupType: VerbGroupType) {
-        verbInstance.setVerbGroupType(verbGroupType)
+    private fun clearCache() {
+        val packageName = context.packageName
+        val cacheDir = context.cacheDir
+
+        val cacheFiles = cacheDir.listFiles { file ->
+            file.isDirectory && file.name.startsWith(packageName)
+        }
+
+        cacheFiles?.forEach { file ->
+            file.deleteRecursively()
+        }
+    }
+
+    private fun clearData() {
+        viewModelScope.launch {
+            (context.getSystemService(ACTIVITY_SERVICE) as ActivityManager).clearApplicationUserData()
+        }
     }
 
     sealed class SyncState {

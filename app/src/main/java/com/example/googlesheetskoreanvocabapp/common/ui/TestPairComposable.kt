@@ -178,7 +178,7 @@ fun TestPairComposable(
         AppButton(onClick = {
             checkAnswer(englishText, koreanTranslation)
             attempt.value = koreanTranslation
-        }, text = "Submit")
+        }, text = "Submit", isEnabled = koreanTranslation.isNotEmpty())
     }
 }
 

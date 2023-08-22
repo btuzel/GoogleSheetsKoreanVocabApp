@@ -11,7 +11,6 @@ import javax.inject.Inject
 class GetWordPair @Inject constructor(
     private val sheetsHelper: SheetsHelper,
     private val verbRepository: VerbRepository,
-    //private val verbInstance: VerbInstance
 ) {
     suspend operator fun invoke(
         wordType: SheetsHelper.WordType,
@@ -28,8 +27,8 @@ class GetWordPair @Inject constructor(
                         when (verbGroupType) {
                             VerbGroupType.OLD -> {
                                 return@withContext Pair(
-                                    verbs.first.take(130),
-                                    verbs.second.take(130)
+                                    verbs.first.take(188),
+                                    verbs.second.take(188)
                                 )
                             }
 
@@ -38,10 +37,23 @@ class GetWordPair @Inject constructor(
                             }
 
                             VerbGroupType.NEW -> {
-                                return@withContext Pair(
-                                    verbs.first.takeLast(verbs.first.size - 130),
-                                    verbs.second.takeLast(verbs.first.size - 130)
+                                val pair = Pair(
+                                    verbs.first.subList(188, 216) + verbs.first.subList(
+                                        223,
+                                        234
+                                    ) + verbs.first.subList(287, 295) + verbs.first.subList(
+                                        314,
+                                        339
+                                    ),
+                                    verbs.second.subList(188, 216) + verbs.second.subList(
+                                        223,
+                                        234
+                                    ) + verbs.second.subList(287, 295) + verbs.second.subList(
+                                        314,
+                                        339
+                                    )
                                 )
+                                return@withContext pair
                             }
 
                             VerbGroupType.COLORS -> {
@@ -73,7 +85,8 @@ class GetWordPair @Inject constructor(
 
                             VerbGroupType.TIME -> {
                                 val fromIndex = verbs.first.indexOf("1 o clock")
-                                val toIndex = verbs.first.indexOf("twelve hours and a half, half word not number") + 1
+                                val toIndex =
+                                    verbs.first.indexOf("twelve hours and a half, half word not number") + 1
                                 return@withContext Pair(
                                     verbs.first.subList(fromIndex, toIndex),
                                     verbs.second.subList(fromIndex, toIndex)

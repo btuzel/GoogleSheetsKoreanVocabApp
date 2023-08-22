@@ -140,12 +140,13 @@ fun AddPairComposable(
 }
 
 @Composable
-fun AppButton(onClick: () -> Unit, modifier: Modifier = Modifier, text: String) {
+fun AppButton(onClick: () -> Unit, modifier: Modifier = Modifier, text: String, isEnabled: Boolean = true) {
     Button(
         modifier = modifier
             .height(48.dp)
             .widthIn(min = 60.dp),
         onClick = onClick,
+        enabled = isEnabled
     ) {
         Text(text = text)
     }
