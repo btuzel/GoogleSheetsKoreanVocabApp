@@ -37,23 +37,18 @@ class GetWordPair @Inject constructor(
                             }
 
                             VerbGroupType.NEW -> {
-                                val pair = Pair(
-                                    verbs.first.subList(188, 216) + verbs.first.subList(
-                                        223,
-                                        234
-                                    ) + verbs.first.subList(287, 295) + verbs.first.subList(
-                                        314,
-                                        339
-                                    ),
-                                    verbs.second.subList(188, 216) + verbs.second.subList(
-                                        223,
-                                        234
-                                    ) + verbs.second.subList(287, 295) + verbs.second.subList(
-                                        314,
-                                        339
-                                    )
+                                val subList = verbs.first.subList(188, 216) // trip to kac kisi burada
+                                val subList1 = verbs.first.subList(223, 234) // foreigner to iwanttoswim
+                                val subList2 = verbs.first.subList(287, 295) // to teach to okadindoktor
+                                val subList3 = verbs.first.subList(314, 339) // kackardesinvar to the car used to be home
+                                val subListKor = verbs.second.subList(188, 216)
+                                val subList1Kor = verbs.second.subList(223, 234)
+                                val subList2Kor = verbs.second.subList(287, 295)
+                                val subList3Kor = verbs.second.subList(314, 339)
+                                return@withContext Pair<List<String>, List<String>>(
+                                    subList + subList1 + subList2 + subList3,
+                                    subListKor + subList1Kor + subList2Kor + subList3Kor
                                 )
-                                return@withContext pair
                             }
 
                             VerbGroupType.COLORS -> {
