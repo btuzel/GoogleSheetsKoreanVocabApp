@@ -184,14 +184,21 @@ fun TestVerbButtons(
 
     Row {
         Button(onClick = {
-            goTestVerb(VerbGroupType.TIME)
-        }) {
-            Text("Test TIME")
-        }
-        Button(onClick = {
             goTestVerb(VerbGroupType.ANIMAL)
         }) {
             Text("Test ANIMAL")
+        }
+
+        Button(onClick = {
+            goTestVerb(VerbGroupType.BODYPARTS)
+        }) {
+            Text("Test BODYPARTS")
+        }
+
+        Button(onClick = {
+            goTestVerb(VerbGroupType.YUUN)
+        }) {
+            Text("Test YUUN")
         }
     }
 }

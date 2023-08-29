@@ -40,11 +40,11 @@ class GetWordPair @Inject constructor(
                                 val subList = verbs.first.subList(188, 216) // trip to kac kisi burada
                                 val subList1 = verbs.first.subList(223, 234) // foreigner to iwanttoswim
                                 val subList2 = verbs.first.subList(287, 295) // to teach to okadindoktor
-                                val subList3 = verbs.first.subList(314, 339) // kackardesinvar to the car used to be home
+                                val subList3 = verbs.first.subList(314, verbs.first.size) // kackardesinvar to LAST ITEM
                                 val subListKor = verbs.second.subList(188, 216)
                                 val subList1Kor = verbs.second.subList(223, 234)
                                 val subList2Kor = verbs.second.subList(287, 295)
-                                val subList3Kor = verbs.second.subList(314, 339)
+                                val subList3Kor = verbs.second.subList(314, verbs.second.size)
                                 return@withContext Pair<List<String>, List<String>>(
                                     subList + subList1 + subList2 + subList3,
                                     subListKor + subList1Kor + subList2Kor + subList3Kor
@@ -78,10 +78,9 @@ class GetWordPair @Inject constructor(
                                 )
                             }
 
-                            VerbGroupType.TIME -> {
-                                val fromIndex = verbs.first.indexOf("1 o clock")
-                                val toIndex =
-                                    verbs.first.indexOf("twelve hours and a half, half word not number") + 1
+                            VerbGroupType.YUUN -> {
+                                val fromIndex = verbs.first.indexOf("china")
+                                val toIndex = verbs.first.size
                                 return@withContext Pair(
                                     verbs.first.subList(fromIndex, toIndex),
                                     verbs.second.subList(fromIndex, toIndex)
@@ -91,6 +90,15 @@ class GetWordPair @Inject constructor(
                             VerbGroupType.ANIMAL -> {
                                 val fromIndex = verbs.first.indexOf("Dog")
                                 val toIndex = verbs.first.indexOf("Gorilla") + 1
+                                return@withContext Pair(
+                                    verbs.first.subList(fromIndex, toIndex),
+                                    verbs.second.subList(fromIndex, toIndex)
+                                )
+                            }
+
+                            VerbGroupType.BODYPARTS -> {
+                                val fromIndex = verbs.first.indexOf("Head")
+                                val toIndex = verbs.first.indexOf("Genitals") + 1
                                 return@withContext Pair(
                                     verbs.first.subList(fromIndex, toIndex),
                                     verbs.second.subList(fromIndex, toIndex)

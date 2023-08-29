@@ -65,6 +65,19 @@ class SyncViewModel @Inject constructor(
             getWordsFromSheets.first!!.map { it.toString().fixStrings() }
         val sheetsKorWords =
             getWordsFromSheets.second!!.map { it.toString().fixStrings() }
+        val changedKoreanWords = dbWords.second.subtract(sheetsKorWords.toSet())
+        if(changedKoreanWords.isNotEmpty()) {
+            changedKoreanWords.forEach {
+                val indexOfChangedKoreanWordInEnglish = dbWords.second.indexOf(it)
+                val changedWordsEnglishWord = dbWords.first[indexOfChangedKoreanWordInEnglish]
+                verbRepository.deleteVerb(
+                    Verbs(
+                        englishWord = changedWordsEnglishWord,
+                        koreanWord = it
+                    )
+                )
+            }
+        }
         if (dbWords.first.size > sheetsEngWords.size) {
             val differencesInEngWords =
                 dbWords.first.subtract(sheetsEngWords.toSet()).toList()
