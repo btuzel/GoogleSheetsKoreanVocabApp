@@ -97,7 +97,7 @@ abstract class BaseWordPairViewModel(
                 durationSec.toString(),
                 incorrectWords.ifEmpty { listOf() }
             )
-            saveResultUseCase(saveResultState)
+            saveResultUseCase.saveTestResults(saveResultState)
         }
     }
 

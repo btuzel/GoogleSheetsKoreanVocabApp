@@ -10,13 +10,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -98,7 +105,9 @@ fun DoneStateScreen(
     clearSharedPref: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -145,19 +154,19 @@ fun TestVerbButtons(
         Button(onClick = {
             goTestVerb(VerbGroupType.ALL)
         }) {
-            Text("Test Verb all")
+            Text("Test all")
         }
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = {
             goTestVerb(VerbGroupType.OLD)
         }) {
-            Text("Test Verb old")
+            Text("Test old")
         }
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = {
-            goTestVerb(VerbGroupType.NEW)
+            goTestVerb(VerbGroupType.HYUNGSEOK)
         }) {
-            Text("Test Verb new")
+            Text("Test HYUNGSEOK")
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
@@ -200,6 +209,39 @@ fun TestVerbButtons(
         }) {
             Text("Test YUUN")
         }
+    }
+    var fromIndex by remember { mutableStateOf("") }
+    var toIndex by remember { mutableStateOf("") }
+    Row {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            OutlinedTextField(
+                value = fromIndex,
+                onValueChange = { fromIndex = it },
+                shape = RoundedCornerShape(16.dp),
+                label = { Text("From") },
+            )
+            OutlinedTextField(
+                value = toIndex,
+                onValueChange = { toIndex = it },
+                shape = RoundedCornerShape(16.dp),
+                label = { Text("To") },
+            )
+            Button(onClick = {
+                GlobalClass.globalProperty = Pair(fromIndex.toInt(), toIndex.toInt())
+                goTestVerb(VerbGroupType.LASTXNUMBERS)
+            }) {
+                Text("Last Lesson")
+            }
+        }
+    }
+}
+
+class GlobalClass {
+    companion object {
+        var globalProperty: Pair<Int, Int> = Pair(0, 0)
     }
 }
 

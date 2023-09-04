@@ -12,7 +12,7 @@ class GetResult @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val coroutineDispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(): List<BaseWordPairViewModel.SaveResultCompleteState> =
+    suspend fun getTestResults(): List<BaseWordPairViewModel.SaveResultCompleteState> =
         withContext(coroutineDispatcher) {
             val x = BaseWordPairViewModel.SaveResultCompleteState(
                 SaveResultState("", ""),
@@ -22,7 +22,7 @@ class GetResult @Inject constructor(
                 listOf()
             )
             val sharedPreferencesKeys = listOf(
-              "verbs"
+                "verbs"
             )
             val gson = Gson()
             val resultList = mutableListOf<BaseWordPairViewModel.SaveResultCompleteState>()
@@ -38,4 +38,11 @@ class GetResult @Inject constructor(
 
             return@withContext resultList
         }
+
+    suspend fun getListToNotUse(): List<Int> =
+        withContext(coroutineDispatcher) {
+            val storedSet = sharedPreferences.getStringSet("numbers", emptySet())
+            return@withContext storedSet?.map<String?, Int> { it!!.toInt() } ?: emptyList<Int>()
+        }
+
 }

@@ -1,5 +1,6 @@
 package com.example.googlesheetskoreanvocabapp.results
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.ui.SaveResultState
@@ -28,7 +29,8 @@ class ResultsViewModel @Inject constructor(private val getResult: GetResult) : V
 
     init {
         viewModelScope.launch {
-            (uiState as MutableStateFlow).value = getResult()
+            (uiState as MutableStateFlow).value = getResult.getTestResults()
+            Log.d("numbersman", getResult.getListToNotUse().toString())
         }
     }
 }
