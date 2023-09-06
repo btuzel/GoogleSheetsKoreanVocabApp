@@ -14,7 +14,7 @@ class SaveResult @Inject constructor(
     suspend fun saveTestResults(saveResultCompleteState: BaseWordPairViewModel.SaveResultCompleteState) =
         withContext(coroutineDispatcher) {
             when (saveResultCompleteState.savedResultState.wordType) {
-                SheetsHelper.WordType.VERBS.name -> {
+                SheetsHelper.WordType.YUUN.name -> {
                     sharedPreferences.edit()
                         .putString("verbs", Gson().toJson(saveResultCompleteState)).apply()
                 }

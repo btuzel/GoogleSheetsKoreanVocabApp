@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.example.googlesheetskoreanvocabapp.db.VerbDao
-import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
+import com.example.googlesheetskoreanvocabapp.db.Daos
+import com.example.googlesheetskoreanvocabapp.db.MainDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,15 +20,15 @@ import javax.inject.Singleton
 object VerbDaoModule {
 
     @Provides
-    fun provideVerbDao(verbDatabase: VerbDatabase): VerbDao {
-        return verbDatabase.verbDao()
+    fun provideMainDao(mainDatabase: MainDatabase): Daos {
+        return mainDatabase.mainDao()
     }
 
     @Provides
-    fun provideDatabase(application: Application): VerbDatabase {
+    fun provideDatabase(application: Application): MainDatabase {
         return Room.databaseBuilder(
             application,
-            VerbDatabase::class.java,
+            MainDatabase::class.java,
             "my-db"
         ).build()
     }

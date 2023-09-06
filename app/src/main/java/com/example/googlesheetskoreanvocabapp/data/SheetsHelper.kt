@@ -2,8 +2,11 @@ package com.example.googlesheetskoreanvocabapp.data
 
 import android.content.Context
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
-import com.example.googlesheetskoreanvocabapp.db.VerbDatabase
-import com.example.googlesheetskoreanvocabapp.db.Verbs
+import com.example.googlesheetskoreanvocabapp.db.Hyungseok
+import com.example.googlesheetskoreanvocabapp.db.MainDatabase
+import com.example.googlesheetskoreanvocabapp.db.OldWords
+import com.example.googlesheetskoreanvocabapp.db.Repeatables
+import com.example.googlesheetskoreanvocabapp.db.Yuun
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -28,7 +31,7 @@ import javax.inject.Inject
 const val SPREADSHEET_ID = "1OX5NhFXAiPXwjdW5g6AmEriWbqzRvAvT_uZOAeVQ1t8"
 
 class SheetsHelper @Inject constructor(
-    @ApplicationContext applicationContext: Context, private val verbDatabase: VerbDatabase
+    @ApplicationContext applicationContext: Context, private val mainDatabase: MainDatabase
 ) {
     private val transport: HttpTransport = NetHttpTransport()
     private val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
@@ -53,7 +56,10 @@ class SheetsHelper @Inject constructor(
                         .getValues()
                 val emptyListengValuesIndices = engValues.indices.filter { engValues[it].size == 0 }
                 val sheetId = when (wordType) {
-                    WordType.VERBS -> SheetId.VERBS
+                    WordType.YUUN -> SheetId.YUUN
+                    WordType.REPEATABLES -> SheetId.REPEATABLES
+                    WordType.OLDWORDS -> SheetId.OLDWORDS
+                    WordType.HYUNGSEOK -> SheetId.HYUNGSEOK
                 }
                 emptyListengValuesIndices.forEach { deleteDataWithIndex(it, sheetId.sheetId) }
                 val koreanValues =
@@ -84,7 +90,23 @@ class SheetsHelper @Inject constructor(
                     }
                 }
                 when (wordType) {
-                    WordType.VERBS -> addWordsToDB(
+                    WordType.YUUN -> addWordsToDB(
+                        wordType = wordType,
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
+                    )
+
+                    WordType.REPEATABLES -> addWordsToDB(
+                        wordType = wordType,
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
+                    )
+                    WordType.OLDWORDS -> addWordsToDB(
+                        wordType = wordType,
+                        cleanedEngValues.flatten(),
+                        cleanedKorValues.flatten()
+                    )
+                    WordType.HYUNGSEOK -> addWordsToDB(
                         wordType = wordType,
                         cleanedEngValues.flatten(),
                         cleanedKorValues.flatten()
@@ -108,10 +130,43 @@ class SheetsHelper @Inject constructor(
         koreanWords: List<String>
     ) {
         when (wordType) {
-            WordType.VERBS -> {
-                verbDatabase.verbDao().insertVerbs(
+            WordType.YUUN -> {
+                mainDatabase.mainDao().insertYuuns(
                     englishWords.mapIndexed { i, word ->
-                        Verbs(
+                        Yuun(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
+                )
+            }
+
+            WordType.REPEATABLES -> {
+                mainDatabase.mainDao().insertRepeatables(
+                    englishWords.mapIndexed { i, word ->
+                        Repeatables(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
+                )
+            }
+
+            WordType.OLDWORDS -> {
+                mainDatabase.mainDao().insertOldWords(
+                    englishWords.mapIndexed { i, word ->
+                        OldWords(
+                            englishWord = word,
+                            koreanWord = koreanWords[i]
+                        )
+                    }
+                )
+            }
+
+            WordType.HYUNGSEOK -> {
+                mainDatabase.mainDao().insertHyungseoks(
+                    englishWords.mapIndexed { i, word ->
+                        Hyungseok(
                             englishWord = word,
                             koreanWord = koreanWords[i]
                         )
@@ -171,7 +226,10 @@ class SheetsHelper @Inject constructor(
                     return@withContext false
                 }
                 val sheetId = when (wordType) {
-                    WordType.VERBS -> SheetId.VERBS
+                    WordType.YUUN -> SheetId.YUUN
+                    WordType.REPEATABLES -> SheetId.REPEATABLES
+                    WordType.OLDWORDS -> SheetId.OLDWORDS
+                    WordType.HYUNGSEOK -> SheetId.HYUNGSEOK
                 }
                 val rangeToDelete = "$sheetTitle!A${indexToDelete}:${indexToDelete}"
                 service.spreadsheets().values()
@@ -212,10 +270,16 @@ class SheetsHelper @Inject constructor(
         }
 
     enum class WordType(val sheetIndex: Int) {
-        VERBS(sheetIndex = 0),
+        YUUN(sheetIndex = 0),
+        REPEATABLES(sheetIndex = 1),
+        OLDWORDS(sheetIndex = 2),
+        HYUNGSEOK(sheetIndex = 3)
     }
 
     enum class SheetId(val sheetId: Int) {
-        VERBS(sheetId = 0),
+        YUUN(sheetId = 0),
+        REPEATABLES(sheetId = 1),
+        OLDWORDS(sheetId = 2),
+        HYUNGSEOK(sheetId = 3)
     }
 }

@@ -9,12 +9,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.googlesheetskoreanvocabapp.MainScreen
-import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
 import com.example.googlesheetskoreanvocabapp.numbers.NumbersScreen
 import com.example.googlesheetskoreanvocabapp.results.ResultsScreen
-import com.example.googlesheetskoreanvocabapp.verbs.AddVerbScreen
-import com.example.googlesheetskoreanvocabapp.verbs.DisplayVerbsScreen
-import com.example.googlesheetskoreanvocabapp.verbs.VerbsScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.AddYuunScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.AddHyungseokScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.AddRepeatableScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.AddOldWordScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.DisplayYuunsScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.DisplayOldWordsScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.DisplayRepeatablesScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.DisplayHyungseoksScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.YuunsScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.HyungseoksScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.OldWordsScreen
+import com.example.googlesheetskoreanvocabapp.yuuns.RepeatablesScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -25,22 +33,47 @@ fun NavGraph(
         navController = navHostController,
         startDestination = ScreenDestination.MainScreen.route
     ) {
-        composable(
-            route = ScreenDestination.VerbsScreen.route,
-            arguments = listOf(navArgument(VERB_TYPE) {
-                type = NavType.StringType
-            })
-        ) {
-            VerbsScreen(onComplete = { navigateToMainScreen(navHostController) },
-                verbGroupType = it.arguments?.getString(VERB_TYPE)?.let { it1 -> stringToEnum(it1) }!!
-            )
+
+        composable(route = ScreenDestination.YuunsScreen.route) {
+            YuunsScreen(onComplete = { navigateToMainScreen(navHostController) })
         }
-        composable(route = ScreenDestination.AddVerbsScreen.route) {
-            AddVerbScreen()
+        composable(route = ScreenDestination.AddYuunsScreen.route) {
+            AddYuunScreen()
         }
-        composable(route = ScreenDestination.DisplayVerbsScreen.route) {
-            DisplayVerbsScreen()
+        composable(route = ScreenDestination.DisplayYuunsScreen.route) {
+            DisplayYuunsScreen()
         }
+
+        composable(route = ScreenDestination.RepeatablesScreen.route) {
+            RepeatablesScreen(onComplete = { navigateToMainScreen(navHostController) })
+        }
+        composable(route = ScreenDestination.AddRepeatablesScreen.route) {
+            AddRepeatableScreen()
+        }
+        composable(route = ScreenDestination.DisplayRepeatablesScreen.route) {
+            DisplayRepeatablesScreen()
+        }
+
+        composable(route = ScreenDestination.OldWordsScreen.route) {
+            OldWordsScreen(onComplete = { navigateToMainScreen(navHostController) })
+        }
+        composable(route = ScreenDestination.AddOldWordsScreen.route) {
+            AddOldWordScreen()
+        }
+        composable(route = ScreenDestination.DisplayOldWordsScreen.route) {
+            DisplayOldWordsScreen()
+        }
+
+        composable(route = ScreenDestination.HyungseoksScreen.route) {
+            HyungseoksScreen(onComplete = { navigateToMainScreen(navHostController) })
+        }
+        composable(route = ScreenDestination.AddHyungseoksScreen.route) {
+            AddHyungseokScreen()
+        }
+        composable(route = ScreenDestination.DisplayHyungseoksScreen.route) {
+            DisplayHyungseoksScreen()
+        }
+
         composable(route = ScreenDestination.ResultsScreen.route) {
             ResultsScreen()
         }
@@ -59,14 +92,6 @@ fun NavGraph(
         composable(route = ScreenDestination.MainScreen.route) {
             MainScreen(navHostController)
         }
-    }
-}
-
-fun stringToEnum(input: String): VerbGroupType? {
-    return try {
-        VerbGroupType.valueOf(input)
-    } catch (e: IllegalArgumentException) {
-        null
     }
 }
 

@@ -5,25 +5,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,14 +30,9 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
-import com.example.googlesheetskoreanvocabapp.common.ui.KoreanButton
 import com.example.googlesheetskoreanvocabapp.common.ui.LinearLoadingState
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
 import com.example.googlesheetskoreanvocabapp.navigation.ScreenDestination
-import com.example.googlesheetskoreanvocabapp.ui.theme.CyanCobaltBlue
-import com.example.googlesheetskoreanvocabapp.ui.theme.SonicSilver
-import com.example.googlesheetskoreanvocabapp.ui.theme.Teal200
 
 @Composable
 fun MainScreen(
@@ -61,9 +52,31 @@ fun MainScreen(
         },
         goToResults = { navHostController.navigate(ScreenDestination.ResultsScreen.route) },
         clearSharedPref = syncViewModel::clearSharedPref,
-        goTestVerb = { navHostController.navigate(route = ScreenDestination.VerbsScreen.passType(it.name)) },
-        goToDisplay = { navHostController.navigate(ScreenDestination.DisplayVerbsScreen.route) },
-        goToAdd = { navHostController.navigate(ScreenDestination.AddVerbsScreen.route) }
+        goTestWordType = {
+            when (it) {
+                SheetsHelper.WordType.YUUN -> navHostController.navigate(ScreenDestination.YuunsScreen.route)
+                SheetsHelper.WordType.REPEATABLES -> navHostController.navigate(ScreenDestination.RepeatablesScreen.route)
+                SheetsHelper.WordType.OLDWORDS -> navHostController.navigate(ScreenDestination.OldWordsScreen.route)
+                SheetsHelper.WordType.HYUNGSEOK -> navHostController.navigate(ScreenDestination.HyungseoksScreen.route)
+            }
+        },
+        goToDisplayWordType = {
+            when (it) {
+                SheetsHelper.WordType.YUUN -> navHostController.navigate(ScreenDestination.DisplayYuunsScreen.route)
+                SheetsHelper.WordType.REPEATABLES -> navHostController.navigate(ScreenDestination.DisplayRepeatablesScreen.route)
+                SheetsHelper.WordType.OLDWORDS -> navHostController.navigate(ScreenDestination.DisplayOldWordsScreen.route)
+                SheetsHelper.WordType.HYUNGSEOK -> navHostController.navigate(ScreenDestination.DisplayHyungseoksScreen.route)
+            }
+        },
+        doLast50 = { navHostController.navigate(ScreenDestination.YuunsScreen.route) },
+        goToAddWordType = {
+            when (it) {
+                SheetsHelper.WordType.YUUN -> navHostController.navigate(ScreenDestination.AddYuunsScreen.route)
+                SheetsHelper.WordType.REPEATABLES -> navHostController.navigate(ScreenDestination.AddRepeatablesScreen.route)
+                SheetsHelper.WordType.OLDWORDS -> navHostController.navigate(ScreenDestination.AddOldWordsScreen.route)
+                SheetsHelper.WordType.HYUNGSEOK -> navHostController.navigate(ScreenDestination.AddHyungseoksScreen.route)
+            }
+        }
     )
 }
 
@@ -71,20 +84,22 @@ fun MainScreen(
 fun WordManagementScreen(
     goToResults: () -> Unit,
     goToNumbers: (Boolean) -> Unit,
-    goToDisplay: () -> Unit,
-    goToAdd: () -> Unit,
-    goTestVerb: (VerbGroupType) -> Unit,
+    goToDisplayWordType: (SheetsHelper.WordType) -> Unit,
+    goToAddWordType: (SheetsHelper.WordType) -> Unit,
+    goTestWordType: (SheetsHelper.WordType) -> Unit,
     clearSharedPref: () -> Unit,
-    uiState: SyncViewModel.SyncState
+    uiState: SyncViewModel.SyncState,
+    doLast50: () -> Unit
 ) {
     when (uiState) {
         SyncViewModel.SyncState.Done -> DoneStateScreen(
             goToNumbers = goToNumbers,
-            goTestVerb = goTestVerb,
-            goToAdd = goToAdd,
-            goToDisplay = goToDisplay,
+            goTestWordType = goTestWordType,
+            goToAddWordType = goToAddWordType,
+            goToDisplayWordType = goToDisplayWordType,
             goToResults = goToResults,
-            clearSharedPref = clearSharedPref
+            clearSharedPref = clearSharedPref,
+            doLast50 = doLast50
         )
 
         SyncViewModel.SyncState.Init -> InitStateScreen()
@@ -98,11 +113,12 @@ fun WordManagementScreen(
 @Composable
 fun DoneStateScreen(
     goToNumbers: (Boolean) -> Unit,
-    goTestVerb: (VerbGroupType) -> Unit,
-    goToAdd: () -> Unit,
-    goToDisplay: () -> Unit,
+    goTestWordType: (SheetsHelper.WordType) -> Unit,
+    goToAddWordType: (SheetsHelper.WordType) -> Unit,
+    goToDisplayWordType: (SheetsHelper.WordType) -> Unit,
     goToResults: () -> Unit,
     clearSharedPref: () -> Unit,
+    doLast50: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -124,10 +140,12 @@ fun DoneStateScreen(
         }
 
         TestVerbButtons(
-            goTestVerb = goTestVerb
+            goTestWordType = goTestWordType,
+            goToAddWordType = goToAddWordType,
+            goToDisplayWordType = goToDisplayWordType,
+            goToResults = goToResults,
+            doLast50 = doLast50
         )
-
-        KoreanButtonsGroup(goToAdd = goToAdd, goToDisplay = goToDisplay, goToResults = goToResults)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -142,131 +160,120 @@ fun DoneStateScreen(
 
 @Composable
 fun TestVerbButtons(
-    goTestVerb: (VerbGroupType) -> Unit
+    goTestWordType: (SheetsHelper.WordType) -> Unit,
+    goToAddWordType: (SheetsHelper.WordType) -> Unit,
+    goToDisplayWordType: (SheetsHelper.WordType) -> Unit,
+    goToResults: () -> Unit,
+    doLast50: () -> Unit
 ) {
-    Text(
-        text = "Test Verb",
-        style = MaterialTheme.typography.h4,
-        modifier = Modifier.padding(top = 16.dp)
-    )
-
-    Row {
-        Button(onClick = {
-            goTestVerb(VerbGroupType.ALL)
-        }) {
-            Text("Test all")
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        Button(onClick = {
-            goTestVerb(VerbGroupType.OLD)
-        }) {
-            Text("Test old")
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        Button(onClick = {
-            goTestVerb(VerbGroupType.HYUNGSEOK)
-        }) {
-            Text("Test HYUNGSEOK")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
+    Button(onClick = {
+        goToResults()
+    }) {
+        Text("Results")
     }
 
-    Row {
-        Button(onClick = {
-            goTestVerb(VerbGroupType.COLORS)
-        }) {
-            Text("Test COLOR")
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        Button(onClick = {
-            goTestVerb(VerbGroupType.UPDOWNLEFTRIGHT)
-        }) {
-            Text("Test UPDOWN")
-        }
-        Button(onClick = {
-            goTestVerb(VerbGroupType.WEEKDAYS)
-        }) {
-            Text("Test DAYSOFWEEK")
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-    }
-
-    Row {
-        Button(onClick = {
-            goTestVerb(VerbGroupType.ANIMAL)
-        }) {
-            Text("Test ANIMAL")
-        }
-
-        Button(onClick = {
-            goTestVerb(VerbGroupType.BODYPARTS)
-        }) {
-            Text("Test BODYPARTS")
-        }
-
-        Button(onClick = {
-            goTestVerb(VerbGroupType.YUUN)
-        }) {
-            Text("Test YUUN")
-        }
-    }
-    var fromIndex by remember { mutableStateOf("") }
-    var toIndex by remember { mutableStateOf("") }
     Row {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .fillMaxHeight()
+                .wrapContentWidth()
         ) {
-            OutlinedTextField(
-                value = fromIndex,
-                onValueChange = { fromIndex = it },
-                shape = RoundedCornerShape(16.dp),
-                label = { Text("From") },
-            )
-            OutlinedTextField(
-                value = toIndex,
-                onValueChange = { toIndex = it },
-                shape = RoundedCornerShape(16.dp),
-                label = { Text("To") },
-            )
             Button(onClick = {
-                GlobalClass.globalProperty = Pair(fromIndex.toInt(), toIndex.toInt())
-                goTestVerb(VerbGroupType.LASTXNUMBERS)
+                goTestWordType(SheetsHelper.WordType.REPEATABLES)
             }) {
-                Text("Last Lesson")
+                Text("Test Repeatables")
             }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = {
+                goTestWordType(SheetsHelper.WordType.YUUN)
+            }) {
+                Text("Test Yuun")
+            }
+            Button(onClick = {
+                goTestWordType(SheetsHelper.WordType.OLDWORDS)
+            }) {
+                Text("Test Old Words")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = {
+                goTestWordType(SheetsHelper.WordType.HYUNGSEOK)
+            }) {
+                Text("Test Hyungseok")
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .wrapContentWidth()
+        ) {
+            Button(onClick = {
+                goToAddWordType(SheetsHelper.WordType.REPEATABLES)
+            }) {
+                Text("Add Repeatables")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = {
+                goToAddWordType(SheetsHelper.WordType.YUUN)
+            }) {
+                Text("Add Yuun")
+            }
+            Button(onClick = {
+                goToAddWordType(SheetsHelper.WordType.OLDWORDS)
+            }) {
+                Text("Add Old Words")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = {
+                goToAddWordType(SheetsHelper.WordType.HYUNGSEOK)
+            }) {
+                Text("Add Hyungseok")
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .wrapContentWidth()
+        ) {
+            Button(onClick = {
+                goToDisplayWordType(SheetsHelper.WordType.REPEATABLES)
+            }) {
+                Text("Display Repeatables")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = {
+                goToDisplayWordType(SheetsHelper.WordType.YUUN)
+                GlobalClass.globalProperty = true
+            }) {
+                Text("Display Yuun")
+            }
+            Button(onClick = {
+                goToDisplayWordType(SheetsHelper.WordType.OLDWORDS)
+            }) {
+                Text("Display Old Words")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = {
+                goToDisplayWordType(SheetsHelper.WordType.HYUNGSEOK)
+            }) {
+                Text("Display Hyungseok")
+            }
+        }
+    }
+    Row {
+        Button(onClick = {
+            GlobalClass.doLast50 = true
+            doLast50()
+        }) {
+            Text("Do Last 50")
         }
     }
 }
 
 class GlobalClass {
     companion object {
-        var globalProperty: Pair<Int, Int> = Pair(0, 0)
+        var globalProperty: Boolean = false
+        var doLast50: Boolean = false
     }
-}
-
-@Composable
-fun KoreanButtonsGroup(
-    goToAdd: () -> Unit,
-    goToDisplay: () -> Unit,
-    goToResults: () -> Unit
-) {
-    KoreanButton(
-        onClick = { goToAdd() },
-        backgroundColor = Teal200,
-        buttonText = "Add"
-    )
-
-    KoreanButton(
-        onClick = { goToDisplay() },
-        backgroundColor = SonicSilver,
-        buttonText = "Display"
-    )
-    KoreanButton(
-        onClick = { goToResults() },
-        backgroundColor = CyanCobaltBlue,
-        buttonText = "Results"
-    )
 }
 
 @Composable

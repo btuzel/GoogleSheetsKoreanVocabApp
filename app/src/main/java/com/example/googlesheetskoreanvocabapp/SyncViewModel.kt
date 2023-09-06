@@ -9,8 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.googlesheetskoreanvocabapp.common.fixStrings
 import com.example.googlesheetskoreanvocabapp.common.isOnline
 import com.example.googlesheetskoreanvocabapp.data.SheetsHelper
-import com.example.googlesheetskoreanvocabapp.db.VerbRepository
-import com.example.googlesheetskoreanvocabapp.db.Verbs
+import com.example.googlesheetskoreanvocabapp.db.Hyungseok
+import com.example.googlesheetskoreanvocabapp.db.MainRepositoryDatabase
+import com.example.googlesheetskoreanvocabapp.db.OldWords
+import com.example.googlesheetskoreanvocabapp.db.Repeatables
+import com.example.googlesheetskoreanvocabapp.db.Yuun
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SyncViewModel @Inject constructor(
-    private val verbRepository: VerbRepository,
+    private val mainRepositoryDatabase: MainRepositoryDatabase,
     private val sheetsHelper: SheetsHelper,
     private val sharedPreferences: SharedPreferences,
     @ApplicationContext private val context: Context
@@ -47,8 +50,14 @@ class SyncViewModel @Inject constructor(
     private suspend fun syncAllData() {
         if (isOnline()) {
             viewModelScope.launch {
-                _uiState.value = SyncState.Loading(SheetsHelper.WordType.VERBS, 6 / 6f)
-                syncWords(SheetsHelper.WordType.VERBS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.YUUN, 1 / 4f)
+                syncWords(SheetsHelper.WordType.YUUN)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.REPEATABLES, 2 / 4f)
+                syncWords(SheetsHelper.WordType.REPEATABLES)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.OLDWORDS, 3 / 4f)
+                syncWords(SheetsHelper.WordType.OLDWORDS)
+                _uiState.value = SyncState.Loading(SheetsHelper.WordType.HYUNGSEOK, 4 / 4f)
+                syncWords(SheetsHelper.WordType.HYUNGSEOK)
                 _uiState.value = SyncState.Done
             }
         } else {
@@ -58,7 +67,10 @@ class SyncViewModel @Inject constructor(
 
     private suspend fun syncWords(wordType: SheetsHelper.WordType) {
         val dbWords = when (wordType) {
-            SheetsHelper.WordType.VERBS -> verbRepository.getVerbs()
+            SheetsHelper.WordType.YUUN -> mainRepositoryDatabase.getYuuns()
+            SheetsHelper.WordType.REPEATABLES -> mainRepositoryDatabase.getRepeatables()
+            SheetsHelper.WordType.OLDWORDS -> mainRepositoryDatabase.getOldWords()
+            SheetsHelper.WordType.HYUNGSEOK -> mainRepositoryDatabase.getHyungseoks()
         }
         val getWordsFromSheets = sheetsHelper.getWordsFromSpreadsheet(wordType)
         val sheetsEngWords =
@@ -66,16 +78,39 @@ class SyncViewModel @Inject constructor(
         val sheetsKorWords =
             getWordsFromSheets.second!!.map { it.toString().fixStrings() }
         val changedKoreanWords = dbWords.second.subtract(sheetsKorWords.toSet())
-        if(changedKoreanWords.isNotEmpty()) {
+        if (changedKoreanWords.isNotEmpty()) {
             changedKoreanWords.forEach {
                 val indexOfChangedKoreanWordInEnglish = dbWords.second.indexOf(it)
                 val changedWordsEnglishWord = dbWords.first[indexOfChangedKoreanWordInEnglish]
-                verbRepository.deleteVerb(
-                    Verbs(
-                        englishWord = changedWordsEnglishWord,
-                        koreanWord = it
+                when (wordType) {
+                    SheetsHelper.WordType.YUUN -> mainRepositoryDatabase.deleteYuuns(
+                        Yuun(
+                            englishWord = changedWordsEnglishWord,
+                            koreanWord = it
+                        )
                     )
-                )
+
+                    SheetsHelper.WordType.REPEATABLES -> mainRepositoryDatabase.deleteRepeatables(
+                        Repeatables(
+                            englishWord = changedWordsEnglishWord,
+                            koreanWord = it
+                        )
+                    )
+
+                    SheetsHelper.WordType.OLDWORDS -> mainRepositoryDatabase.deleteOldWords(
+                        OldWords(
+                            englishWord = changedWordsEnglishWord,
+                            koreanWord = it
+                        )
+                    )
+
+                    SheetsHelper.WordType.HYUNGSEOK -> mainRepositoryDatabase.deleteHyungseoks(
+                        Hyungseok(
+                            englishWord = changedWordsEnglishWord,
+                            koreanWord = it
+                        )
+                    )
+                }
             }
         }
         if (dbWords.first.size > sheetsEngWords.size) {
@@ -86,16 +121,36 @@ class SyncViewModel @Inject constructor(
             try {
                 differencesInEngWords.forEachIndexed { index, englishWord ->
                     when (wordType) {
-                        SheetsHelper.WordType.VERBS -> verbRepository.deleteVerb(
-                            Verbs(
+                        SheetsHelper.WordType.YUUN -> mainRepositoryDatabase.deleteYuuns(
+                            Yuun(
+                                englishWord = englishWord,
+                                koreanWord = differencesInKorWords[index]
+                            )
+                        )
+
+                        SheetsHelper.WordType.REPEATABLES -> mainRepositoryDatabase.deleteRepeatables(
+                            Repeatables(
+                                englishWord = englishWord,
+                                koreanWord = differencesInKorWords[index]
+                            )
+                        )
+
+                        SheetsHelper.WordType.OLDWORDS -> mainRepositoryDatabase.deleteOldWords(
+                            OldWords(
+                                englishWord = englishWord,
+                                koreanWord = differencesInKorWords[index]
+                            )
+                        )
+
+                        SheetsHelper.WordType.HYUNGSEOK -> mainRepositoryDatabase.deleteHyungseoks(
+                            Hyungseok(
                                 englishWord = englishWord,
                                 koreanWord = differencesInKorWords[index]
                             )
                         )
                     }
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 clearCache()
                 clearData()
             }

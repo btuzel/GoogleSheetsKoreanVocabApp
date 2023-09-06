@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.googlesheetskoreanvocabapp.common.VerbGroupType
+import com.example.googlesheetskoreanvocabapp.GlobalClass
 import com.example.googlesheetskoreanvocabapp.common.state.AnswerState
 import com.example.googlesheetskoreanvocabapp.common.state.DisplayState
 import com.example.googlesheetskoreanvocabapp.common.state.GetWords
@@ -53,8 +53,6 @@ abstract class BaseWordPairViewModel(
     private val incorrectWords = mutableListOf<String>()
 
     private lateinit var startTime: LocalDateTime
-
-    lateinit var verbGroupType: VerbGroupType
 
     override fun addWordPair(englishWord: String, koreanWord: String) {
         viewModelScope.launch {
@@ -126,10 +124,10 @@ abstract class BaseWordPairViewModel(
     init {
         viewModelScope.launch {
             delay(500)
-            _wordPairs = if(this@BaseWordPairViewModel::verbGroupType.isInitialized) {
-                getWordPair(wordType, verbGroupType)
+            _wordPairs = if(GlobalClass.globalProperty) {
+                getWordPair(wordType, true)
             } else {
-                getWordPair(wordType, VerbGroupType.ALL)
+                getWordPair(wordType, false)
             }
             _displayAllPairsUiState.value = DisplayState.AllPairs(_wordPairs)
             sendRandomEnglishWord(AnswerState.Init)

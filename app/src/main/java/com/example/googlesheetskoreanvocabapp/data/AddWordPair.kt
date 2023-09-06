@@ -1,15 +1,18 @@
 package com.example.googlesheetskoreanvocabapp.data
 
 import com.example.googlesheetskoreanvocabapp.common.isOnline
-import com.example.googlesheetskoreanvocabapp.db.VerbRepository
-import com.example.googlesheetskoreanvocabapp.db.Verbs
+import com.example.googlesheetskoreanvocabapp.db.Hyungseok
+import com.example.googlesheetskoreanvocabapp.db.MainRepositoryDatabase
+import com.example.googlesheetskoreanvocabapp.db.OldWords
+import com.example.googlesheetskoreanvocabapp.db.Repeatables
+import com.example.googlesheetskoreanvocabapp.db.Yuun
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddWordPair @Inject constructor(
     private val sheetsHelper: SheetsHelper,
-    private val verbRepository: VerbRepository
+    private val mainRepositoryDatabase: MainRepositoryDatabase
 ) {
     suspend operator fun invoke(
         englishWord: String,
@@ -19,10 +22,41 @@ class AddWordPair @Inject constructor(
         Dispatchers.IO
     ) {
         when (wordType) {
-            SheetsHelper.WordType.VERBS -> {
-                verbRepository.insertVerbs(
+            SheetsHelper.WordType.YUUN -> {
+                mainRepositoryDatabase.insertYuuns(
                     listOf(
-                        Verbs(
+                        Yuun(
+                            englishWord = englishWord,
+                            koreanWord = koreanWord
+                        )
+                    )
+                )
+            }
+
+            SheetsHelper.WordType.REPEATABLES -> {
+                mainRepositoryDatabase.insertRepeatables(
+                    listOf(
+                        Repeatables(
+                            englishWord = englishWord,
+                            koreanWord = koreanWord
+                        )
+                    )
+                )
+            }
+            SheetsHelper.WordType.OLDWORDS -> {
+                mainRepositoryDatabase.insertOldWords(
+                    listOf(
+                        OldWords(
+                            englishWord = englishWord,
+                            koreanWord = koreanWord
+                        )
+                    )
+                )
+            }
+            SheetsHelper.WordType.HYUNGSEOK -> {
+                mainRepositoryDatabase.insertHyungseoks(
+                    listOf(
+                        Hyungseok(
                             englishWord = englishWord,
                             koreanWord = koreanWord
                         )
@@ -32,9 +66,28 @@ class AddWordPair @Inject constructor(
         }
         if (isOnline()) {
             when (wordType) {
-                SheetsHelper.WordType.VERBS -> {
+                SheetsHelper.WordType.YUUN -> {
                     return@withContext sheetsHelper.addData(
-                        SheetsHelper.WordType.VERBS,
+                        SheetsHelper.WordType.YUUN,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
+
+                SheetsHelper.WordType.REPEATABLES -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.REPEATABLES,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
+                SheetsHelper.WordType.OLDWORDS -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.REPEATABLES,
+                        Pair<String, String>(englishWord, koreanWord)
+                    )
+                }
+                SheetsHelper.WordType.HYUNGSEOK -> {
+                    return@withContext sheetsHelper.addData(
+                        SheetsHelper.WordType.REPEATABLES,
                         Pair<String, String>(englishWord, koreanWord)
                     )
                 }
